@@ -1,6 +1,7 @@
 package com.gululu.mediabridge
 
 import android.content.Context
+import android.graphics.Bitmap
 import android.util.Log
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
@@ -22,17 +23,26 @@ object MediaBridgeSessionManager {
         }
     }
 
-    fun updateMetadata(title: String?, artist: String?) {
+    fun updateMetadata(title: String?, artist: String?, albumArt: Bitmap? = null) {
         val metadata = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, title ?: "")
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artist ?: "")
+            .apply {
+                if (albumArt != null) {
+                    putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, albumArt)
+                }
+            }
             .build()
 
         mediaSession?.setMetadata(metadata)
 
         Log.d("MediaBridge", "🎵 元数据已更新: $title - $artist")
         LogBuffer.append("🎵 元数据更新: $title - $artist")
+        if (albumArt != null) {
+            LogBuffer.append("🖼️ 封面图已设置")
+        }
     }
+
 
     fun setPlaybackState(state: Int) {
         val playbackState = PlaybackStateCompat.Builder()
