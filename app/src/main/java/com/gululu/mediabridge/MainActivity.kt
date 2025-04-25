@@ -1,5 +1,6 @@
 package com.gululu.mediabridge
 
+import android.content.Intent
 import android.os.Bundle
 import android.widget.TextView
 import androidx.activity.ComponentActivity
@@ -22,5 +23,17 @@ class MainActivity : ComponentActivity() {
         })
 
         LogBuffer.append("✅ MainActivity started")
+    }
+
+    private fun launchApp(packageName: String) {
+        val pm = packageManager
+        val intent = pm.getLaunchIntentForPackage(packageName)
+        if (intent != null) {
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
+            startActivity(intent)
+            LogBuffer.append("✅ 尝试启动 $packageName")
+        } else {
+            LogBuffer.append("❌ 无法启动 $packageName")
+        }
     }
 }
