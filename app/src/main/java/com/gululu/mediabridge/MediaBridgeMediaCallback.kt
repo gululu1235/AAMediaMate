@@ -8,6 +8,7 @@ import android.media.session.MediaSessionManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
+import android.support.v4.media.RatingCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 
@@ -48,6 +49,14 @@ class MediaBridgeMediaCallback(private val context: Context) : MediaSessionCompa
     override fun onSeekTo(pos: Long) {
         Log.d("MediaBridge", "🎯 onSeekTo triggered: $pos ms")
         getRealController()?.transportControls?.seekTo(pos)
+
+        sync()
+    }
+
+    override fun onSetRating(rating: RatingCompat?) {
+        if (rating != null) {
+            MediaBridgeSessionManager.toggleLyrics(rating.isRated)
+        }
 
         sync()
     }
