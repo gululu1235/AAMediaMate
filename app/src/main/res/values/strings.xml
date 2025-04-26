@@ -1,3 +1,16 @@
 <resources>
     <string name="app_name">MediaBridge</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">设置</string>
+    <string name="show_lyrics">显示歌词</string>
+    <string name="musixmatch_api_key">Musixmatch API Key</string>
+    <string name="show">查看</string>
+    <string name="hide">隐藏</string>
+    <string name="back">返回</string>
+    <string name="simplify_chinese">繁体转简体</string>
+    <string name="ignore_auto_supported_apps">忽略原生 Android Auto 播放器</string>
+
+    <!-- Main Screen -->
+    <string name="open_settings">打开设置</string>
 </resources>

@@ -53,14 +53,6 @@ class MediaBridgeMediaCallback(private val context: Context) : MediaSessionCompa
         sync()
     }
 
-    override fun onSetRating(rating: RatingCompat?) {
-        if (rating != null) {
-            MediaBridgeSessionManager.toggleLyrics(rating.isRated)
-        }
-
-        sync()
-    }
-
     private fun sync()
     {
         Handler(Looper.getMainLooper()).postDelayed({

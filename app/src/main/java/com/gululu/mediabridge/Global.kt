@@ -13,7 +13,7 @@ object Global
     )
 
     fun packageAllowed(context: Context, packageName:String): Boolean {
-        return !isAndroidAutoApp(context, packageName)
+        return !SettingsManager.getIgnoreNativeAutoApps(context) || !isAndroidAutoApp(context, packageName)
     }
 
     private fun isAndroidAutoApp(context: Context, packageName: String): Boolean {

@@ -19,7 +19,6 @@ object MediaBridgeSessionManager {
     private var mediaSession: MediaSessionCompat? = null
     private var appContext: Context? = null
     private var currentMediaInfo: MediaInfo? = null
-    private var isLyricsEnabled = true
 
     fun init(context: Context) {
         if (mediaSession != null) return
@@ -42,15 +41,6 @@ object MediaBridgeSessionManager {
 
     fun getCurrentMediaPackage(): String? = currentMediaInfo?.appName
 
-    fun toggleLyrics(enabled:Boolean)
-    {
-        isLyricsEnabled = enabled
-    }
-
-    private fun getLyricsRating(): RatingCompat {
-        return RatingCompat.newHeartRating(isLyricsEnabled)
-    }
-
     fun updateFromMediaInfo(info: MediaInfo?) {
         currentMediaInfo = info
 
@@ -66,7 +56,6 @@ object MediaBridgeSessionManager {
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, info.artist + "-" + info.album)
             .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "From $label")
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, info.duration)
-            .putRating(MediaMetadataCompat.METADATA_KEY_USER_RATING, getLyricsRating())
             .apply {
                 if (info.albumArt != null) {
                     putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, info.albumArt)
@@ -95,14 +84,15 @@ object MediaBridgeSessionManager {
     private var currentLyricsJob: Job? = null
 
     private fun tryStartLyricsSync(info: MediaInfo, mediaSession: MediaSessionCompat?) {
-        if (!isLyricsEnabled || !info.isPlaying || info.title.isBlank() || info.artist.isBlank()) {
+        val enabled = SettingsManager.getLyricsEnabled(appContext!!)
+        if (!enabled || !info.isPlaying || info.title.isBlank() || info.artist.isBlank()) {
             LyricSyncEngine.stop()
             return
         }
 
         currentLyricsJob?.cancel()
         currentLyricsJob = lyricsScope.launch {
-            val lyrics = LyricCache.getOrFetchLyrics(info.title, info.artist, info.duration.toString())
+            val lyrics = LyricCache.getOrFetchLyrics(appContext!!, info.title, info.artist, info.duration.toString())
             if (lyrics.isEmpty()) {
                 Log.d("MediaBridge", "🚫 没有找到歌词: ${info.title}")
                 return@launch
@@ -117,7 +107,6 @@ object MediaBridgeSessionManager {
                     .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "${info.title} - ${info.artist} - ${info.album}")
                     .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "via ${info.appName}")
                     .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, info.duration)
-                    .putRating(MediaMetadataCompat.METADATA_KEY_USER_RATING, getLyricsRating())
                     .apply {
                         if (info.albumArt != null) {
                             putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, info.albumArt)
@@ -168,6 +157,5 @@ object MediaBridgeSessionManager {
                 PlaybackStateCompat.ACTION_PAUSE or
                 PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
                 PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                PlaybackStateCompat.ACTION_SEEK_TO or
-                PlaybackStateCompat.ACTION_SET_RATING
+                PlaybackStateCompat.ACTION_SEEK_TO
 }

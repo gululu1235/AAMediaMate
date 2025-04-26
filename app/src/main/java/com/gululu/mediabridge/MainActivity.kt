@@ -1,39 +1,78 @@
+@file:OptIn(ExperimentalMaterial3Api::class)
 package com.gululu.mediabridge
 
-import android.content.Intent
 import android.os.Bundle
-import android.widget.TextView
 import androidx.activity.ComponentActivity
-import androidx.lifecycle.Observer
+import androidx.activity.compose.setContent
+import androidx.compose.foundation.layout.*
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.MoreVert
+import androidx.compose.material3.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.unit.dp
+import com.gululu.mediabridge.ui.SettingsScreen
+import androidx.compose.runtime.livedata.observeAsState
 
 class MainActivity : ComponentActivity() {
-
-    private lateinit var logText: TextView
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
-
-        logText = findViewById(R.id.logTextView)
-
-        MediaBridgeSessionManager.init(this)
-
-        LogBuffer.logs.observe(this, Observer { newLog ->
-            logText.text = newLog
-        })
-
-        LogBuffer.append("✅ MainActivity started")
-    }
-
-    private fun launchApp(packageName: String) {
-        val pm = packageManager
-        val intent = pm.getLaunchIntentForPackage(packageName)
-        if (intent != null) {
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK)
-            startActivity(intent)
-            LogBuffer.append("✅ 尝试启动 $packageName")
-        } else {
-            LogBuffer.append("❌ 无法启动 $packageName")
+        setContent {
+            MediaBridgeApp()
         }
     }
+}
+
+@Composable
+fun MediaBridgeApp() {
+    var showSettings by remember { mutableStateOf(false) }
+
+    if (showSettings) {
+        SettingsScreen(onBack = { showSettings = false })
+    } else {
+        MainScreen(onOpenSettings = { showSettings = true })
+    }
+}
+
+@Composable
+fun MainScreen(onOpenSettings: () -> Unit) {
+    Scaffold(
+        topBar = {
+            TopAppBar(
+                title = { Text(stringResource(id = R.string.app_name)) },
+                actions = {
+                    var expanded by remember { mutableStateOf(false) }
+
+                    IconButton(onClick = { expanded = true }) {
+                        Icon(Icons.Default.MoreVert, contentDescription = "Menu")
+                    }
+
+                    DropdownMenu(
+                        expanded = expanded,
+                        onDismissRequest = { expanded = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.settings_title)) },
+                            onClick = {
+                                expanded = false
+                                onOpenSettings()
+                            }
+                        )
+                    }
+                }
+            )
+        }
+    ) { innerPadding ->
+        Column(modifier = Modifier.padding(innerPadding).padding(16.dp)) {
+            LogDisplay()
+        }
+    }
+}
+
+@Composable
+fun LogDisplay() {
+    val logs by LogBuffer.logs.observeAsState("")
+    Text(text = logs)
 }
