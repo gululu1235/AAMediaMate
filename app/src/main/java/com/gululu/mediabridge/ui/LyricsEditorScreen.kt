@@ -1,6 +1,7 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 package com.gululu.mediabridge.ui
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
@@ -52,6 +53,7 @@ fun LyricsEditorScreen(
                     IconButton(onClick = {
                         coroutineScope.launch {
                             LyricsRepository.saveLyricsText(context, lyricsKey, content)
+                            Toast.makeText(context, context.getString(R.string.lyrics_saved), Toast.LENGTH_SHORT).show()
                             onBack()
                         }
                     }) {
@@ -60,6 +62,7 @@ fun LyricsEditorScreen(
                     IconButton(onClick = {
                         coroutineScope.launch {
                             LyricsRepository.deleteLyrics(context, listOf(lyricsKey))
+                            Toast.makeText(context, context.getString(R.string.lyrics_deleted), Toast.LENGTH_SHORT).show()
                             onDeleted()
                         }
                     }) {

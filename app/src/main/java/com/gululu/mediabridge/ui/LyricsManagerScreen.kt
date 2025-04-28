@@ -2,6 +2,7 @@
 
 package com.gululu.mediabridge.ui
 
+import android.widget.Toast
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.clickable
@@ -250,6 +251,7 @@ fun LyricsManagerScreen(
                         coroutineScope.launch {
                             LyricsRepository.deleteLyrics(context, selectedKeys.toList())
                             fullLyricsList = LyricsRepository.getAllLyrics(context)
+                            Toast.makeText(context, context.getString(R.string.deleted_message, selectedKeys.size), Toast.LENGTH_SHORT).show()
                             selectedKeys = emptySet()
                         }
                     }
