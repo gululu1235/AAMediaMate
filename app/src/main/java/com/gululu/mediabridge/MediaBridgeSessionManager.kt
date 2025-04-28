@@ -39,7 +39,7 @@ object MediaBridgeSessionManager {
         Log.d("MediaBridge", "✅ MediaSession 初始化完成")
     }
 
-    fun getCurrentMediaPackage(): String? = currentMediaInfo?.appName
+    fun getCurrentMediaPackage(): String? = currentMediaInfo?.appPackageName
 
     fun updateFromMediaInfo(info: MediaInfo?) {
         currentMediaInfo = info
@@ -50,11 +50,10 @@ object MediaBridgeSessionManager {
             return
         }
 
-        val label = getAppLabel(info.appName)
         val metadata = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, info.title)
             .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, info.artist + "-" + info.album)
-            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "From $label")
+            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "From ${info.appName}")
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, info.duration)
             .apply {
                 if (info.albumArt != null) {
@@ -105,7 +104,7 @@ object MediaBridgeSessionManager {
                 val metadata = MediaMetadataCompat.Builder()
                     .putString(MediaMetadataCompat.METADATA_KEY_TITLE, line) // 歌词行
                     .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "${info.title} - ${info.artist} - ${info.album}")
-                    .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "via ${info.appName}")
+                    .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "From ${info.appName}")
                     .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, info.duration)
                     .apply {
                         if (info.albumArt != null) {
@@ -140,16 +139,6 @@ object MediaBridgeSessionManager {
 
         mediaSession?.setPlaybackState(playbackState)
         Log.d("MediaBridge", "⏯️ 播放状态更新: $state at $position ms")
-    }
-
-    private fun getAppLabel(packageName: String): String {
-        return try {
-            val pm = appContext!!.packageManager
-            val appInfo = pm.getApplicationInfo(packageName, 0)
-            pm.getApplicationLabel(appInfo).toString()
-        } catch (e: Exception) {
-            packageName
-        }
     }
 
     private const val SUPPORTED_ACTIONS =

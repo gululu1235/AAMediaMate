@@ -57,6 +57,6 @@ class MediaBridgeMediaCallback(private val context: Context) : MediaSessionCompa
     {
         Handler(Looper.getMainLooper()).postDelayed({
             MediaBridgeSessionManager.updateFromMediaInfo(MediaInformationRetriever.refreshCurrentMediaInfo(context))
-        }, 1000)
+        }, 500)
     }
 }

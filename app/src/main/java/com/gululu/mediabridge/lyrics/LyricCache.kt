@@ -2,6 +2,8 @@ package com.gululu.mediabridge.lyrics
 
 import android.content.Context
 import android.util.Log
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.io.File
 
 object LyricCache {
@@ -37,7 +39,7 @@ object LyricCache {
             val lrcContent = file.readText()
             Log.d("MediaBridge", "Reading from file. $file")
 
-            if (lrcContent.trim() == "failed") {
+            if (lrcContent.isBlank()) {
                 Log.d("MediaBridge", "Reading from file, but no lyrics found.")
                 memoryCache[key] = null
                 return emptyList()
@@ -60,13 +62,17 @@ object LyricCache {
                 return lyrics
             } else {
                 memoryCache[key] = null
-                file.writeText("failed")
+                withContext(Dispatchers.IO) {
+                    file.createNewFile()
+                }
                 Log.d("MediaBridge", "Failed to get lyrics.")
                 return emptyList()
             }
         } else {
             memoryCache[key] = null
-            file.writeText("failed")
+            withContext(Dispatchers.IO) {
+                file.createNewFile()
+            }
             return emptyList()
         }
     }
