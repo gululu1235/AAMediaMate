@@ -6,14 +6,13 @@ import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.ArrowBack
 import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
-import com.gululu.mediabridge.ui.SettingsScreen
+import com.gululu.mediabridge.ui.*
 import androidx.compose.runtime.livedata.observeAsState
 
 class MainActivity : ComponentActivity() {
@@ -28,16 +27,32 @@ class MainActivity : ComponentActivity() {
 @Composable
 fun MediaBridgeApp() {
     var showSettings by remember { mutableStateOf(false) }
+    var showLyricsManager by remember { mutableStateOf(false) }
+    var selectedLyricsKey by remember { mutableStateOf<String?>(null) }
 
-    if (showSettings) {
-        SettingsScreen(onBack = { showSettings = false })
-    } else {
-        MainScreen(onOpenSettings = { showSettings = true })
+    when {
+        selectedLyricsKey != null -> LyricsEditorScreen(
+            lyricsKey = selectedLyricsKey!!,
+            onBack = { selectedLyricsKey = null },
+            onDeleted = {
+                selectedLyricsKey = null
+            }
+        )
+        showSettings -> SettingsScreen { showSettings = false }
+        showLyricsManager -> LyricsManagerScreen(
+            onBack = { showLyricsManager = false },
+            onOpenEditor = { lyricsKey -> selectedLyricsKey = lyricsKey }
+        )
+        else -> MainScreen(
+            onOpenSettings = { showSettings = true },
+            onOpenLyricsManager = { showLyricsManager = true }
+        )
     }
 }
 
 @Composable
-fun MainScreen(onOpenSettings: () -> Unit) {
+fun MainScreen(onOpenSettings: () -> Unit,
+               onOpenLyricsManager: () -> Unit) {
     Scaffold(
         topBar = {
             TopAppBar(
@@ -58,6 +73,13 @@ fun MainScreen(onOpenSettings: () -> Unit) {
                             onClick = {
                                 expanded = false
                                 onOpenSettings()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.lyrics_manager)) },
+                            onClick = {
+                                expanded = false
+                                onOpenLyricsManager()
                             }
                         )
                     }

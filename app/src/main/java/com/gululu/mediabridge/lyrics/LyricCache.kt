@@ -8,11 +8,16 @@ import java.io.File
 
 object LyricCache {
     private val memoryCache = mutableMapOf<String, List<LyricLine>?>()
+    private var lyricsDir: File? = null
+    fun getLyricsDir(context: Context): File {
+        if (lyricsDir == null)
+        {
+            val dir = context.getExternalFilesDir("lyrics")!!
+            if (!dir.exists()) dir.mkdirs()
+            lyricsDir = dir
+        }
 
-    private fun getLyricsDir(context: Context): File {
-        val dir = context.getExternalFilesDir("lyrics")!!
-        if (!dir.exists()) dir.mkdirs()
-        return dir
+        return lyricsDir!!
     }
 
     private fun sanitizeFileName(input: String): String {
@@ -75,5 +80,9 @@ object LyricCache {
             }
             return emptyList()
         }
+    }
+
+    fun clearMemoryCache(key: String) {
+        memoryCache.remove(key)
     }
 }
