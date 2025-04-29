@@ -42,28 +42,6 @@ class MediaBridgeService : androidx.media.MediaBrowserServiceCompat() {
     ) {
         val items = mutableListOf<MediaBrowserCompat.MediaItem>()
 
-//        items.addAll(
-//            Global.allowedPackages.map { (pkg, label) ->
-//                val desc = MediaDescriptionCompat.Builder()
-//                    .setMediaId(pkg)
-//                    .setTitle("启动 $label")
-//                    .setSubtitle(pkg)
-//                    .build()
-//
-//                MediaBrowserCompat.MediaItem(desc, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
-//            }
-//        )
-//        Log.d("mediabridage", "sending result $items")
         result.sendResult(items)
-    }
-
-    private fun isWhitelistedPlaying(context: Context): Boolean {
-        val sessionManager = context.getSystemService(Context.MEDIA_SESSION_SERVICE) as android.media.session.MediaSessionManager
-        val component = ComponentName(context, MediaNotificationListener::class.java)
-        val controllers = sessionManager.getActiveSessions(component)
-
-        return controllers.any {
-            Global.packageAllowed(context, it.packageName)
-        }
     }
 }

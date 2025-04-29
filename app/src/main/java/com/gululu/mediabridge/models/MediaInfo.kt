@@ -11,5 +11,6 @@ data class MediaInfo(
     val duration: Long,
     val position: Long,
     val isPlaying: Boolean,
-    val albumArt: Bitmap?
+    val albumArt: Bitmap?,
+    val appIcon: Bitmap?
 )

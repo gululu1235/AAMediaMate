@@ -15,6 +15,12 @@ object MusixmatchProvider : LyricsProvider {
     private val client = OkHttpClient()
 
     override suspend fun getLyricsLrc(context: Context, title: String, artist: String, duration: String): String? = withContext(Dispatchers.IO) {
+        val apiKey = SettingsManager.getApiKey(context)
+        if (apiKey.isEmpty())
+        {
+            return@withContext null
+        }
+
         try {
             val t = URLEncoder.encode(title, "UTF-8")
             val a = URLEncoder.encode(artist, "UTF-8")
@@ -24,7 +30,7 @@ object MusixmatchProvider : LyricsProvider {
                 .url(url)
                 .get()
                 .addHeader("x-rapidapi-host", "musixmatch-lyrics-songs.p.rapidapi.com")
-                .addHeader("x-rapidapi-key", SettingsManager.getApiKey(context))
+                .addHeader("x-rapidapi-key", apiKey)
                 .build()
             Log.d("MediaBridge", "Sending request to musixmatch: $request")
 

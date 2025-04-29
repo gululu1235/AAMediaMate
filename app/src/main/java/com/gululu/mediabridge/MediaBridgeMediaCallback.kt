@@ -2,13 +2,10 @@ package com.gululu.mediabridge
 
 import android.content.ComponentName
 import android.content.Context
-import android.content.Intent
 import android.media.session.MediaController
 import android.media.session.MediaSessionManager
-import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import android.support.v4.media.RatingCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 

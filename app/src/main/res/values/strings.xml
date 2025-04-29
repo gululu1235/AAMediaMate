@@ -5,6 +5,7 @@
     <string name="settings_title">设置</string>
     <string name="show_lyrics">显示歌词</string>
     <string name="musixmatch_api_key">Musixmatch API Key</string>
+    <string name="lrccx_api_uri">LrcCx API地址</string>
     <string name="show">查看</string>
     <string name="hide">隐藏</string>
     <string name="back">返回</string>
@@ -21,7 +22,12 @@
     <string name="lyrics_manager_top_selected">已选</string>
     <string name="lyrics_manager_top_items">项</string>
     <!-- Main Screen -->
-    <string name="open_settings">打开设置</string>
+    <string name="settings">设置</string>
+    <string name="no_media_playing">当前没有正在播放的媒体</string>
+    <string name="edit_current_lyrics">编辑当前歌词</string>
+    <string name="playing_from">播放自</string>
+    <string name="currently_playing">正在播放</string>
+    <string name="lyrics_not_enabled">歌词未启用</string>
 
     <!--Lyrics Manager Delete-->
     <string name="confirm_delete_title">确认删除</string>

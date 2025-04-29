@@ -28,8 +28,8 @@ fun SettingsScreen(onBack: () -> Unit) {
     val context = LocalContext.current
 
     var lyricsEnabled by remember { mutableStateOf(SettingsManager.getLyricsEnabled(context)) }
-    var apiKeyVisible by remember { mutableStateOf(false) }
     var apiKey by remember { mutableStateOf(SettingsManager.getApiKey(context)) }
+    var lrcCxUri by remember { mutableStateOf(SettingsManager.getLrcCxBaseUri(context)) }
     var simplifyChinese by remember { mutableStateOf(SettingsManager.getSimplifyEnabled(context)) }
     var ignoreNativeAutoApps by remember { mutableStateOf(SettingsManager.getIgnoreNativeAutoApps(context)) }
 
@@ -52,7 +52,6 @@ fun SettingsScreen(onBack: () -> Unit) {
                 .fillMaxSize(),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            // 显示歌词开关
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = stringResource(id = R.string.show_lyrics), modifier = Modifier.weight(1f))
                 Switch(
@@ -73,6 +72,20 @@ fun SettingsScreen(onBack: () -> Unit) {
                     SettingsManager.setApiKey(context, it)
                 },
                 label = { Text(stringResource(id = R.string.musixmatch_api_key)) },
+                singleLine = true,
+                visualTransformation = VisualTransformation.None,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            // LrcCx Uri
+            Text(text = stringResource(id = R.string.lrccx_api_uri))
+            OutlinedTextField(
+                value = lrcCxUri,
+                onValueChange = {
+                    lrcCxUri = it
+                    SettingsManager.setLrcCxBaseUri(context, it)
+                },
+                label = { Text(stringResource(id = R.string.lrccx_api_uri)) },
                 singleLine = true,
                 visualTransformation = VisualTransformation.None,
                 modifier = Modifier.fillMaxWidth()

@@ -3,7 +3,6 @@ package com.gululu.mediabridge
 import android.content.Context
 import android.util.Log
 import android.support.v4.media.MediaMetadataCompat
-import android.support.v4.media.RatingCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.support.v4.media.session.PlaybackStateCompat
 import com.gululu.mediabridge.lyrics.LyricCache
@@ -19,6 +18,16 @@ object MediaBridgeSessionManager {
     private var mediaSession: MediaSessionCompat? = null
     private var appContext: Context? = null
     private var currentMediaInfo: MediaInfo? = null
+
+    private var mediaInfoListener: ((MediaInfo?) -> Unit)? = null
+
+    fun setMediaInfoListener(listener: (MediaInfo?) -> Unit) {
+        mediaInfoListener = listener
+    }
+
+    fun clearMediaInfoListener() {
+        mediaInfoListener = null
+    }
 
     fun init(context: Context) {
         if (mediaSession != null) return
@@ -47,6 +56,7 @@ object MediaBridgeSessionManager {
         if (info == null)
         {
             clearSessionMetadata()
+            mediaInfoListener?.invoke(null)
             return
         }
 
@@ -77,6 +87,7 @@ object MediaBridgeSessionManager {
 
         Log.d("MediaBridge", "🎵 更新 MediaSession: ${info.title} by ${info.artist}")
         tryStartLyricsSync(info, mediaSession)
+        mediaInfoListener?.invoke(info)
     }
 
     private val lyricsScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)

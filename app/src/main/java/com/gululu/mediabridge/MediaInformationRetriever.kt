@@ -34,6 +34,7 @@ object MediaInformationRetriever {
 
             val mediaInfo = MediaInfo(
                 appPackageName = controller.packageName,
+                appIcon = appIcon,
                 appName = getAppLabel(context, controller.packageName),
                 title = metadata.getString(MediaMetadata.METADATA_KEY_TITLE) ?: "未知标题",
                 artist = metadata.getString(MediaMetadata.METADATA_KEY_ARTIST) ?: "未知艺术家",
