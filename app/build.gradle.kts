@@ -5,11 +5,11 @@ plugins {
 }
 
 android {
-    namespace = "com.gululu.mediabridge"
+    namespace = "com.gululu.aamediamate"
     compileSdk = 35
 
     defaultConfig {
-        applicationId = "com.gululu.mediabridge"
+        applicationId = "com.gululu.aamediamate"
         minSdk = 29
         targetSdk = 35
         versionCode = 1
