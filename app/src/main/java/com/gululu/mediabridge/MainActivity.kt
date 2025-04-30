@@ -23,7 +23,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
 import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.filled.PlayArrow
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.DropdownMenu
@@ -51,6 +50,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -79,17 +79,13 @@ class MainActivity : ComponentActivity() {
 fun MediaBridgeApp() {
     val context = LocalContext.current
 
-    LaunchedEffect(Unit) {
-        val intent = Intent(context, MediaBridgeService::class.java)
-        context.startService(intent)
-    }
-
     var showSettings by remember { mutableStateOf(false) }
     var showLyricsManager by remember { mutableStateOf(false) }
     var selectedLyricsKey by remember { mutableStateOf<String?>(null) }
     var currentMediaInfo by remember { mutableStateOf<MediaInfo?>(null) }
 
     LaunchedEffect(Unit) {
+        currentMediaInfo = MediaInformationRetriever.refreshCurrentMediaInfo(context )
         MediaBridgeSessionManager.setMediaInfoListener { info ->
             currentMediaInfo = info
         }
@@ -147,7 +143,7 @@ fun MainScreen(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text("Media Bridge", color = RightTextColor) },
+                title = { Text(stringResource(R.string.app_title), color = RightTextColor) },
                 actions = {
                     IconButton(onClick = { expanded = true }) {
                         Icon(Icons.Default.MoreVert, contentDescription = "Menu", tint = RightTextColor)
@@ -326,7 +322,7 @@ fun AlbumArtWithShadow(albumArtBitmap: Bitmap?) {
         }
     } else {
         Icon(
-            imageVector = Icons.Default.PlayArrow,
+            painter = painterResource(id = R.mipmap.ic_launcher),
             contentDescription = "Default icon",
             modifier = Modifier
                 .size(240.dp),

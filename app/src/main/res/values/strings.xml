@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">MediaBridge</string>
+    <string name="app_name">AAMediaMate</string>
 
     <!-- Settings Screen -->
     <string name="settings_title">设置</string>
@@ -22,6 +22,7 @@
     <string name="lyrics_manager_top_selected">已选</string>
     <string name="lyrics_manager_top_items">项</string>
     <!-- Main Screen -->
+    <string name="app_title">AA Media Mate</string>
     <string name="settings">设置</string>
     <string name="no_media_playing">当前没有正在播放的媒体</string>
     <string name="edit_current_lyrics">编辑当前歌词</string>
