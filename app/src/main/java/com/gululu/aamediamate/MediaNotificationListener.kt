@@ -12,16 +12,19 @@ class MediaNotificationListener : NotificationListenerService() {
         if (sbn.notification.category != Notification.CATEGORY_TRANSPORT) return
 
         val packageName = sbn.packageName
-        Log.d("MediaBridge", "📥 来自 $packageName 的媒体通知")
+        Log.d("MediaBridge", "📥 Media Notification from $packageName")
 
-        Handler(Looper.getMainLooper()).postDelayed({
-            MediaBridgeSessionManager.updateFromMediaInfo(MediaInformationRetriever.refreshCurrentMediaInfo(this))
-        }, 500)
+        sync()
     }
 
     override fun onNotificationRemoved(sbn: StatusBarNotification) {
-        MediaBridgeSessionManager.updateFromMediaInfo(
-            MediaInformationRetriever.refreshCurrentMediaInfo(this))
-        Log.d("MediaBridge", "通知移除: ${sbn.packageName}")
+        sync()
+    }
+
+    private fun sync()
+    {
+        Handler(Looper.getMainLooper()).postDelayed({
+            MediaBridgeSessionManager.updateFromMediaInfo(MediaInformationRetriever.refreshCurrentMediaInfo(this))
+        }, 1000)
     }
 }

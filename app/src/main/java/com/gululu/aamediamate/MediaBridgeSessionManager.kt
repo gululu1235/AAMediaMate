@@ -34,6 +34,7 @@ object MediaBridgeSessionManager {
 
         appContext = context.applicationContext
 
+        @Suppress("DEPRECATION")
         mediaSession = MediaSessionCompat(context, "MediaBridgeSession").apply {
             setCallback(MediaBridgeMediaCallback(context))
             setFlags(
@@ -43,9 +44,13 @@ object MediaBridgeSessionManager {
             isActive = true
         }
 
-        // 设置初始播放状态为暂停
-        updatePlaybackState(PlaybackStateCompat.STATE_PAUSED, 0L)
-        Log.d("MediaBridge", "✅ MediaSession 初始化完成")
+        val playbackState = PlaybackStateCompat.Builder()
+            .setActions(SUPPORTED_ACTIONS)
+            .setState(PlaybackStateCompat.STATE_PAUSED, 0L, 1.0f)
+            .build()
+
+        mediaSession?.setPlaybackState(playbackState)
+        Log.d("MediaBridge", "✅ MediaSession initialized.")
     }
 
     fun getCurrentMediaPackage(): String? = currentMediaInfo?.appPackageName
@@ -85,7 +90,7 @@ object MediaBridgeSessionManager {
         mediaSession?.setMetadata(metadata)
         mediaSession?.setPlaybackState(state)
 
-        Log.d("MediaBridge", "🎵 更新 MediaSession: ${info.title} by ${info.artist}")
+        Log.d("MediaBridge", "🎵 Updating MediaSession: ${info.title} by ${info.artist}")
         tryStartLyricsSync(info, mediaSession)
         mediaInfoListener?.invoke(info)
     }
@@ -94,6 +99,11 @@ object MediaBridgeSessionManager {
     private var currentLyricsJob: Job? = null
 
     private fun tryStartLyricsSync(info: MediaInfo, mediaSession: MediaSessionCompat?) {
+        if (appContext == null)
+        {
+            return
+        }
+
         val enabled = SettingsManager.getLyricsEnabled(appContext!!)
         if (!enabled || !info.isPlaying || info.title.isBlank() || info.artist.isBlank()) {
             LyricSyncEngine.stop()
@@ -104,16 +114,15 @@ object MediaBridgeSessionManager {
         currentLyricsJob = lyricsScope.launch {
             val lyrics = LyricCache.getOrFetchLyrics(appContext!!, info.title, info.artist, info.duration.toString())
             if (lyrics.isEmpty()) {
-                Log.d("MediaBridge", "🚫 没有找到歌词: ${info.title}")
+                Log.d("MediaBridge", "🚫 Lyrics not found: ${info.title}")
                 return@launch
             }
 
-            Log.d("MediaBridge", "🎤 开始同步歌词: ${info.title}")
+            Log.d("MediaBridge", "🎤 Start lyrics sync: ${info.title}")
 
             LyricSyncEngine.start(lyrics, info.position) { line ->
-                // 构建同步元数据
                 val metadata = MediaMetadataCompat.Builder()
-                    .putString(MediaMetadataCompat.METADATA_KEY_TITLE, line) // 歌词行
+                    .putString(MediaMetadataCompat.METADATA_KEY_TITLE, line) // Lyrics
                     .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "${info.title} - ${info.artist} - ${info.album}")
                     .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "From ${info.appName}")
                     .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, info.duration)
@@ -139,17 +148,7 @@ object MediaBridgeSessionManager {
         )
         mediaSession?.setMetadata(null)
         currentMediaInfo = null
-        Log.d("MediaBridge", "🧹 清空桥接状态")
-    }
-
-    private fun updatePlaybackState(state: Int, position: Long = 0L) {
-        val playbackState = PlaybackStateCompat.Builder()
-            .setActions(SUPPORTED_ACTIONS)
-            .setState(state, position, 1.0f)
-            .build()
-
-        mediaSession?.setPlaybackState(playbackState)
-        Log.d("MediaBridge", "⏯️ 播放状态更新: $state at $position ms")
+        Log.d("MediaBridge", "Reset session states.")
     }
 
     private const val SUPPORTED_ACTIONS =

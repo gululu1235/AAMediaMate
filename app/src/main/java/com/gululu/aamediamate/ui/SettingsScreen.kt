@@ -30,6 +30,8 @@ fun SettingsScreen(onBack: () -> Unit) {
     var lrcCxUri by remember { mutableStateOf(SettingsManager.getLrcCxBaseUri(context)) }
     var simplifyChinese by remember { mutableStateOf(SettingsManager.getSimplifyEnabled(context)) }
     var ignoreNativeAutoApps by remember { mutableStateOf(SettingsManager.getIgnoreNativeAutoApps(context)) }
+    var showLyricsConfirmationDialog by remember { mutableStateOf(false) }
+    var pendingEnableLyrics by remember { mutableStateOf(false) }
 
     Scaffold(
         topBar = {
@@ -54,9 +56,39 @@ fun SettingsScreen(onBack: () -> Unit) {
                 Text(text = stringResource(id = R.string.show_lyrics), modifier = Modifier.weight(1f))
                 Switch(
                     checked = lyricsEnabled,
-                    onCheckedChange = {
-                        lyricsEnabled = it
-                        SettingsManager.setLyricsEnabled(context, it)
+                    onCheckedChange = { checked ->
+                        if (checked) {
+                            pendingEnableLyrics = true
+                            showLyricsConfirmationDialog = true
+                        } else {
+                            lyricsEnabled = false
+                            SettingsManager.setLyricsEnabled(context, false)
+                        }
+                    }
+                )
+            }
+
+            if (showLyricsConfirmationDialog) {
+                AlertDialog(
+                    onDismissRequest = { showLyricsConfirmationDialog = false },
+                    title = { Text(stringResource(id = R.string.lyrics_enable_warning_title)) },
+                    text = { Text(stringResource(id = R.string.lyrics_enable_warning_text)) },
+                    confirmButton = {
+                        TextButton(onClick = {
+                            lyricsEnabled = true
+                            SettingsManager.setLyricsEnabled(context, true)
+                            showLyricsConfirmationDialog = false
+                        }) {
+                            Text(stringResource(id = R.string.lyrics_enable_confirm_button))
+                        }
+                    },
+                    dismissButton = {
+                        TextButton(onClick = {
+                            showLyricsConfirmationDialog = false
+                            pendingEnableLyrics = false
+                        }) {
+                            Text(stringResource(id = R.string.cancel))
+                        }
                     }
                 )
             }
@@ -89,7 +121,6 @@ fun SettingsScreen(onBack: () -> Unit) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            // 繁体转简体开关
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = stringResource(id = R.string.simplify_chinese), modifier = Modifier.weight(1f))
                 Switch(
@@ -101,7 +132,6 @@ fun SettingsScreen(onBack: () -> Unit) {
                 )
             }
 
-            // 🚗 忽略原生 Android Auto App 开关
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = stringResource(id = R.string.ignore_auto_supported_apps), modifier = Modifier.weight(1f))
                 Switch(

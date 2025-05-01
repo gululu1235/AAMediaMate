@@ -19,8 +19,11 @@
     <string name="search">按关键字搜索</string>
     <string name="delete">删除</string>
     <string name="item_selected">已选中</string>
-    <string name="lyrics_manager_top_selected">已选</string>
-    <string name="lyrics_manager_top_items">项</string>
+    <string name="lyrics_manager_top_selected">已选 %1$d 项</string>
+    <string name="lyrics_enable_warning_title">安全提醒</string>
+    <string name="lyrics_enable_warning_text">此功能仅供乘客使用。请勿在驾驶时查看歌词。</string>
+    <string name="lyrics_enable_confirm_button">我是乘客</string>
+
     <!-- Main Screen -->
     <string name="app_title">AA Media Mate</string>
     <string name="settings">设置</string>
@@ -29,6 +32,8 @@
     <string name="playing_from">播放自</string>
     <string name="currently_playing">正在播放</string>
     <string name="lyrics_not_enabled">歌词未启用</string>
+    <string name="message_enable_permission">请开启通知访问权限以使用完整功能</string>
+    <string name="direct_to_settings">前往设置</string>
 
     <!--Lyrics Manager Delete-->
     <string name="confirm_delete_title">确认删除</string>
@@ -43,4 +48,9 @@
     <string name="lyrics_content_label">歌词内容（LRC 格式）</string>
     <string name="lyrics_saved">歌词已保存</string>
     <string name="lyrics_deleted">歌词已删除</string>
+
+    <!--MediaInformationRetriever-->
+    <string name="unknown_title">未知标题</string>
+    <string name="unknown_artist">未知艺术家</string>
+    <string name="unknown_album">未知专辑</string>
 </resources>

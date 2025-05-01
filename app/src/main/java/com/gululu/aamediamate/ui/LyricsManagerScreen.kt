@@ -105,7 +105,7 @@ fun LyricsManagerScreen(
             TopAppBar(
                 title = {
                     if (isSelectionMode) {
-                        Text(stringResource(id = R.string.lyrics_manager_top_selected) + " ${selectedKeys.size} " + stringResource(id = R.string.lyrics_manager_top_items))
+                        Text(stringResource(id = R.string.lyrics_manager_top_selected, selectedKeys.size))
                     } else {
                         Text(stringResource(id = R.string.lyrics_manager))
                     }
@@ -144,7 +144,6 @@ fun LyricsManagerScreen(
                 .padding(innerPadding)
                 .fillMaxSize()
         ) {
-            // 🔍 搜索 + 筛选器
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -202,7 +201,7 @@ fun LyricsManagerScreen(
                 }
             }
 
-            // 📄 歌词列表
+            // list of lyrics
             LazyColumn(
                 verticalArrangement = Arrangement.spacedBy(8.dp),
                 modifier = Modifier

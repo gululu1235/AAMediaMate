@@ -29,9 +29,8 @@ object LyricCache {
     }
 
     suspend fun getOrFetchLyrics(context: Context, title: String, artist: String, duration: String): List<LyricLine> {
-        val key = "$title|$artist"
+        val key = title+"_" +artist
 
-        // 1. 内存
         memoryCache[key]?.let { cached ->
             Log.d("MediaBridge", "Reading from mem cache")
             return cached ?: emptyList()
@@ -39,7 +38,6 @@ object LyricCache {
 
         val file = getLyricFile(context, title, artist)
 
-        // 2. 磁盘
         if (file.exists()) {
             val lrcContent = file.readText()
             Log.d("MediaBridge", "Reading from file. $file")
@@ -55,8 +53,6 @@ object LyricCache {
             return lyrics
         }
 
-        Log.d("MediaBridge", "Not cached, reading from API.")
-        // 3. 网络
         val lrcContent = LyricsManager.getLyricsLrt(context, title, artist, duration)
         if (!lrcContent.isNullOrBlank()) {
             val lyrics = LyricsManager.parseLrc(context, lrcContent)

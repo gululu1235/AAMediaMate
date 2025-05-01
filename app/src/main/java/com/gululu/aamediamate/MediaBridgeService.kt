@@ -5,11 +5,10 @@ import android.util.Log
 import android.support.v4.media.MediaBrowserCompat
 import androidx.media.MediaBrowserServiceCompat
 
-class MediaBridgeService : androidx.media.MediaBrowserServiceCompat() {
+class MediaBridgeService : MediaBrowserServiceCompat() {
 
     override fun onCreate() {
         super.onCreate()
-        Log.d("MediaBridge", "📡 MediaBridgeService 启动")
 
         MediaBridgeSessionManager.init(this)
 
@@ -21,15 +20,14 @@ class MediaBridgeService : androidx.media.MediaBrowserServiceCompat() {
             MediaBridgeSessionManager.updateFromMediaInfo(mediaInfo)
         }
 
-        Log.d("MediaBridge", "📡 MediaBrowserServiceCompat 启动")
+        Log.d("MediaBridge", "MediaBrowserServiceCompat started")
     }
 
     override fun onGetRoot(
         clientPackageName: String,
         clientUid: Int,
         rootHints: Bundle?
-    ): MediaBrowserServiceCompat.BrowserRoot {
-        Log.d("MediaBridge", "onGetRoot called from $clientPackageName")
+    ): BrowserRoot {
         return BrowserRoot("root", null)
     }
 

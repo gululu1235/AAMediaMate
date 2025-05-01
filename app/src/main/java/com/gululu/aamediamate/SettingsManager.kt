@@ -14,7 +14,7 @@ object SettingsManager {
     private fun getPrefs(context: Context) = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     fun getLyricsEnabled(context: Context): Boolean =
-        getPrefs(context).getBoolean(KEY_LYRICS_ENABLED, true)
+        getPrefs(context).getBoolean(KEY_LYRICS_ENABLED, false)
 
     fun setLyricsEnabled(context: Context, enabled: Boolean) {
         getPrefs(context).edit() { putBoolean(KEY_LYRICS_ENABLED, enabled) }

@@ -1,9 +1,11 @@
 @file:OptIn(ExperimentalMaterial3Api::class)
 package com.gululu.aamediamate
 
+import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
+import android.provider.Settings
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -19,6 +21,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.KeyboardArrowRight
@@ -32,7 +35,9 @@ import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.material3.TopAppBar
 import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
@@ -54,16 +59,18 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import com.gululu.aamediamate.models.MediaInfo
 import com.gululu.aamediamate.ui.LyricsEditorScreen
 import com.gululu.aamediamate.ui.LyricsManagerScreen
 import com.gululu.aamediamate.ui.SettingsScreen
 
-// 颜色统一管理
-val DeepPurpleBackground = Color(0xFF1B1B2F)  // 背景深紫
-val CardBackgroundColor = Color(0xFF2B2B40)    // 每行Card颜色，偏浅一点紫灰
-val LeftTextColor = Color(0xFFAAAAAA)          // 左边文字浅灰
-val RightTextColor = Color(0xFFFFFFFF)         // 右边文字白色
+val DeepPurpleBackground = Color(0xFF1B1B2F)
+val CardBackgroundColor = Color(0xFF2B2B40)
+val LeftTextColor = Color(0xFFAAAAAA)
+val RightTextColor = Color(0xFFFFFFFF)
 
 class MainActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -72,6 +79,22 @@ class MainActivity : ComponentActivity() {
             MediaBridgeApp()
         }
     }
+}
+
+fun hasNotificationAccess(context: Context): Boolean {
+    val enabledPackages = Settings.Secure.getString(
+        context.contentResolver,
+        "enabled_notification_listeners"
+    ) ?: return false
+
+    val packageName = context.packageName
+    return enabledPackages.contains(packageName)
+}
+
+fun openNotificationAccessSettings(context: Context) {
+    val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
+    intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
+    context.startActivity(intent)
 }
 
 @Preview
@@ -138,6 +161,26 @@ fun MainScreen(
     onOpenLyricsEditor: (String, String) -> Unit,
     onOpenApp: (String) -> Unit
 ) {
+    val context = LocalContext.current
+    var hasPermission by remember { mutableStateOf(true) }
+
+    LaunchedEffect(Unit) {
+        hasPermission = hasNotificationAccess(context)
+    }
+
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                hasPermission = hasNotificationAccess(context)
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
+    }
+
     var expanded by remember { mutableStateOf(false) }
 
     Scaffold(
@@ -188,6 +231,12 @@ fun MainScreen(
                 verticalArrangement = Arrangement.Top,
                 horizontalAlignment = Alignment.CenterHorizontally
             ) {
+                if (!hasPermission) {
+                    NotificationAccessBanner {
+                        openNotificationAccessSettings(context)
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(32.dp))
 
                 AlbumArtWithShadow(mediaInfo?.albumArt)
@@ -196,8 +245,8 @@ fun MainScreen(
 
                 MediaInfoRow(
                     leftText = stringResource(id = R.string.playing_from),
-                    rightText = mediaInfo?.appName ?: "",
-                    rightIcon = if (!mediaInfo?.appName.isNullOrEmpty()) Icons.AutoMirrored.Filled.KeyboardArrowRight else null,
+                    rightText = mediaInfo?.appName ?: "--",
+                    rightIcon = if (!mediaInfo?.appPackageName.isNullOrEmpty()) Icons.AutoMirrored.Filled.KeyboardArrowRight else null,
                     onClick = {
                         mediaInfo?.let { onOpenApp(it.appPackageName) }
                     }
@@ -205,7 +254,7 @@ fun MainScreen(
 
                 MediaInfoRow(
                     leftText = stringResource(id = R.string.currently_playing),
-                    rightText = if (mediaInfo != null) "${mediaInfo.title} - ${mediaInfo.artist}" else ""
+                    rightText = if (mediaInfo != null) "${mediaInfo.title} - ${mediaInfo.artist}" else "--"
                 )
 
                 MediaInfoRow(
@@ -326,6 +375,31 @@ fun AlbumArtWithShadow(albumArtBitmap: Bitmap?) {
             contentDescription = "App icon",
             modifier = Modifier.size(240.dp)
         )
+    }
+}
+
+@Composable
+fun NotificationAccessBanner(onFixClicked: () -> Unit) {
+    Surface(
+        color = Color(0xFFFFE0B2),
+        modifier = Modifier.fillMaxWidth()
+    ) {
+        Row(
+            modifier = Modifier
+                .padding(12.dp),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+        ) {
+            Text(
+                text = stringResource(R.string.message_enable_permission),
+                color = Color(0xFF5D4037),
+                modifier = Modifier.weight(1f)
+            )
+            Spacer(modifier = Modifier.width(8.dp))
+            TextButton(onClick = onFixClicked) {
+                Text(stringResource(R.string.direct_to_settings))
+            }
+        }
     }
 }
 
