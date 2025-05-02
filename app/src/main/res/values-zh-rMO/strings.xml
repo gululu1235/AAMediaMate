@@ -1,0 +1,58 @@
+<resources>
+    <string name="app_name">AAMediaMate</string>
+
+    <!-- Settings Screen -->
+    <string name="settings_title">設定</string>
+    <string name="show_lyrics">顯示歌詞</string>
+    <string name="musixmatch_api_key">Musixmatch API 金鑰</string>
+    <string name="lrc_api_uri">Lrc API 位址</string>
+    <string name="show">顯示</string>
+    <string name="hide">隱藏</string>
+    <string name="back">返回</string>
+    <string name="simplify_chinese">繁體轉簡體</string>
+    <string name="ignore_auto_supported_apps">忽略原生 Android Auto 播放器</string>
+    <string name="lyrics_manager">歌詞管理器</string>
+    <string name="has_lyrics">有歌詞</string>
+    <string name="no_lyrics">無歌詞</string>
+    <string name="filter_all">全部</string>
+    <string name="details">詳情</string>
+    <string name="search">關鍵字搜尋</string>
+    <string name="delete">刪除</string>
+    <string name="item_selected">已選</string>
+    <string name="lyrics_manager_top_selected">已選 %1$d 項</string>
+    <string name="lyrics_enable_warning_title">安全提醒</string>
+    <string name="lyrics_enable_warning_text">此功能僅供乘客使用。請勿於駕駛時查看歌詞。</string>
+    <string name="lyrics_enable_confirm_button">我是乘客</string>
+    <string name="language_title">語言(重啓後生效)</string>
+    <string name="language">語言</string>
+
+    <!-- Main Screen -->
+    <string name="app_title">AA Media Mate</string>
+    <string name="settings">設定</string>
+    <string name="no_media_playing">目前沒有播放任何媒體</string>
+    <string name="edit_current_lyrics">編輯目前歌詞</string>
+    <string name="playing_from">播放來源</string>
+    <string name="currently_playing">正在播放</string>
+    <string name="lyrics_not_enabled">歌詞未啟用</string>
+    <string name="message_enable_permission">請開啟通知存取權限以使用完整功能</string>
+    <string name="direct_to_settings">前往設定</string>
+
+    <!--Lyrics Manager Delete-->
+    <string name="confirm_delete_title">確認刪除</string>
+    <string name="confirm_delete_message">確定要刪除 %1$d 項歌詞快取嗎？</string>
+    <string name="deleted_message">已刪除 %1$d 項歌詞</string>
+    <string name="confirm">確認</string>
+    <string name="cancel">取消</string>
+
+    <!--Lyrics Editor-->
+    <string name="edit_lyrics">編輯歌詞</string>
+    <string name="save">儲存</string>
+    <string name="lyrics_content_label">歌詞內容（LRC 格式）</string>
+    <string name="lyrics_saved">歌詞已儲存</string>
+    <string name="lyrics_deleted">歌詞已刪除</string>
+
+    <!--MediaInformationRetriever-->
+    <string name="unknown_title">未知標題</string>
+    <string name="unknown_artist">未知藝術家</string>
+    <string name="unknown_album">未知專輯</string>
+</resources>

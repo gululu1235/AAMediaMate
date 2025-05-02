@@ -9,11 +9,11 @@ import okhttp3.OkHttpClient
 import okhttp3.Request
 import java.net.URLEncoder
 
-object LrcCxProvider : LyricsProvider {
+object LrcApiProvider : LyricsProvider {
     private val client = OkHttpClient()
 
     override suspend fun getLyricsLrc(context: Context, title: String, artist: String, duration: String): String? = withContext(Dispatchers.IO) {
-        val baseUrl = SettingsManager.getLrcCxBaseUri(context);
+        val baseUrl = SettingsManager.getLrcApiBaseUri(context);
         if (baseUrl.isEmpty())
         {
             return@withContext null
@@ -30,7 +30,7 @@ object LrcCxProvider : LyricsProvider {
                 .get()
                 .build()
 
-            Log.d("MediaBridge", "Sending request to LrcCx: $request")
+            Log.d("MediaBridge", "Sending request to Lrc Api: $request")
             val response = client.newCall(request).execute()
             Log.d("MediaBridge", "Response: $response")
 

@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.os.Bundle
 import android.provider.Settings
+import android.util.Log
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -66,6 +67,7 @@ import com.gululu.aamediamate.models.MediaInfo
 import com.gululu.aamediamate.ui.LyricsEditorScreen
 import com.gululu.aamediamate.ui.LyricsManagerScreen
 import com.gululu.aamediamate.ui.SettingsScreen
+import java.util.Locale
 
 val DeepPurpleBackground = Color(0xFF1B1B2F)
 val CardBackgroundColor = Color(0xFF2B2B40)
@@ -73,6 +75,15 @@ val LeftTextColor = Color(0xFFAAAAAA)
 val RightTextColor = Color(0xFFFFFFFF)
 
 class MainActivity : ComponentActivity() {
+    override fun attachBaseContext(newBase: Context) {
+        val langCode = SettingsManager.getLanguagePreference(newBase).split("_")
+        Log.d("mediaBridge", "$langCode")
+        val language = langCode[0]
+        val country = if (langCode.size <= 1) "" else langCode[1]
+        val context = applyLanguage(newBase, language, country)
+        super.attachBaseContext(context)
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
@@ -95,6 +106,18 @@ fun openNotificationAccessSettings(context: Context) {
     val intent = Intent(Settings.ACTION_NOTIFICATION_LISTENER_SETTINGS)
     intent.flags = Intent.FLAG_ACTIVITY_NEW_TASK
     context.startActivity(intent)
+}
+
+fun applyLanguage(context: Context, language: String, country: String): Context {
+    if (language.isEmpty()) return context
+
+    Log.d("Media Bridge", "Setting locale to $language $country")
+    val locale = Locale(language, country)
+    Locale.setDefault(locale)
+
+    val config = context.resources.configuration
+    config.setLocale(locale)
+    return context.createConfigurationContext(config)
 }
 
 @Preview

@@ -78,13 +78,13 @@ object MediaBridgeSessionManager {
             .build()
 
         val state = PlaybackStateCompat.Builder()
+            .setActions(SUPPORTED_ACTIONS)
             .setState(
                 if (info.isPlaying) PlaybackStateCompat.STATE_PLAYING
                 else PlaybackStateCompat.STATE_PAUSED,
                 info.position,
                 1.0f
             )
-            .setActions(SUPPORTED_ACTIONS)
             .build()
 
         mediaSession?.setMetadata(metadata)
@@ -156,5 +156,7 @@ object MediaBridgeSessionManager {
                 PlaybackStateCompat.ACTION_PAUSE or
                 PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
                 PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                PlaybackStateCompat.ACTION_SEEK_TO
+                PlaybackStateCompat.ACTION_SEEK_TO or
+                PlaybackStateCompat.ACTION_REWIND or
+                PlaybackStateCompat.ACTION_FAST_FORWARD
 }

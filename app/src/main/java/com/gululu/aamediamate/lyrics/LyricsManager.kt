@@ -13,7 +13,7 @@ data class LyricLine(val timeSec: Float, val text: String)
 object LyricsManager {
     private val providers = listOf(
         MusixmatchProvider,
-        LrcCxProvider
+        LrcApiProvider
     )
 
     suspend fun getLyricsLrt(context: Context, title: String, artist: String, duration: String): String? = withContext(Dispatchers.IO) {
@@ -41,16 +41,16 @@ object LyricsManager {
                     var text = matcher.group(3)!!.trim()
                     if (SettingsManager.getSimplifyEnabled(context))
                     {
-                        text = zhConvertToSimplified(text)
+                        text = ZhConverterUtil.toSimple(text)
+                    }
+                    else
+                    {
+                        text = ZhConverterUtil.toTraditional(text)
                     }
                     LyricLine(timeSec = min * 60 + sec, text = text)
                 } else null
             }
             .sortedBy { it.timeSec }
             .toList()
-    }
-
-    private fun zhConvertToSimplified(text: String): String {
-        return ZhConverterUtil.toSimple(text)
     }
 }

@@ -2,55 +2,57 @@
     <string name="app_name">AAMediaMate</string>
 
     <!-- Settings Screen -->
-    <string name="settings_title">设置</string>
-    <string name="show_lyrics">显示歌词</string>
+    <string name="settings_title">Settings</string>
+    <string name="show_lyrics">Show Lyrics</string>
     <string name="musixmatch_api_key">Musixmatch API Key</string>
-    <string name="lrccx_api_uri">LrcCx API地址</string>
-    <string name="show">查看</string>
-    <string name="hide">隐藏</string>
-    <string name="back">返回</string>
-    <string name="simplify_chinese">繁体转简体</string>
-    <string name="ignore_auto_supported_apps">忽略原生 Android Auto 播放器</string>
-    <string name="lyrics_manager">歌词管理器</string>
-    <string name="has_lyrics">有歌词</string>
-    <string name="no_lyrics">无歌词</string>
-    <string name="filter_all">全部</string>
-    <string name="details">详情</string>
-    <string name="search">按关键字搜索</string>
-    <string name="delete">删除</string>
-    <string name="item_selected">已选中</string>
-    <string name="lyrics_manager_top_selected">已选 %1$d 项</string>
-    <string name="lyrics_enable_warning_title">安全提醒</string>
-    <string name="lyrics_enable_warning_text">此功能仅供乘客使用。请勿在驾驶时查看歌词。</string>
-    <string name="lyrics_enable_confirm_button">我是乘客</string>
+    <string name="lrc_api_uri">Lrc API URL</string>
+    <string name="show">Show</string>
+    <string name="hide">Hide</string>
+    <string name="back">Back</string>
+    <string name="simplify_chinese">Traditional to Simplified</string>
+    <string name="ignore_auto_supported_apps">Ignore Native Android Auto Players</string>
+    <string name="lyrics_manager">Lyrics Manager</string>
+    <string name="has_lyrics">With Lyrics</string>
+    <string name="no_lyrics">No Lyrics</string>
+    <string name="filter_all">All</string>
+    <string name="details">Details</string>
+    <string name="search">Search by keyword</string>
+    <string name="delete">Delete</string>
+    <string name="item_selected">Selected</string>
+    <string name="lyrics_manager_top_selected">%1$d item(s) selected</string>
+    <string name="lyrics_enable_warning_title">Safety Warning</string>
+    <string name="lyrics_enable_warning_text">This feature is for passengers only. Do not view lyrics while driving.</string>
+    <string name="lyrics_enable_confirm_button">I\'m a passenger</string>
+    <string name="language_title">Language(Restart required)</string>
+    <string name="language">Language</string>
 
     <!-- Main Screen -->
     <string name="app_title">AA Media Mate</string>
-    <string name="settings">设置</string>
-    <string name="no_media_playing">当前没有正在播放的媒体</string>
-    <string name="edit_current_lyrics">编辑当前歌词</string>
-    <string name="playing_from">播放自</string>
-    <string name="currently_playing">正在播放</string>
-    <string name="lyrics_not_enabled">歌词未启用</string>
-    <string name="message_enable_permission">请开启通知访问权限以使用完整功能</string>
-    <string name="direct_to_settings">前往设置</string>
+    <string name="settings">Settings</string>
+    <string name="no_media_playing">No media is currently playing</string>
+    <string name="edit_current_lyrics">Edit current lyrics</string>
+    <string name="playing_from">Playing from</string>
+    <string name="currently_playing">Now Playing</string>
+    <string name="lyrics_not_enabled">Lyrics not enabled</string>
+    <string name="message_enable_permission">Please enable notification access to use full features</string>
+    <string name="direct_to_settings">Go to settings</string>
 
     <!--Lyrics Manager Delete-->
-    <string name="confirm_delete_title">确认删除</string>
-    <string name="confirm_delete_message">确定要删除 %1$d 项歌词缓存吗？</string>
-    <string name="deleted_message">已删除 %1$d 项歌词</string>
-    <string name="confirm">确定</string>
-    <string name="cancel">取消</string>
+    <string name="confirm_delete_title">Confirm Deletion</string>
+    <string name="confirm_delete_message">Are you sure you want to delete %1$d lyric cache item(s)?</string>
+    <string name="deleted_message">%1$d lyric(s) deleted</string>
+    <string name="confirm">Confirm</string>
+    <string name="cancel">Cancel</string>
 
     <!--Lyrics Editor-->
-    <string name="edit_lyrics">编辑歌词</string>
-    <string name="save">保存</string>
-    <string name="lyrics_content_label">歌词内容（LRC 格式）</string>
-    <string name="lyrics_saved">歌词已保存</string>
-    <string name="lyrics_deleted">歌词已删除</string>
+    <string name="edit_lyrics">Edit Lyrics</string>
+    <string name="save">Save</string>
+    <string name="lyrics_content_label">Lyrics content (LRC format)</string>
+    <string name="lyrics_saved">Lyrics saved</string>
+    <string name="lyrics_deleted">Lyrics deleted</string>
 
     <!--MediaInformationRetriever-->
-    <string name="unknown_title">未知标题</string>
-    <string name="unknown_artist">未知艺术家</string>
-    <string name="unknown_album">未知专辑</string>
+    <string name="unknown_title">Unknown Title</string>
+    <string name="unknown_artist">Unknown Artist</string>
+    <string name="unknown_album">Unknown Album</string>
 </resources>

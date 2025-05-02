@@ -50,6 +50,24 @@ class MediaBridgeMediaCallback(private val context: Context) : MediaSessionCompa
         sync()
     }
 
+    override fun onRewind() {
+        val controller = getRealController() ?: return
+        val pos = controller.playbackState?.position ?: 0L
+        val newPos = (pos - 10_000).coerceAtLeast(0L)
+        Log.d("MediaBridge", "⏪ Rewind triggered: $newPos ms")
+        controller.transportControls.seekTo(newPos)
+        sync()
+    }
+
+    override fun onFastForward() {
+        val controller = getRealController() ?: return
+        val pos = controller.playbackState?.position ?: 0L
+        val newPos = pos + 10_000
+        Log.d("MediaBridge", "⏩ FastForward triggered: $newPos ms")
+        controller.transportControls.seekTo(newPos)
+        sync()
+    }
+
     private fun sync()
     {
         Handler(Looper.getMainLooper()).postDelayed({
