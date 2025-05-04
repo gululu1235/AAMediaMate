@@ -12,7 +12,10 @@ import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.SupervisorJob
+import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.sync.Mutex
+import kotlinx.coroutines.sync.withLock
 
 object MediaBridgeSessionManager {
     private var mediaSession: MediaSessionCompat? = null
@@ -97,6 +100,7 @@ object MediaBridgeSessionManager {
 
     private val lyricsScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var currentLyricsJob: Job? = null
+    private val lyricsJobMutex = Mutex()
 
     private fun tryStartLyricsSync(info: MediaInfo, mediaSession: MediaSessionCompat?) {
         if (appContext == null)
@@ -110,30 +114,50 @@ object MediaBridgeSessionManager {
             return
         }
 
-        currentLyricsJob?.cancel()
-        currentLyricsJob = lyricsScope.launch {
-            val lyrics = LyricCache.getOrFetchLyrics(appContext!!, info.title, info.artist, info.duration.toString())
-            if (lyrics.isEmpty()) {
-                Log.d("MediaBridge", "🚫 Lyrics not found: ${info.title}")
-                return@launch
-            }
 
-            Log.d("MediaBridge", "🎤 Start lyrics sync: ${info.title}")
 
-            LyricSyncEngine.start(lyrics, info.position) { line ->
-                val metadata = MediaMetadataCompat.Builder()
-                    .putString(MediaMetadataCompat.METADATA_KEY_TITLE, line) // Lyrics
-                    .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "${info.title} - ${info.artist} - ${info.album}")
-                    .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "From ${info.appName}")
-                    .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, info.duration)
-                    .apply {
-                        if (info.albumArt != null) {
-                            putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, info.albumArt)
-                        }
+        lyricsScope.launch {
+            lyricsJobMutex.withLock {
+                currentLyricsJob?.cancelAndJoin()
+                currentLyricsJob = launch {
+                    val lyrics = LyricCache.getOrFetchLyrics(
+                        appContext!!,
+                        info.title,
+                        info.artist,
+                        info.duration.toString()
+                    )
+                    if (lyrics.isEmpty()) {
+                        Log.d("MediaBridge", "🚫 Lyrics not found: ${info.title}")
+                        return@launch
                     }
-                    .build()
 
-                mediaSession?.setMetadata(metadata)
+                    Log.d("MediaBridge", "🎤 Start lyrics sync: ${info.title}")
+
+                    LyricSyncEngine.start(lyrics, info.position) { line ->
+                        val metadata = MediaMetadataCompat.Builder()
+                            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, line) // Lyrics
+                            .putString(
+                                MediaMetadataCompat.METADATA_KEY_ARTIST,
+                                "${info.title} - ${info.artist} - ${info.album}"
+                            )
+                            .putString(
+                                MediaMetadataCompat.METADATA_KEY_ALBUM,
+                                "From ${info.appName}"
+                            )
+                            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, info.duration)
+                            .apply {
+                                if (info.albumArt != null) {
+                                    putBitmap(
+                                        MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
+                                        info.albumArt
+                                    )
+                                }
+                            }
+                            .build()
+
+                        mediaSession?.setMetadata(metadata)
+                    }
+                }
             }
         }
     }

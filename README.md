@@ -14,7 +14,7 @@
 
 - 🛰️ 桥接正在播放的音乐 App（无须 App 原生支持 Android Auto）
 - ⏯️ 支持基础控制：播放、暂停、上一首、下一首
-- 🎤 可选支持歌词显示（通过歌词 API）
+- 🎤 可选支持歌词显示，通过Android Auto的歌名显示滚动歌词
 - 📱 手机端主界面支持管理歌词缓存、修改设置
 
 ---
@@ -93,10 +93,21 @@ AAMediaMate 支持两个歌词源，默认启用 Musixmatch，如需切换请前
 
 ## 📷 截图
 
-- 手机端设置页、主界面
-- Android Auto 媒体界面桥接效果
-- 歌词同步演示
+### Android Auto效果
+<div align="center">
+<img src="screenshots/lyrics_qqmusic.png" alt="歌词显示" width="600">
+</div>
+
+### 手机端主界面
+<div align="center">
+    <img src="screenshots/MainScreen_zh.jpg" alt="主界面" width="400">
+</div>
+
+### 歌词管理
+<div align="center">
+<img src="screenshots/lyrics_manager.jpg" alt="歌词管理器" width="400">
+<img src="screenshots/lyrics_editor_zh.jpg" alt="歌词编辑器" width="400">
+</div>
 
 ---
-
 欢迎反馈建议或提交 Issue！  
