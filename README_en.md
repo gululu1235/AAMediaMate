@@ -61,7 +61,7 @@ No API key required, but you need to manually configure the API URL. See the [Lr
 
 ## 🛠️ How to Use
 
-1. Download the APK from the [Releases Page](https://github.com/your-username/AAMediaMate/releases)
+1. Download the APK from the [Releases Page](https://github.com/gululu1235/AAMediaMate/releases)
 2. Grant notification listener permission (you will be prompted on first launch)
 3. Open the app on your phone to view current playback information
 4. On Android Auto, select AAMediaMate as the media source
@@ -71,7 +71,7 @@ No API key required, but you need to manually configure the API URL. See the [Lr
 
 ## 📂 Download APK
 
-Go to the [Releases Page](https://github.com/your-username/AAMediaMate/releases) to download the latest APK.  
+Go to the [Releases Page](https://github.com/gululu1235/AAMediaMate/releases) to download the latest APK.  
 (Browser recommended. Please ensure “Install from unknown sources” is enabled in your device settings.)
 
 ---

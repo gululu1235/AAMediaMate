@@ -1,8 +1,10 @@
-# AAMediaMate
+# AAMediaMate 
 
 <div align="center">
     <img alt="LOGO" src="app\src\main\res\drawable\app_icon.png" width="200" height="200" />
 </div>
+
+[For README in English](README_en.md)
 
  **AAMediaMate (Android Auto Media Mate)** 是一款用于 Android Auto 的媒体桥接工具，可以将当前正在手机上播放的音乐信息同步到车载屏幕上，并支持基础的播放控制与可选的歌词同步功能。
 
@@ -71,7 +73,7 @@ AAMediaMate 支持两个歌词源，默认启用 Musixmatch，如需切换请前
 
 ## 📂 下载发布版 APK
 
-请前往 [Releases 页面](https://github.com/your-username/AAMediaMate/releases) 下载最新版 APK  
+请前往 [Releases 页面](https://github.com/gululu1235/AAMediaMate/releases) 下载最新版 APK  
 （建议通过浏览器访问，确保已允许「安装未知来源的应用」）
 
 ---
