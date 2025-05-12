@@ -39,7 +39,7 @@ Please use it only when parked or as a passenger to ensure road safety.
 
 AAMediaMate supports two lyrics sources. The default is **Musixmatch**, and you can switch between providers in the app settings.
 
-### 1️⃣ Musixmatch (via [RapidAPI](https://rapidapi.com/musixmatchcom/api/musixmatch-lyrics-songs))
+### 1️⃣ Musixmatch (via [RapidAPI](https://rapidapi.com/Paxsenix0/api/musixmatch-lyrics-songs/))
 
 **Setup Instructions:**
 
@@ -52,10 +52,10 @@ AAMediaMate supports two lyrics sources. The default is **Musixmatch**, and you 
 
 ---
 
-### 2️⃣ [LrcApi](https://github.com/HisAtri/LrcApi)
+### 2️⃣ [LrcApi](https://github.com/HisAtri/LrcApi/blob/main/README_EN.md)
 
 A community-provided open-source lyrics API mainly for Chinese lyrics.  
-No API key required, but you need to manually configure the API URL. See the [LrcApi docs](https://github.com/HisAtri/LrcApi) for public API endpoints or self-hosting instructions.
+No API key required, but you need to manually configure the API URL. See the [LrcApi docs](https://github.com/HisAtri/LrcApi/blob/main/README_EN.md#public-api) for public API endpoints or self-hosting instructions.
 
 ---
 
