@@ -43,7 +43,7 @@ AAMediaMate supports two lyrics sources. The default is **Musixmatch**, and you 
 
 **Setup Instructions:**
 
-1. Visit the [RapidAPI Page](https://rapidapi.com/musixmatchcom/api/musixmatch-lyrics-songs)
+1. Visit the [RapidAPI Page](https://rapidapi.com/Paxsenix0/api/musixmatch-lyrics-songs/)
 2. Register or log in to your RapidAPI account
 3. Copy your `X-RapidAPI-Key`
 4. Paste it into AAMediaMate settings
