@@ -45,7 +45,7 @@ AAMediaMate 支持两个歌词源，默认启用 Musixmatch，如需切换请前
 
 **设置方法：**
 
-1. 访问 [RapidAPI 页面](https://rapidapi.com/musixmatchcom/api/musixmatch-lyrics-songs)
+1. 访问 [RapidAPI 页面](https://rapidapi.com/Paxsenix0/api/musixmatch-lyrics-songs/playground)
 2. 注册或登录 RapidAPI 账号
 3. 获取你的 `X-RapidAPI-Key`
 4. 在 AAMediaMate 设置中粘贴该 Key
