@@ -123,6 +123,9 @@ object MediaBridgeSessionManager {
         Log.d("MediaBridge", "🎵 Updating MediaSession: ${info.title} by ${info.artist}")
         tryStartLyricsSync(info, mediaSession)
         mediaInfoListener?.invoke(info)
+        
+        // Directly refresh browser data
+        MediaBridgeService.refreshBrowserData()
     }
 
     private val lyricsScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
@@ -141,26 +144,30 @@ object MediaBridgeSessionManager {
             return
         }
 
-
-
         lyricsScope.launch {
             lyricsJobMutex.withLock {
                 currentLyricsJob?.cancelAndJoin()
                 currentLyricsJob = launch {
+                    Log.d("MediaBridge", "🎤 Fetching lyrics for: ${info.title}")
+                    
                     val lyrics = LyricCache.getOrFetchLyrics(
                         appContext!!,
                         info.title,
                         info.artist,
                         info.duration.toString()
                     )
+                    
                     if (lyrics.isEmpty()) {
                         Log.d("MediaBridge", "🚫 Lyrics not found: ${info.title}")
                         return@launch
                     }
 
-                    Log.d("MediaBridge", "🎤 Start lyrics sync: ${info.title}")
-
-                    LyricSyncEngine.start(lyrics, info.position) { line ->
+                    Log.d("MediaBridge", "🎤 Starting lyrics sync: ${info.title} with ${lyrics.size} lines")
+                    
+                    // Get current position after lyrics are loaded to ensure accuracy
+                    val currentPosition = MediaInformationRetriever.refreshCurrentMediaInfo(appContext!!)?.position ?: info.position
+                    
+                    LyricSyncEngine.start(lyrics, currentPosition) { line ->
                         val metadata = MediaMetadataCompat.Builder()
                             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, line) // Lyrics
                             .putString(

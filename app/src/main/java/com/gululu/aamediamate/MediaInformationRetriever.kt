@@ -59,7 +59,8 @@ object MediaInformationRetriever {
 
         val appIcon = getAppIconBitmap(context, controller.packageName)
         var albumArt = metadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)
-        if (appIcon != null) {
+
+        if (appIcon != null && albumArt != null) {
             albumArt = composeAlbumArtWithAppIconFixed(albumArt, appIcon)
         }
 

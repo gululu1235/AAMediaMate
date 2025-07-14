@@ -25,6 +25,9 @@ class MediaNotificationListener : NotificationListenerService() {
     {
         Handler(Looper.getMainLooper()).postDelayed({
             MediaBridgeSessionManager.updateFromMediaInfo(MediaInformationRetriever.refreshCurrentMediaInfo(this))
+            
+            // Directly refresh browser data
+            MediaBridgeService.refreshBrowserData()
         }, 1000)
     }
 }

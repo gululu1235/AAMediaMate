@@ -7,9 +7,21 @@ import android.support.v4.media.MediaDescriptionCompat
 import androidx.media.MediaBrowserServiceCompat
 
 class MediaBridgeService : MediaBrowserServiceCompat() {
+    
+    companion object {
+        private var instance: MediaBridgeService? = null
+        
+        fun refreshBrowserData() {
+            instance?.let { service ->
+                Log.d("MediaBridge", "🔄 Refreshing browser data")
+                service.notifyChildrenChanged("root")
+            }
+        }
+    }
 
     override fun onCreate() {
         super.onCreate()
+        instance = this
 
         MediaBridgeSessionManager.init(this)
 
@@ -22,6 +34,11 @@ class MediaBridgeService : MediaBrowserServiceCompat() {
         }
 
         Log.d("MediaBridge", "MediaBrowserServiceCompat started")
+    }
+    
+    override fun onDestroy() {
+        super.onDestroy()
+        instance = null
     }
 
     override fun onGetRoot(
@@ -36,6 +53,8 @@ class MediaBridgeService : MediaBrowserServiceCompat() {
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
+        Log.d("MediaBridge", "🔄 onLoadChildren called for parentId: $parentId")
+        
         val context = this
         val controllers = MediaControllerManager.getAllControllers(context)
 
@@ -53,6 +72,7 @@ class MediaBridgeService : MediaBrowserServiceCompat() {
             MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
         }.toMutableList()
 
+        Log.d("MediaBridge", "📋 Loaded ${items.size} media items")
         result.sendResult(items)
     }
 }

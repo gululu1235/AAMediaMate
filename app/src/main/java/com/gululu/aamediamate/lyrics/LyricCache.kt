@@ -30,9 +30,10 @@ object LyricCache {
 
     suspend fun getOrFetchLyrics(context: Context, title: String, artist: String, duration: String): List<LyricLine> {
         val key = title+"_" +artist
+        Log.d("MediaBridge", "🎤 Getting lyrics for: $title by $artist")
 
         memoryCache[key]?.let { cached ->
-            Log.d("MediaBridge", "Reading from mem cache")
+            Log.d("MediaBridge", "🎤 Reading from mem cache")
             return cached ?: emptyList()
         }
 
@@ -40,33 +41,35 @@ object LyricCache {
 
         if (file.exists()) {
             val lrcContent = file.readText()
-            Log.d("MediaBridge", "Reading from file. $file")
+            Log.d("MediaBridge", "🎤 Reading from file: $file")
 
             if (lrcContent.isBlank()) {
-                Log.d("MediaBridge", "Reading from file, but no lyrics found.")
+                Log.d("MediaBridge", "🎤 Reading from file, but no lyrics found.")
                 memoryCache[key] = null
                 return emptyList()
             }
 
             val lyrics = LyricsManager.parseLrc(context, lrcContent)
             memoryCache[key] = lyrics
+            Log.d("MediaBridge", "🎤 Loaded ${lyrics.size} lines from cache")
             return lyrics
         }
 
+        Log.d("MediaBridge", "🎤 Fetching lyrics from network...")
         val lrcContent = LyricsManager.getLyricsLrt(context, title, artist, duration)
         if (!lrcContent.isNullOrBlank()) {
             val lyrics = LyricsManager.parseLrc(context, lrcContent)
             if (lyrics.isNotEmpty()) {
                 memoryCache[key] = lyrics
                 file.writeText(lrcContent)
-                Log.d("MediaBridge", "Saving lyrics to file.")
+                Log.d("MediaBridge", "🎤 Saved ${lyrics.size} lines to file")
                 return lyrics
             } else {
                 memoryCache[key] = null
                 withContext(Dispatchers.IO) {
                     file.createNewFile()
                 }
-                Log.d("MediaBridge", "Failed to get lyrics.")
+                Log.d("MediaBridge", "🎤 Failed to parse lyrics")
                 return emptyList()
             }
         } else {
@@ -74,6 +77,7 @@ object LyricCache {
             withContext(Dispatchers.IO) {
                 file.createNewFile()
             }
+            Log.d("MediaBridge", "🎤 No lyrics found from network")
             return emptyList()
         }
     }
