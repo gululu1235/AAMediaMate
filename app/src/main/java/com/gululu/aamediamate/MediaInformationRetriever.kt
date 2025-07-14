@@ -9,6 +9,7 @@ import com.gululu.aamediamate.models.MediaInfo
 import android.graphics.*
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
+import android.media.session.MediaController
 import androidx.core.graphics.withTranslation
 import androidx.core.graphics.scale
 import androidx.core.graphics.createBitmap
@@ -19,10 +20,7 @@ object MediaInformationRetriever {
 
     fun refreshCurrentMediaInfo(context: Context): MediaInfo? {
         try {
-            val sessionManager = context.getSystemService(Context.MEDIA_SESSION_SERVICE) as android.media.session.MediaSessionManager
-            val component = ComponentName(context, MediaNotificationListener::class.java)
-            val controller = sessionManager.getActiveSessions(component)
-                .firstOrNull { it.packageName != context.packageName && Global.packageAllowed(context, it.packageName) } ?: return null
+            val controller = MediaControllerManager.getFirstController(context) ?: return null
 
             val metadata = controller.metadata ?: return null
             val state = controller.playbackState ?: return null
@@ -53,6 +51,30 @@ object MediaInformationRetriever {
             Log.e("MediaBridge", "⚠️ Updating media info failed： ${e.message}")
             return null
         }
+    }
+
+    fun buildMediaInfoFromController(context: Context, controller: MediaController): MediaInfo? {
+        val metadata = controller.metadata ?: return null
+        val state = controller.playbackState ?: return null
+
+        val appIcon = getAppIconBitmap(context, controller.packageName)
+        var albumArt = metadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)
+        if (appIcon != null) {
+            albumArt = composeAlbumArtWithAppIconFixed(albumArt, appIcon)
+        }
+
+        return MediaInfo(
+            appPackageName = controller.packageName,
+            appIcon = appIcon,
+            appName = getAppLabel(context, controller.packageName),
+            title = metadata.getString(MediaMetadata.METADATA_KEY_TITLE) ?: context.getString(R.string.unknown_title),
+            artist = metadata.getString(MediaMetadata.METADATA_KEY_ARTIST) ?: context.getString(R.string.unknown_artist),
+            album = metadata.getString(MediaMetadata.METADATA_KEY_ALBUM) ?: context.getString(R.string.unknown_album),
+            duration = metadata.getLong(MediaMetadata.METADATA_KEY_DURATION),
+            position = state.position,
+            isPlaying = state.state == PlaybackState.STATE_PLAYING,
+            albumArt = albumArt
+        )
     }
 
     private fun composeAlbumArtWithAppIconFixed(

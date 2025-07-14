@@ -24,6 +24,10 @@ object MediaBridgeSessionManager {
 
     private var mediaInfoListener: ((MediaInfo?) -> Unit)? = null
 
+    // Custom action IDs for Android Auto
+    private const val ACTION_REWIND_10S = "action_rewind_10s"
+    private const val ACTION_FAST_FORWARD_10S = "action_fast_forward_10s"
+
     fun setMediaInfoListener(listener: (MediaInfo?) -> Unit) {
         mediaInfoListener = listener
     }
@@ -49,11 +53,29 @@ object MediaBridgeSessionManager {
 
         val playbackState = PlaybackStateCompat.Builder()
             .setActions(SUPPORTED_ACTIONS)
+            .addCustomAction(createRewindAction())
+            .addCustomAction(createFastForwardAction())
             .setState(PlaybackStateCompat.STATE_PAUSED, 0L, 1.0f)
             .build()
 
         mediaSession?.setPlaybackState(playbackState)
         Log.d("MediaBridge", "✅ MediaSession initialized.")
+    }
+
+    private fun createRewindAction(): PlaybackStateCompat.CustomAction {
+        return PlaybackStateCompat.CustomAction.Builder(
+            ACTION_REWIND_10S,
+            appContext?.getString(R.string.action_rewind_10s) ?: "Rewind 10s",
+            android.R.drawable.ic_media_rew
+        ).build()
+    }
+
+    private fun createFastForwardAction(): PlaybackStateCompat.CustomAction {
+        return PlaybackStateCompat.CustomAction.Builder(
+            ACTION_FAST_FORWARD_10S,
+            appContext?.getString(R.string.action_fast_forward_10s) ?: "Forward 10s",
+            android.R.drawable.ic_media_ff
+        ).build()
     }
 
     fun getCurrentMediaPackage(): String? = currentMediaInfo?.appPackageName
@@ -82,6 +104,8 @@ object MediaBridgeSessionManager {
 
         val state = PlaybackStateCompat.Builder()
             .setActions(SUPPORTED_ACTIONS)
+            .addCustomAction(createRewindAction())
+            .addCustomAction(createFastForwardAction())
             .setState(
                 if (info.isPlaying) PlaybackStateCompat.STATE_PLAYING
                 else PlaybackStateCompat.STATE_PAUSED,
@@ -89,6 +113,9 @@ object MediaBridgeSessionManager {
                 1.0f
             )
             .build()
+
+        Log.d("MediaBridge", "🎵 Setting playback state with actions: ${SUPPORTED_ACTIONS}")
+        Log.d("MediaBridge", "🎵 Actions include: REWIND=${SUPPORTED_ACTIONS and PlaybackStateCompat.ACTION_REWIND != 0L}, FAST_FORWARD=${SUPPORTED_ACTIONS and PlaybackStateCompat.ACTION_FAST_FORWARD != 0L}")
 
         mediaSession?.setMetadata(metadata)
         mediaSession?.setPlaybackState(state)
@@ -183,4 +210,8 @@ object MediaBridgeSessionManager {
                 PlaybackStateCompat.ACTION_SEEK_TO or
                 PlaybackStateCompat.ACTION_REWIND or
                 PlaybackStateCompat.ACTION_FAST_FORWARD
+
+    // Helper function to get custom action IDs (for MediaCallback)
+    fun getRewindActionId(): String = ACTION_REWIND_10S
+    fun getFastForwardActionId(): String = ACTION_FAST_FORWARD_10S
 }

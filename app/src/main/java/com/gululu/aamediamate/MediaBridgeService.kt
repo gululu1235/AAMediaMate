@@ -3,6 +3,7 @@ package com.gululu.aamediamate
 import android.os.Bundle
 import android.util.Log
 import android.support.v4.media.MediaBrowserCompat
+import android.support.v4.media.MediaDescriptionCompat
 import androidx.media.MediaBrowserServiceCompat
 
 class MediaBridgeService : MediaBrowserServiceCompat() {
@@ -35,7 +36,22 @@ class MediaBridgeService : MediaBrowserServiceCompat() {
         parentId: String,
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
-        val items = mutableListOf<MediaBrowserCompat.MediaItem>()
+        val context = this
+        val controllers = MediaControllerManager.getAllControllers(context)
+
+        val items = controllers.map { controller ->
+            val mediaInfo = MediaInformationRetriever.buildMediaInfoFromController(context, controller)
+            val title = mediaInfo?.title ?: controller.packageName
+
+            val description = MediaDescriptionCompat.Builder()
+                .setMediaId(controller.packageName)
+                .setTitle(mediaInfo?.appName ?: controller.packageName)
+                .setSubtitle(title)
+                .setIconBitmap(mediaInfo?.appIcon)
+                .build()
+
+            MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
+        }.toMutableList()
 
         result.sendResult(items)
     }

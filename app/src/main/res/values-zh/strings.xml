@@ -55,4 +55,8 @@
     <string name="unknown_title">未知标题</string>
     <string name="unknown_artist">未知艺术家</string>
     <string name="unknown_album">未知专辑</string>
+    
+    <!--Media Control Actions-->
+    <string name="action_rewind_10s">后退10秒</string>
+    <string name="action_fast_forward_10s">前进10秒</string>
 </resources>
