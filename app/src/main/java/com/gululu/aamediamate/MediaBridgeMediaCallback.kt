@@ -80,10 +80,10 @@ class MediaBridgeMediaCallback(private val context: Context) : MediaSessionCompa
         Log.d("MediaBridge", "🎯 Custom action triggered: $action")
         
         when (action) {
-            MediaBridgeSessionManager.getRewindActionId() -> {
+            MediaStateUpdater.ACTION_REWIND_10S -> {
                 onRewind()
             }
-            MediaBridgeSessionManager.getFastForwardActionId() -> {
+            MediaStateUpdater.ACTION_FAST_FORWARD_10S -> {
                 onFastForward()
             }
             else -> {

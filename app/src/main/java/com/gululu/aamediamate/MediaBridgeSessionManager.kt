@@ -1,47 +1,24 @@
 package com.gululu.aamediamate
 
 import android.content.Context
-import android.util.Log
-import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
-import android.support.v4.media.session.PlaybackStateCompat
-import com.gululu.aamediamate.lyrics.LyricCache
-import com.gululu.aamediamate.lyrics.LyricSyncEngine
+import android.util.Log
 import com.gululu.aamediamate.models.MediaInfo
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.cancelAndJoin
-import kotlinx.coroutines.launch
-import kotlinx.coroutines.sync.Mutex
-import kotlinx.coroutines.sync.withLock
 
 object MediaBridgeSessionManager {
     private var mediaSession: MediaSessionCompat? = null
-    private var appContext: Context? = null
+    private var mediaStateUpdater: MediaStateUpdater? = null
+    private var lyricDisplayManager: LyricDisplayManager? = null
     private var currentMediaInfo: MediaInfo? = null
-
     private var mediaInfoListener: ((MediaInfo?) -> Unit)? = null
-
-    // Custom action IDs for Android Auto
-    private const val ACTION_REWIND_10S = "action_rewind_10s"
-    private const val ACTION_FAST_FORWARD_10S = "action_fast_forward_10s"
-
-    fun setMediaInfoListener(listener: (MediaInfo?) -> Unit) {
-        mediaInfoListener = listener
-    }
-
-    fun clearMediaInfoListener() {
-        mediaInfoListener = null
-    }
 
     fun init(context: Context) {
         if (mediaSession != null) return
 
-        appContext = context.applicationContext
+        val appContext = context.applicationContext
+        mediaStateUpdater = MediaStateUpdater(appContext)
+        lyricDisplayManager = LyricDisplayManager(appContext)
 
-        @Suppress("DEPRECATION")
         mediaSession = MediaSessionCompat(context, "MediaBridgeSession").apply {
             setCallback(MediaBridgeMediaCallback(context))
             setFlags(
@@ -51,174 +28,41 @@ object MediaBridgeSessionManager {
             isActive = true
         }
 
-        val playbackState = PlaybackStateCompat.Builder()
-            .setActions(SUPPORTED_ACTIONS)
-            .addCustomAction(createRewindAction())
-            .addCustomAction(createFastForwardAction())
-            .setState(PlaybackStateCompat.STATE_PAUSED, 0L, 1.0f)
-            .build()
-
-        mediaSession?.setPlaybackState(playbackState)
+        mediaStateUpdater?.clear(mediaSession!!)
         Log.d("MediaBridge", "✅ MediaSession initialized.")
     }
 
-    private fun createRewindAction(): PlaybackStateCompat.CustomAction {
-        return PlaybackStateCompat.CustomAction.Builder(
-            ACTION_REWIND_10S,
-            appContext?.getString(R.string.action_rewind_10s) ?: "Rewind 10s",
-            android.R.drawable.ic_media_rew
-        ).build()
-    }
-
-    private fun createFastForwardAction(): PlaybackStateCompat.CustomAction {
-        return PlaybackStateCompat.CustomAction.Builder(
-            ACTION_FAST_FORWARD_10S,
-            appContext?.getString(R.string.action_fast_forward_10s) ?: "Forward 10s",
-            android.R.drawable.ic_media_ff
-        ).build()
-    }
-
-    fun getCurrentMediaPackage(): String? = currentMediaInfo?.appPackageName
-
     fun updateFromMediaInfo(info: MediaInfo?) {
         currentMediaInfo = info
+        val session = mediaSession ?: return
 
-        if (info == null)
-        {
-            clearSessionMetadata()
+        if (info == null) {
+            mediaStateUpdater?.clear(session)
+            lyricDisplayManager?.stop()
             mediaInfoListener?.invoke(null)
             return
         }
 
-        val metadata = MediaMetadataCompat.Builder()
-            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, info.title)
-            .putString(MediaMetadataCompat.METADATA_KEY_ARTIST, info.artist + "-" + info.album)
-            .putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "From ${info.appName}")
-            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, info.duration)
-            .apply {
-                if (info.albumArt != null) {
-                    putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, info.albumArt)
-                }
-            }
-            .build()
+        // Restore original metadata before showing lyrics
+        mediaStateUpdater?.update(session, info)
+        lyricDisplayManager?.start(session, info)
 
-        val state = PlaybackStateCompat.Builder()
-            .setActions(SUPPORTED_ACTIONS)
-            .addCustomAction(createRewindAction())
-            .addCustomAction(createFastForwardAction())
-            .setState(
-                if (info.isPlaying) PlaybackStateCompat.STATE_PLAYING
-                else PlaybackStateCompat.STATE_PAUSED,
-                info.position,
-                1.0f
-            )
-            .build()
-
-        Log.d("MediaBridge", "🎵 Setting playback state with actions: ${SUPPORTED_ACTIONS}")
-        Log.d("MediaBridge", "🎵 Actions include: REWIND=${SUPPORTED_ACTIONS and PlaybackStateCompat.ACTION_REWIND != 0L}, FAST_FORWARD=${SUPPORTED_ACTIONS and PlaybackStateCompat.ACTION_FAST_FORWARD != 0L}")
-
-        mediaSession?.setMetadata(metadata)
-        mediaSession?.setPlaybackState(state)
-
-        Log.d("MediaBridge", "🎵 Updating MediaSession: ${info.title} by ${info.artist}")
-        tryStartLyricsSync(info, mediaSession)
         mediaInfoListener?.invoke(info)
-        
-        // Directly refresh browser data
         MediaBridgeService.refreshBrowserData()
-    }
-
-    private val lyricsScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
-    private var currentLyricsJob: Job? = null
-    private val lyricsJobMutex = Mutex()
-
-    private fun tryStartLyricsSync(info: MediaInfo, mediaSession: MediaSessionCompat?) {
-        if (appContext == null)
-        {
-            return
-        }
-
-        val enabled = SettingsManager.getLyricsEnabled(appContext!!)
-        if (!enabled || !info.isPlaying || info.title.isBlank() || info.artist.isBlank()) {
-            LyricSyncEngine.stop()
-            return
-        }
-
-        lyricsScope.launch {
-            lyricsJobMutex.withLock {
-                currentLyricsJob?.cancelAndJoin()
-                currentLyricsJob = launch {
-                    Log.d("MediaBridge", "🎤 Fetching lyrics for: ${info.title}")
-                    
-                    val lyrics = LyricCache.getOrFetchLyrics(
-                        appContext!!,
-                        info.title,
-                        info.artist,
-                        info.duration.toString()
-                    )
-                    
-                    if (lyrics.isEmpty()) {
-                        Log.d("MediaBridge", "🚫 Lyrics not found: ${info.title}")
-                        return@launch
-                    }
-
-                    Log.d("MediaBridge", "🎤 Starting lyrics sync: ${info.title} with ${lyrics.size} lines")
-                    
-                    // Get current position after lyrics are loaded to ensure accuracy
-                    val currentPosition = MediaInformationRetriever.refreshCurrentMediaInfo(appContext!!)?.position ?: info.position
-                    
-                    LyricSyncEngine.start(lyrics, currentPosition) { line ->
-                        val metadata = MediaMetadataCompat.Builder()
-                            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, line) // Lyrics
-                            .putString(
-                                MediaMetadataCompat.METADATA_KEY_ARTIST,
-                                "${info.title} - ${info.artist} - ${info.album}"
-                            )
-                            .putString(
-                                MediaMetadataCompat.METADATA_KEY_ALBUM,
-                                "From ${info.appName}"
-                            )
-                            .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, info.duration)
-                            .apply {
-                                if (info.albumArt != null) {
-                                    putBitmap(
-                                        MediaMetadataCompat.METADATA_KEY_ALBUM_ART,
-                                        info.albumArt
-                                    )
-                                }
-                            }
-                            .build()
-
-                        mediaSession?.setMetadata(metadata)
-                    }
-                }
-            }
-        }
     }
 
     fun getSessionToken(): MediaSessionCompat.Token? = mediaSession?.sessionToken
 
-    private fun clearSessionMetadata() {
-        mediaSession?.setPlaybackState(
-            PlaybackStateCompat.Builder()
-                .setState(PlaybackStateCompat.STATE_NONE, 0, 1.0f)
-                .build()
-        )
-        mediaSession?.setMetadata(null)
-        currentMediaInfo = null
-        Log.d("MediaBridge", "Reset session states.")
+    fun getCurrentMediaPackage(): String? = currentMediaInfo?.appPackageName
+
+    fun setMediaInfoListener(listener: (MediaInfo?) -> Unit) {
+        mediaInfoListener = listener
     }
 
-    private const val SUPPORTED_ACTIONS =
-        PlaybackStateCompat.ACTION_PLAY or
-                PlaybackStateCompat.ACTION_PAUSE or
-                PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
-                PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
-                PlaybackStateCompat.ACTION_SEEK_TO or
-                PlaybackStateCompat.ACTION_REWIND or
-                PlaybackStateCompat.ACTION_FAST_FORWARD
+    fun clearMediaInfoListener() {
+        mediaInfoListener = null
+    }
 
-    // Helper function to get custom action IDs (for MediaCallback)
-    fun getRewindActionId(): String = ACTION_REWIND_10S
-    fun getFastForwardActionId(): String = ACTION_FAST_FORWARD_10S
+    fun getRewindActionId(): String = MediaStateUpdater.ACTION_REWIND_10S
+    fun getFastForwardActionId(): String = MediaStateUpdater.ACTION_FAST_FORWARD_10S
 }

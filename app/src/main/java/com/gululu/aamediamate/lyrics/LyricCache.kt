@@ -57,8 +57,10 @@ object LyricCache {
 
         Log.d("MediaBridge", "🎤 Fetching lyrics from network...")
         val lrcContent = LyricsManager.getLyricsLrt(context, title, artist, duration)
+        Log.d("MediaBridge", "🎤 Network fetch returned: $lrcContent")
         if (!lrcContent.isNullOrBlank()) {
             val lyrics = LyricsManager.parseLrc(context, lrcContent)
+            Log.d("MediaBridge", "🎤 Parsed lyrics: $lyrics")
             if (lyrics.isNotEmpty()) {
                 memoryCache[key] = lyrics
                 file.writeText(lrcContent)
