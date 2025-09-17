@@ -16,8 +16,8 @@ class MediaStateUpdater(private val context: Context) {
     }
 
     private fun updateMetadata(mediaSession: MediaSessionCompat, info: MediaInfo) {
-        val artist = info.artist.takeIf { it.isNotBlank() && !it.equals("<unknown>", ignoreCase = true) }
-        val album = info.album.takeIf { it.isNotBlank() && !it.equals("<unknown>", ignoreCase = true) }
+        val artist = info.artist.takeIf { it.isNotBlank() }
+        val album = info.album.takeIf { it.isNotBlank() }
 
         val artistAlbum = listOfNotNull(artist, album).joinToString(" - ")
 
