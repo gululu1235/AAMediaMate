@@ -11,11 +11,13 @@ object MediaBridgeSessionManager {
     private var lyricDisplayManager: LyricDisplayManager? = null
     private var currentMediaInfo: MediaInfo? = null
     private var mediaInfoListener: ((MediaInfo?) -> Unit)? = null
+    private var context: Context? = null
 
     fun init(context: Context) {
         if (mediaSession != null) return
 
         val appContext = context.applicationContext
+        this.context = appContext
         mediaStateUpdater = MediaStateUpdater(appContext)
         lyricDisplayManager = LyricDisplayManager(appContext)
 
@@ -41,6 +43,11 @@ object MediaBridgeSessionManager {
             lyricDisplayManager?.stop()
             mediaInfoListener?.invoke(null)
             return
+        }
+
+        // Track this app as bridged
+        context?.let { ctx ->
+            SettingsManager.addOrUpdateBridgedApp(ctx, info.appPackageName, info.appName)
         }
 
         // Restore original metadata before showing lyrics

@@ -59,4 +59,11 @@
     <!--Media Control Actions-->
     <string name="action_rewind_10s">Rewind 10s</string>
     <string name="action_fast_forward_10s">Forward 10s</string>
+    
+    <!--Bridged Apps-->
+    <string name="bridged_apps_title">Lyrics display by apps</string>
+    <string name="bridged_apps_subtitle">Control lyrics display for each app</string>
+    <string name="no_bridged_apps">No apps have been bridged yet</string>
+    <string name="lyrics_enabled">Lyrics enabled</string>
+    <string name="lyrics_disabled">Lyrics disabled</string>
 </resources>

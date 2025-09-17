@@ -16,7 +16,7 @@ import androidx.core.graphics.createBitmap
 
 object MediaInformationRetriever {
     private val iconMap = mutableMapOf<String, Bitmap?>()
-    private val labelMap = mutableMapOf<String, String>()
+    internal val labelMap = mutableMapOf<String, String>()
 
     fun refreshCurrentMediaInfo(context: Context): MediaInfo? {
         try {
@@ -111,27 +111,68 @@ object MediaInformationRetriever {
         return resultBitmap
     }
 
-    private fun getAppLabel(context: Context, packageName: String): String {
-        return labelMap[packageName] ?: run {
-            try {
+    fun getAppLabel(context: Context, packageName: String): String {
+        return labelMap[packageName]?.also {
+            Log.d("MediaBridge", "📱 Using cached app name for $packageName: $it")
+        } ?: run {
+            Log.d("MediaBridge", "📱 Fetching app name for $packageName from PackageManager")
+            val appName = try {
                 val pm = context.packageManager
+                
+                // Try the normal approach first
                 val appInfo = pm.getApplicationInfo(packageName, 0)
-                pm.getApplicationLabel(appInfo).toString()
+                val label = pm.getApplicationLabel(appInfo).toString()
+                
+                // Validate the result - if it's the same as package name, try alternative
+                if (label == packageName) {
+                    Log.d("MediaBridge", "📱 Label equals package name, trying alternative for $packageName")
+                    // Try getting installed packages approach
+                    val packages = pm.getInstalledPackages(0)
+                    val targetPackage = packages.find { it.packageName == packageName }
+                    targetPackage?.applicationInfo?.loadLabel(pm)?.toString() ?: packageName
+                } else {
+                    label
+                }
             } catch (e: Exception) {
-                packageName
+                when (e) {
+                    is android.content.pm.PackageManager.NameNotFoundException -> {
+                        Log.w("MediaBridge", "⚠️ App not found: $packageName (possibly modded/uninstalled app)")
+                    }
+                    else -> {
+                        Log.w("MediaBridge", "⚠️ Failed to get app name for $packageName: ${e.message}")
+                    }
+                }
+                
+                // Try one more alternative approach for missing packages
+                try {
+                    val pm = context.packageManager
+                    val packages = pm.getInstalledPackages(0)
+                    val targetPackage = packages.find { it.packageName == packageName }
+                    targetPackage?.applicationInfo?.loadLabel(pm)?.toString() ?: packageName
+                } catch (e2: Exception) {
+                    Log.w("MediaBridge", "⚠️ All attempts failed for $packageName, using package name")
+                    packageName
+                }
             }
+            // Cache the retrieved app name
+            labelMap[packageName] = appName
+            Log.d("MediaBridge", "📱 Cached app name for $packageName: $appName")
+            appName
         }
     }
 
     private fun getAppIconBitmap(context: Context, packageName: String): Bitmap? {
         return iconMap[packageName] ?: run {
-            try {
+            val bitmap = try {
                 val drawable = context.packageManager.getApplicationIcon(packageName)
                 drawableToBitmap(drawable)
             } catch (e: Exception) {
-                e.printStackTrace()
+                Log.w("MediaBridge", "⚠️ Failed to get app icon for $packageName: ${e.message}")
                 null
             }
+            // Cache the result (even if null) to avoid repeated attempts
+            iconMap[packageName] = bitmap
+            bitmap
         }
     }
 

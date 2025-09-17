@@ -61,7 +61,8 @@ enum class LyricsFilterType {
 @Composable
 fun LyricsManagerScreen(
     onBack: () -> Unit,
-    onOpenEditor: (String) -> Unit
+    onOpenEditor: (String) -> Unit,
+    onNavigateToBridgedApps: () -> Unit = {}
 ) {
     BackHandler {
         onBack()
@@ -198,6 +199,19 @@ fun LyricsManagerScreen(
                             }
                         )
                     }
+                }
+            }
+
+            // Bridged Apps Button - only show when not in selection mode
+            if (!isSelectionMode) {
+                OutlinedButton(
+                    onClick = onNavigateToBridgedApps,
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .padding(horizontal = 16.dp)
+                        .padding(bottom = 8.dp)
+                ) {
+                    Text(stringResource(id = R.string.bridged_apps_title))
                 }
             }
 

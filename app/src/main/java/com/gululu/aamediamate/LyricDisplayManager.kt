@@ -18,11 +18,20 @@ class LyricDisplayManager(private val context: Context) {
     private val lyricsJobMutex = Mutex()
 
     fun start(mediaSession: MediaSessionCompat, info: MediaInfo) {
-        val enabled = SettingsManager.getLyricsEnabled(context)
-        if (!enabled || !info.isPlaying || info.title.isBlank() || info.artist.isBlank()) {
+        val globalLyricsEnabled = SettingsManager.getLyricsEnabled(context)
+        val appLyricsEnabled = SettingsManager.isAppLyricsEnabled(context, info.appPackageName)
+        
+        if (!globalLyricsEnabled || !appLyricsEnabled || !info.isPlaying || info.title.isBlank() || info.artist.isBlank()) {
+            if (!globalLyricsEnabled) {
+                Log.d("MediaBridge", "🚫 Lyrics globally disabled")
+            } else if (!appLyricsEnabled) {
+                Log.d("MediaBridge", "🚫 Lyrics disabled for app: ${info.appPackageName}")
+            }
             stop()
             return
         }
+        
+        Log.d("MediaBridge", "🎵 Starting lyrics for: ${info.appPackageName} - ${info.title} by ${info.artist}")
 
         lyricsScope.launch {
             lyricsJobMutex.withLock {
