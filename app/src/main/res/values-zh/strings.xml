@@ -59,4 +59,11 @@
     <!--Media Control Actions-->
     <string name="action_rewind_10s">后退10秒</string>
     <string name="action_fast_forward_10s">前进10秒</string>
+    
+    <!--Bridged Apps-->
+    <string name="bridged_apps_title">按应用显示歌词</string>
+    <string name="bridged_apps_subtitle">控制每个应用的歌词显示</string>
+    <string name="no_bridged_apps">暂无桥接的应用</string>
+    <string name="lyrics_enabled">歌词已启用</string>
+    <string name="lyrics_disabled">歌词已禁用</string>
 </resources>

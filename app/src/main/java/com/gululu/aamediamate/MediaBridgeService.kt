@@ -54,8 +54,8 @@ class MediaBridgeService : MediaBrowserServiceCompat() {
         result: Result<MutableList<MediaBrowserCompat.MediaItem>>
     ) {
         Log.d("MediaBridge", "🔄 onLoadChildren called for parentId: $parentId")
-        
-        val context = this
+
+        val context = this.applicationContext
         val controllers = MediaControllerManager.getAllControllers(context)
 
         val items = controllers.mapNotNull { controller ->
