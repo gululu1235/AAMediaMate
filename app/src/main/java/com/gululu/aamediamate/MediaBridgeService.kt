@@ -58,18 +58,20 @@ class MediaBridgeService : MediaBrowserServiceCompat() {
         val context = this
         val controllers = MediaControllerManager.getAllControllers(context)
 
-        val items = controllers.map { controller ->
+        val items = controllers.mapNotNull { controller ->
             val mediaInfo = MediaInformationRetriever.buildMediaInfoFromController(context, controller)
-            val title = mediaInfo?.title ?: controller.packageName
+            
+            // Only show apps that have active media info
+            mediaInfo?.let {
+                val description = MediaDescriptionCompat.Builder()
+                    .setMediaId(controller.packageName)
+                    .setTitle(it.appName)
+                    .setSubtitle(it.title)
+                    .setIconBitmap(it.appIcon)
+                    .build()
 
-            val description = MediaDescriptionCompat.Builder()
-                .setMediaId(controller.packageName)
-                .setTitle(mediaInfo?.appName ?: controller.packageName)
-                .setSubtitle(title)
-                .setIconBitmap(mediaInfo?.appIcon)
-                .build()
-
-            MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
+                MediaBrowserCompat.MediaItem(description, MediaBrowserCompat.MediaItem.FLAG_PLAYABLE)
+            }
         }.toMutableList()
 
         Log.d("MediaBridge", "📋 Loaded ${items.size} media items")
