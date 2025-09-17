@@ -25,6 +25,31 @@ This app and its README were written with the help of ChatGPT, and the logo was 
   It can still work with apps that already support Android Auto (e.g., YouTube Music) by disabling "Ignore Native Android Auto Players" in settings.
 
 - The app uses notification listeners and media session APIs to extract playback info. Please make sure the necessary permissions are granted, or the app will not work properly.
+- **Enable Unkown source for Android Auto is required if you use APK to install this app**
+---
+## How to Enable Unknown Sources in Android Auto
+
+To use apps outside the official Play Store in Android Auto (for example, a custom media bridge app), you need to enable **Unknown Sources** first. Follow the steps below:
+
+---
+
+### 1. Enable Developer Mode
+1. Open the **Android Auto app** (search for "Android Auto" in your phone settings).
+2. Scroll to the bottom and find the **Version** section.
+3. Tap the **Version number 10 times** until you see the message **“Developer mode enabled”**.
+
+---
+
+### 2. Enter Developer Settings
+1. Go back to the **Android Auto settings** main screen.
+2. Tap the **three-dot menu (⋮) → Developer settings**.
+
+---
+
+### 3. Turn on Unknown Sources
+1. In Developer settings, find the option **“Unknown sources”**.
+2. Toggle it **ON**.
+3. Restart the Android Auto app.
 
 ---
 
