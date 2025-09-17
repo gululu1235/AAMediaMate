@@ -8,7 +8,7 @@
 
  **AAMediaMate (Android Auto Media Mate)** 是一款用于 Android Auto 的媒体桥接工具，可以将当前正在手机上播放的音乐信息同步到车载屏幕上，并支持基础的播放控制与可选的歌词同步功能。
 
-本App主要功能与Readme由ChatGPT辅助编写，Logo由Gemini辅助生成。
+本App主要功能与Readme由ChatGPT, Claude Code辅助编写，Logo由Gemini辅助生成。
 
 ---
 
@@ -27,9 +27,27 @@
   若某 App 原生已支持 Android Auto（如 YouTube Music），本App也可以实现控制及歌词显示，但需要先调整设置。
 
 - 本 App 通过通知监听和媒体 Session 获取播放信息，请务必授权对应权限，否则将无法正常使用。
+- **从APK安装本app需要在Android Auto中启用未知来源应用**
+---
+## 如何开启 Android Auto 的 Unknown Sources（未知来源）
+### 1. 启用开发者模式
+1. 打开 **Android Auto 应用**（在手机设置中搜索“Android Auto”）。
+2. 滚动到页面最底部，找到 **版本号（Version）**。
+3. 连续点击 **版本号 10 次**，直到屏幕提示 **“开发者模式已启用”**。
 
 ---
 
+### 2. 进入开发者设置
+1. 返回 **Android Auto 设置**主界面。
+2. 点击右上角的 **三点菜单（⋮） → 开发者设置（Developer settings）**。
+
+---
+
+### 3. 打开 Unknown sources
+1. 在开发者设置中找到 **“Unknown sources / 未知来源”** 选项。
+2. 打开该开关。
+3. 重启 Android Auto 应用。
+---
 ## ⚠️ 安全提示
 
 🚗 **不建议驾驶时使用歌词显示功能。**  
