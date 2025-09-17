@@ -26,8 +26,12 @@ object MediaInformationRetriever {
             val state = controller.playbackState ?: return null
 
             val appIcon = getAppIconBitmap(context, controller.packageName)
-            var albumArt = metadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)
-            if (appIcon != null)
+            var albumArt = metadata.getBitmap(MediaMetadata.METADATA_KEY_ART)
+            if (albumArt == null)
+            {
+                albumArt = metadata.getBitmap(MediaMetadata.METADATA_KEY_ALBUM_ART)
+            }
+            if (appIcon != null && albumArt != null)
             {
                 albumArt = composeAlbumArtWithAppIconFixed(albumArt, appIcon)
             }
@@ -48,7 +52,8 @@ object MediaInformationRetriever {
             Log.d("MediaBridge", "🔄 Updating media info：$mediaInfo")
             return mediaInfo
         } catch (e: Exception) {
-            Log.e("MediaBridge", "⚠️ Updating media info failed： ${e.message}")
+            Log.e("MediaBridge", "⚠️ Updating media info failed")
+            e.printStackTrace()
             return null
         }
     }
