@@ -84,10 +84,20 @@ object SettingsManager {
         
         for (i in 0 until jsonArray.length()) {
             val jsonObject = jsonArray.getJSONObject(i)
+            val packageName = jsonObject.getString("packageName")
+            val storedAppName = jsonObject.getString("appName")
+            
+            // If stored app name is just the package name, try to get proper app name again
+            val refreshedAppName = if (storedAppName == packageName) {
+                MediaInformationRetriever.getAppLabel(context, packageName)
+            } else {
+                storedAppName
+            }
+            
             apps.add(
                 BridgedApp(
-                    packageName = jsonObject.getString("packageName"),
-                    appName = jsonObject.getString("appName"),
+                    packageName = packageName,
+                    appName = refreshedAppName,
                     firstSeen = jsonObject.getLong("firstSeen"),
                     lastSeen = jsonObject.getLong("lastSeen"),
                     lyricsEnabled = jsonObject.optBoolean("lyricsEnabled", true)
