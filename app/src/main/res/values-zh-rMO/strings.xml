@@ -66,4 +66,8 @@
     <string name="no_bridged_apps">尚無橋接的應用</string>
     <string name="lyrics_enabled">歌詞已啟用</string>
     <string name="lyrics_disabled">歌詞已禁用</string>
+    
+    <!--Setup Guidance-->
+    <string name="setup_guidance">設定指南</string>
+    <string name="setup_guidance_url">https://github.com/gululu1235/AAMediaMate?tab=readme-ov-file#%EF%B8%8F-%E6%AD%8C%E8%AF%8D%E8%AE%BE%E7%BD%AE</string>
 </resources>

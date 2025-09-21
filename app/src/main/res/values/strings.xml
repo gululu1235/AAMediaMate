@@ -66,4 +66,8 @@
     <string name="no_bridged_apps">No apps have been bridged yet</string>
     <string name="lyrics_enabled">Lyrics enabled</string>
     <string name="lyrics_disabled">Lyrics disabled</string>
+    
+    <!--Setup Guidance-->
+    <string name="setup_guidance">Setup Guidance</string>
+    <string name="setup_guidance_url">https://github.com/gululu1235/AAMediaMate/blob/main/README_en.md#%EF%B8%8F-lyrics-configuration</string>
 </resources>

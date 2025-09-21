@@ -20,6 +20,7 @@ captures/
 # APKs and output
 *.apk
 output.json
+app/release
 
 # Keystore (DO NOT COMMIT)
 *.jks
