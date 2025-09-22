@@ -74,6 +74,17 @@ class MediaBridgeService : MediaBrowserServiceCompat() {
             }
         }.toMutableList()
 
+        // Add placeholder if no media items found
+        if (items.isEmpty()) {
+            val placeholderDescription = MediaDescriptionCompat.Builder()
+                .setMediaId("placeholder_no_media")
+                .setTitle(getString(R.string.no_media_apps_found))
+                .setSubtitle(getString(R.string.start_playing_music))
+                .build()
+
+            items.add(MediaBrowserCompat.MediaItem(placeholderDescription, MediaBrowserCompat.MediaItem.FLAG_BROWSABLE))
+        }
+
         Log.d("MediaBridge", "📋 Loaded ${items.size} media items")
         result.sendResult(items)
     }

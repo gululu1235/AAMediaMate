@@ -70,4 +70,8 @@
     <!--Setup Guidance-->
     <string name="setup_guidance">Setup Guidance</string>
     <string name="setup_guidance_url">https://github.com/gululu1235/AAMediaMate/blob/main/README_en.md#%EF%B8%8F-lyrics-configuration</string>
+    
+    <!--Placeholder-->
+    <string name="no_media_apps_found">No media apps found</string>
+    <string name="start_playing_music">Play a media on the phone to control them here.</string>
 </resources>
