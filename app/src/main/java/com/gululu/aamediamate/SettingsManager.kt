@@ -4,6 +4,8 @@ import android.content.Context
 import androidx.core.content.edit
 import com.gululu.aamediamate.models.LanguageOption
 import com.gululu.aamediamate.models.BridgedApp
+import com.gululu.aamediamate.data.LyricsProviderConfig
+import com.gululu.aamediamate.data.LyricsProviderRegistry
 import org.json.JSONArray
 import org.json.JSONObject
 
@@ -16,6 +18,7 @@ object SettingsManager {
     private const val KEY_LRC_API_URI = "lrc_api_uri"
     private const val KEY_LANGUAGE = "language_pref"
     private const val KEY_BRIDGED_APPS = "bridged_apps"
+    private const val KEY_LYRICS_PROVIDERS = "lyrics_providers"
 
     private fun getPrefs(context: Context) = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -175,5 +178,72 @@ object SettingsManager {
         getPrefs(context).edit {
             putString(KEY_BRIDGED_APPS, jsonArray.toString())
         }
+    }
+
+    // Lyrics Providers Management
+    fun getLyricsProviders(context: Context): List<LyricsProviderConfig> {
+        val jsonString = getPrefs(context).getString(KEY_LYRICS_PROVIDERS, "[]") ?: "[]"
+        val jsonArray = JSONArray(jsonString)
+        val allProviders = LyricsProviderRegistry.getAllProviders()
+        val savedProviders = mutableMapOf<String, LyricsProviderConfig>()
+        
+        // Parse saved settings
+        for (i in 0 until jsonArray.length()) {
+            val jsonObject = jsonArray.getJSONObject(i)
+            val id = jsonObject.getString("id")
+            val baseProvider = LyricsProviderRegistry.getProviderById(id)
+            
+            if (baseProvider != null) {
+                savedProviders[id] = baseProvider.copy(
+                    isEnabled = jsonObject.optBoolean("isEnabled", baseProvider.isEnabled),
+                    priority = jsonObject.optInt("priority", baseProvider.priority)
+                )
+            }
+        }
+        
+        // Return all providers with saved settings applied, or defaults if not saved
+        return allProviders.map { provider ->
+            savedProviders[provider.id] ?: provider
+        }.sortedBy { it.priority }
+    }
+
+    fun saveLyricsProviders(context: Context, providers: List<LyricsProviderConfig>) {
+        val jsonArray = JSONArray()
+        providers.forEach { provider ->
+            val jsonObject = JSONObject().apply {
+                put("id", provider.id)
+                put("isEnabled", provider.isEnabled)
+                put("priority", provider.priority)
+            }
+            jsonArray.put(jsonObject)
+        }
+        
+        getPrefs(context).edit {
+            putString(KEY_LYRICS_PROVIDERS, jsonArray.toString())
+        }
+    }
+
+    fun updateProviderEnabled(context: Context, providerId: String, enabled: Boolean) {
+        val providers = getLyricsProviders(context).toMutableList()
+        val index = providers.indexOfFirst { it.id == providerId }
+        if (index >= 0) {
+            providers[index] = providers[index].copy(isEnabled = enabled)
+            saveLyricsProviders(context, providers)
+        }
+    }
+
+    fun updateProviderPriority(context: Context, providerId: String, priority: Int) {
+        val providers = getLyricsProviders(context).toMutableList()
+        val index = providers.indexOfFirst { it.id == providerId }
+        if (index >= 0) {
+            providers[index] = providers[index].copy(priority = priority)
+            saveLyricsProviders(context, providers.sortedBy { it.priority })
+        }
+    }
+
+    fun getEnabledProvidersInOrder(context: Context): List<LyricsProviderConfig> {
+        return getLyricsProviders(context)
+            .filter { it.isEnabled }
+            .sortedBy { it.priority }
     }
 }

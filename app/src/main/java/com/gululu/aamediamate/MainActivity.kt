@@ -68,6 +68,7 @@ import com.gululu.aamediamate.ui.LyricsEditorScreen
 import com.gululu.aamediamate.ui.LyricsManagerScreen
 import com.gululu.aamediamate.ui.SettingsScreen
 import com.gululu.aamediamate.ui.BridgedAppsScreen
+import com.gululu.aamediamate.ui.LyricsProvidersScreen
 import java.util.Locale
 
 val DeepPurpleBackground = Color(0xFF1B1B2F)
@@ -129,6 +130,7 @@ fun MediaBridgeApp() {
     var showSettings by remember { mutableStateOf(false) }
     var showLyricsManager by remember { mutableStateOf(false) }
     var showBridgedApps by remember { mutableStateOf(false) }
+    var showLyricsProviders by remember { mutableStateOf(false) }
     var selectedLyricsKey by remember { mutableStateOf<String?>(null) }
     var currentMediaInfo by remember { mutableStateOf<MediaInfo?>(null) }
 
@@ -154,8 +156,10 @@ fun MediaBridgeApp() {
             }
         )
         showBridgedApps -> BridgedAppsScreen { showBridgedApps = false }
+        showLyricsProviders -> LyricsProvidersScreen { showLyricsProviders = false }
         showSettings -> SettingsScreen(
-            onBack = { showSettings = false }
+            onBack = { showSettings = false },
+            onNavigateToProviders = { showLyricsProviders = true }
         )
         showLyricsManager -> LyricsManagerScreen(
             onBack = { showLyricsManager = false },

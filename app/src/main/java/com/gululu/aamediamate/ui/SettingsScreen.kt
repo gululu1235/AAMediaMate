@@ -24,7 +24,10 @@ import com.gululu.aamediamate.SettingsManager
 import com.gululu.aamediamate.models.LanguageOption
 
 @Composable
-fun SettingsScreen(onBack: () -> Unit) {
+fun SettingsScreen(
+    onBack: () -> Unit,
+    onNavigateToProviders: () -> Unit = {}
+) {
     BackHandler {
         onBack()
     }
@@ -32,8 +35,6 @@ fun SettingsScreen(onBack: () -> Unit) {
     val context = LocalContext.current
 
     var lyricsEnabled by remember { mutableStateOf(SettingsManager.getLyricsEnabled(context)) }
-    var apiKey by remember { mutableStateOf(SettingsManager.getApiKey(context)) }
-    var lrcApiUri by remember { mutableStateOf(SettingsManager.getLrcApiBaseUri(context)) }
     var simplifyChinese by remember { mutableStateOf(SettingsManager.getSimplifyEnabled(context)) }
     var ignoreNativeAutoApps by remember { mutableStateOf(SettingsManager.getIgnoreNativeAutoApps(context)) }
     var showLyricsConfirmationDialog by remember { mutableStateOf(false) }
@@ -124,19 +125,14 @@ fun SettingsScreen(onBack: () -> Unit) {
                 )
             }
 
-            // Setup Guidance Link
-            val setupGuidanceUrl = stringResource(id = R.string.setup_guidance_url)
-            Text(
-                text = stringResource(id = R.string.setup_guidance),
-                color = MaterialTheme.colorScheme.primary,
-                style = MaterialTheme.typography.bodyMedium,
-                modifier = Modifier
-                    .clickable {
-                        val intent = Intent(Intent.ACTION_VIEW, Uri.parse(setupGuidanceUrl))
-                        context.startActivity(intent)
-                    }
-                    .padding(vertical = 8.dp)
-            )
+            // Lyrics Providers Button
+            OutlinedButton(
+                onClick = onNavigateToProviders,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.lyrics_providers_title))
+            }
+
 
             if (showLyricsConfirmationDialog) {
                 AlertDialog(
@@ -162,34 +158,6 @@ fun SettingsScreen(onBack: () -> Unit) {
                     }
                 )
             }
-
-            // Musixmatch API Key
-            Text(text = stringResource(id = R.string.musixmatch_api_key))
-            OutlinedTextField(
-                value = apiKey,
-                onValueChange = {
-                    apiKey = it
-                    SettingsManager.setApiKey(context, it)
-                },
-                label = { Text(stringResource(id = R.string.musixmatch_api_key)) },
-                singleLine = true,
-                visualTransformation = VisualTransformation.None,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            // Lrc api Uri
-            Text(text = stringResource(id = R.string.lrc_api_uri))
-            OutlinedTextField(
-                value = lrcApiUri,
-                onValueChange = {
-                    lrcApiUri = it
-                    SettingsManager.setLrcApiBaseUri(context, it)
-                },
-                label = { Text(stringResource(id = R.string.lrc_api_uri)) },
-                singleLine = true,
-                visualTransformation = VisualTransformation.None,
-                modifier = Modifier.fillMaxWidth()
-            )
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = stringResource(id = R.string.simplify_chinese), modifier = Modifier.weight(1f))

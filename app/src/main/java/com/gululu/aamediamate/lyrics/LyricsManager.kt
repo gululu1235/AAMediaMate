@@ -11,15 +11,13 @@ import java.util.regex.Pattern
 data class LyricLine(val timeSec: Float, val text: String)
 
 object LyricsManager {
-    private val providers = listOf(
-        MusixmatchProvider,
-        LrcApiProvider
-    )
-
     suspend fun getLyricsLrt(context: Context, title: String, artist: String, duration: String): String? = withContext(Dispatchers.IO) {
-        for (provider in providers) {
+        // Get enabled providers in order of priority
+        val enabledProviders = SettingsManager.getEnabledProvidersInOrder(context)
+        
+        for (providerConfig in enabledProviders) {
             try {
-                val lrc = provider.getLyricsLrc(context, title, artist, duration)
+                val lrc = providerConfig.provider.getLyricsLrc(context, title, artist, duration)
                 if (!lrc.isNullOrBlank()) {
                     return@withContext lrc
                 }
