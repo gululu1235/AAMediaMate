@@ -81,6 +81,7 @@
     <string name="priority_format">Priority: %1$d</string>
     <string name="no_providers_enabled_warning">⚠️ No lyrics providers are enabled. You won\'t receive any lyrics.</string>
     <string name="provider_configuration">Provider Configuration</string>
-    <string name="musixmatch_description">Commercial lyrics service with high accuracy</string>
-    <string name="lrc_api_description">Open source LRC format lyrics</string>
+    <string name="musixmatch_description">MusixMatch commercial lyrics service</string>
+    <string name="lrc_api_description">Open source LRC API. Good Chinese lyrics support.</string>
+    <string name="lrclib_description">Free synced lyrics database, recommend setting as default.</string>
 </resources>

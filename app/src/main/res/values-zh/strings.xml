@@ -76,11 +76,12 @@
     <string name="start_playing_music">请在手机上播放媒体</string>
     
     <!--Lyrics Providers-->
-    <string name="lyrics_providers_title">歌词提供商</string>
+    <string name="lyrics_providers_title">歌词源设置</string>
     <string name="lyrics_providers_subtitle">配置歌词来源及其优先级</string>
     <string name="priority_format">优先级: %1$d</string>
     <string name="no_providers_enabled_warning">⚠️ 没有启用任何歌词提供商，您将无法获取歌词。</string>
     <string name="provider_configuration">提供商配置</string>
-    <string name="musixmatch_description">高精度的商业歌词服务</string>
-    <string name="lrc_api_description">开源LRC格式歌词</string>
+    <string name="musixmatch_description">MusixMatch商业歌词服务</string>
+    <string name="lrc_api_description">开源LRC API，更好的中文歌词支持</string>
+    <string name="lrclib_description">免费同步歌词数据库，建议设为默认</string>
 </resources>

@@ -1,7 +1,9 @@
 {
   "permissions": {
     "allow": [
-      "Bash(./gradlew:*)"
+      "Bash(./gradlew:*)",
+      "WebFetch(domain:lrclib.net)",
+      "WebSearch"
     ],
     "deny": [],
     "ask": []
