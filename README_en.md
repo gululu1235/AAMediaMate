@@ -7,7 +7,8 @@
 **AAMediaMate (Android Auto Media Mate)** is a media bridge tool designed for Android Auto. It syncs the currently playing music information from your phone to your car screen, supports basic playback controls, and offers optional lyrics display.
 
 This app and its README were written with the help of ChatGPT, and the logo was generated using Gemini.
-
+---
+It's official now -- AAMediaMate is public available in [Google Play](https://play.google.com/store/apps/details?id=com.gululu.aamediamate&pcampaignid=web_share). Enjoy :)
 ---
 
 ## 📱 Features
