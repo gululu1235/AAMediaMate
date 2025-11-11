@@ -65,7 +65,7 @@ class MediaStateUpdater(private val context: Context) {
         return PlaybackStateCompat.CustomAction.Builder(
             ACTION_REWIND_10S,
             context.getString(R.string.action_rewind_10s),
-            android.R.drawable.ic_media_rew
+            R.drawable.ic_replay_10
         ).build()
     }
 
@@ -73,7 +73,7 @@ class MediaStateUpdater(private val context: Context) {
         return PlaybackStateCompat.CustomAction.Builder(
             ACTION_FAST_FORWARD_10S,
             context.getString(R.string.action_fast_forward_10s),
-            android.R.drawable.ic_media_ff
+            R.drawable.ic_forward_10
         ).build()
     }
 

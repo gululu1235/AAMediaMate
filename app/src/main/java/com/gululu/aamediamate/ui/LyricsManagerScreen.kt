@@ -202,18 +202,7 @@ fun LyricsManagerScreen(
                 }
             }
 
-            // Bridged Apps Button - only show when not in selection mode
-            if (!isSelectionMode) {
-                OutlinedButton(
-                    onClick = onNavigateToBridgedApps,
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .padding(horizontal = 16.dp)
-                        .padding(bottom = 8.dp)
-                ) {
-                    Text(stringResource(id = R.string.bridged_apps_title))
-                }
-            }
+            // Removed: Bridged Apps Button (moved to Settings screen)
 
             // list of lyrics
             LazyColumn(

@@ -159,7 +159,8 @@ fun MediaBridgeApp() {
         showLyricsProviders -> LyricsProvidersScreen { showLyricsProviders = false }
         showSettings -> SettingsScreen(
             onBack = { showSettings = false },
-            onNavigateToProviders = { showLyricsProviders = true }
+            onNavigateToProviders = { showLyricsProviders = true },
+            onNavigateToBridgedApps = { showBridgedApps = true }
         )
         showLyricsManager -> LyricsManagerScreen(
             onBack = { showLyricsManager = false },

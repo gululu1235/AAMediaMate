@@ -26,7 +26,8 @@ import com.gululu.aamediamate.models.LanguageOption
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
-    onNavigateToProviders: () -> Unit = {}
+    onNavigateToProviders: () -> Unit = {},
+    onNavigateToBridgedApps: () -> Unit = {}
 ) {
     BackHandler {
         onBack()
@@ -109,6 +110,19 @@ fun SettingsScreen(
                 }
             }
 
+            // Ignore native Android Auto apps (moved above Show Lyrics)
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Text(text = stringResource(id = R.string.ignore_auto_supported_apps), modifier = Modifier.weight(1f))
+                Switch(
+                    checked = ignoreNativeAutoApps,
+                    onCheckedChange = {
+                        ignoreNativeAutoApps = it
+                        SettingsManager.setIgnoreNativeAutoApps(context, it)
+                    }
+                )
+            }
+
+            // Show Lyrics toggle
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = stringResource(id = R.string.show_lyrics), modifier = Modifier.weight(1f))
                 Switch(
@@ -125,12 +139,36 @@ fun SettingsScreen(
                 )
             }
 
-            // Lyrics Providers Button
-            OutlinedButton(
-                onClick = onNavigateToProviders,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.lyrics_providers_title))
+            if (lyricsEnabled) {
+                // Simplify Traditional Chinese (visible only for Simplified Chinese locale)
+                if (selectedLanguage == LanguageOption.SIMPLIFIED_CHINESE) {
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Text(text = stringResource(id = R.string.simplify_chinese), modifier = Modifier.weight(1f))
+                        Switch(
+                            checked = simplifyChinese,
+                            onCheckedChange = {
+                                simplifyChinese = it
+                                SettingsManager.setSimplifyEnabled(context, it)
+                            }
+                        )
+                    }
+                }
+
+                // Lyrics Providers Button
+                OutlinedButton(
+                    onClick = onNavigateToProviders,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.lyrics_providers_title))
+                }
+
+                // Bridged Apps Button (under providers)
+                OutlinedButton(
+                    onClick = onNavigateToBridgedApps,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.bridged_apps_title))
+                }
             }
 
 
@@ -159,27 +197,6 @@ fun SettingsScreen(
                 )
             }
 
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = stringResource(id = R.string.simplify_chinese), modifier = Modifier.weight(1f))
-                Switch(
-                    checked = simplifyChinese,
-                    onCheckedChange = {
-                        simplifyChinese = it
-                        SettingsManager.setSimplifyEnabled(context, it)
-                    }
-                )
-            }
-
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = stringResource(id = R.string.ignore_auto_supported_apps), modifier = Modifier.weight(1f))
-                Switch(
-                    checked = ignoreNativeAutoApps,
-                    onCheckedChange = {
-                        ignoreNativeAutoApps = it
-                        SettingsManager.setIgnoreNativeAutoApps(context, it)
-                    }
-                )
-            }
         }
     }
 }
