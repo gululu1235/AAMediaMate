@@ -50,6 +50,60 @@ fun LyricsEditorScreen(
                     }
                 },
                 actions = {
+                    TextButton(onClick = {
+                        fun shift(contentText: String, deltaMs: Long): String {
+                            val pattern = Regex("\\[(\\d+):(\\d+(?:\\.\\d+)?)]")
+                            fun format(totalSec: Float): String {
+                                val clamped = if (totalSec < 0f) 0f else totalSec
+                                val minutes = kotlin.math.floor((clamped / 60f).toDouble()).toInt()
+                                val seconds = clamped - minutes * 60f
+                                return String.format("[%02d:%05.2f]", minutes, seconds)
+                            }
+                            return contentText.lineSequence().joinToString("\n") { line ->
+                                pattern.replace(line) { m ->
+                                    val min = m.groupValues[1].toIntOrNull() ?: return@replace m.value
+                                    val sec = m.groupValues[2].toFloatOrNull() ?: return@replace m.value
+                                    val total = min * 60f + sec + (deltaMs / 1000f)
+                                    format(total)
+                                }
+                            }
+                        }
+                        content = shift(content, -500)
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.shifted_by_seconds, -0.5f, 1),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }) {
+                        Text(text = stringResource(id = R.string.shift_backward_half))
+                    }
+                    TextButton(onClick = {
+                        fun shift(contentText: String, deltaMs: Long): String {
+                            val pattern = Regex("\\[(\\d+):(\\d+(?:\\.\\d+)?)]")
+                            fun format(totalSec: Float): String {
+                                val clamped = if (totalSec < 0f) 0f else totalSec
+                                val minutes = kotlin.math.floor((clamped / 60f).toDouble()).toInt()
+                                val seconds = clamped - minutes * 60f
+                                return String.format("[%02d:%05.2f]", minutes, seconds)
+                            }
+                            return contentText.lineSequence().joinToString("\n") { line ->
+                                pattern.replace(line) { m ->
+                                    val min = m.groupValues[1].toIntOrNull() ?: return@replace m.value
+                                    val sec = m.groupValues[2].toFloatOrNull() ?: return@replace m.value
+                                    val total = min * 60f + sec + (deltaMs / 1000f)
+                                    format(total)
+                                }
+                            }
+                        }
+                        content = shift(content, 500)
+                        Toast.makeText(
+                            context,
+                            context.getString(R.string.shifted_by_seconds, 0.5f, 1),
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }) {
+                        Text(text = stringResource(id = R.string.shift_forward_half))
+                    }
                     IconButton(onClick = {
                         coroutineScope.launch {
                             LyricsRepository.saveLyricsText(context, lyricsKey, content)

@@ -50,6 +50,9 @@
     <string name="lyrics_content_label">歌词内容（LRC 格式）</string>
     <string name="lyrics_saved">歌词已保存</string>
     <string name="lyrics_deleted">歌词已删除</string>
+    <string name="shift_backward_half">-0.5秒</string>
+    <string name="shift_forward_half">+0.5秒</string>
+    <string name="shifted_by_seconds">已将 %2$d 项歌词整体偏移 %1$.1f 秒</string>
 
     <!--MediaInformationRetriever-->
     <string name="unknown_title">未知标题</string>

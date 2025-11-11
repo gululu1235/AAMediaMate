@@ -50,6 +50,9 @@
     <string name="lyrics_content_label">Lyrics content (LRC format)</string>
     <string name="lyrics_saved">Lyrics saved</string>
     <string name="lyrics_deleted">Lyrics deleted</string>
+    <string name="shift_backward_half">-0.5s</string>
+    <string name="shift_forward_half">+0.5s</string>
+    <string name="shifted_by_seconds">Shifted lyrics by %1$.1fs for %2$d item(s)</string>
 
     <!--MediaInformationRetriever-->
     <string name="unknown_title">Unknown Title</string>
