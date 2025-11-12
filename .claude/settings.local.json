@@ -3,7 +3,8 @@
     "allow": [
       "Bash(./gradlew:*)",
       "WebFetch(domain:lrclib.net)",
-      "WebSearch"
+      "WebSearch",
+      "Bash(findstr:*)"
     ],
     "deny": [],
     "ask": []
