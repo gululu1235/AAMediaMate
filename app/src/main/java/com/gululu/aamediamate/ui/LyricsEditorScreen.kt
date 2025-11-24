@@ -8,12 +8,16 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.MoreVert
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
 import com.gululu.aamediamate.R
 import com.gululu.aamediamate.lyrics.LyricsRepository
 import kotlinx.coroutines.launch
@@ -22,7 +26,8 @@ import kotlinx.coroutines.launch
 fun LyricsEditorScreen(
     lyricsKey: String,
     onBack: () -> Unit,
-    onDeleted: () -> Unit
+    onDeleted: () -> Unit,
+    onManualSearch: (String) -> Unit
 ) {
     BackHandler {
         onBack()
@@ -33,11 +38,23 @@ fun LyricsEditorScreen(
 
     var content by remember { mutableStateOf("") }
     var isLoaded by remember { mutableStateOf(false) }
+    var showMenu by remember { mutableStateOf(false) }
 
-    LaunchedEffect(Unit) {
-        val text = LyricsRepository.loadLyricsText(context, lyricsKey)
-        content = text
-        isLoaded = true
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner, lyricsKey) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                coroutineScope.launch {
+                    val text = LyricsRepository.loadLyricsText(context, lyricsKey)
+                    content = text
+                    if (!isLoaded) isLoaded = true
+                }
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose {
+            lifecycleOwner.lifecycle.removeObserver(observer)
+        }
     }
 
     Scaffold(
@@ -52,7 +69,7 @@ fun LyricsEditorScreen(
                 actions = {
                     TextButton(onClick = {
                         fun shift(contentText: String, deltaMs: Long): String {
-                            val pattern = Regex("\\[(\\d+):(\\d+(?:\\.\\d+)?)]")
+                            val pattern = Regex("""\[(\d+):(\d+(?:\.\d+)?)]""")
                             fun format(totalSec: Float): String {
                                 val clamped = if (totalSec < 0f) 0f else totalSec
                                 val minutes = kotlin.math.floor((clamped / 60f).toDouble()).toInt()
@@ -79,7 +96,7 @@ fun LyricsEditorScreen(
                     }
                     TextButton(onClick = {
                         fun shift(contentText: String, deltaMs: Long): String {
-                            val pattern = Regex("\\[(\\d+):(\\d+(?:\\.\\d+)?)]")
+                            val pattern = Regex("""\[(\d+):(\d+(?:\.\d+)?)]""")
                             fun format(totalSec: Float): String {
                                 val clamped = if (totalSec < 0f) 0f else totalSec
                                 val minutes = kotlin.math.floor((clamped / 60f).toDouble()).toInt()
@@ -104,6 +121,7 @@ fun LyricsEditorScreen(
                     }) {
                         Text(text = stringResource(id = R.string.shift_forward_half))
                     }
+
                     IconButton(onClick = {
                         coroutineScope.launch {
                             LyricsRepository.saveLyricsText(context, lyricsKey, content)
@@ -121,6 +139,32 @@ fun LyricsEditorScreen(
                         }
                     }) {
                         Icon(Icons.Default.Delete, contentDescription = stringResource(id = R.string.delete))
+                    }
+                    IconButton(onClick = { showMenu = true }) {
+                        Icon(Icons.Default.MoreVert, contentDescription = "More options")
+                    }
+                    DropdownMenu(
+                        expanded = showMenu,
+                        onDismissRequest = { showMenu = false }
+                    ) {
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.manual_search)) },
+                            onClick = {
+                                showMenu = false
+                                onManualSearch(lyricsKey)
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.do_not_show_lyrics)) },
+                            onClick = {
+                                showMenu = false
+                                content = ""
+                                coroutineScope.launch {
+                                    LyricsRepository.saveLyricsText(context, lyricsKey, "")
+                                    Toast.makeText(context, context.getString(R.string.lyrics_cleared), Toast.LENGTH_SHORT).show()
+                                }
+                            }
+                        )
                     }
                 }
             )

@@ -17,6 +17,13 @@ class MediaBridgeMediaCallback(private val context: Context) : MediaSessionCompa
         sync()
     }
 
+    override fun onPlayFromSearch(query: String?, extras: Bundle?) {
+        Log.d("MediaBridge", "onPlayFromSearch: query=$query")
+        // A simple implementation: just delegate to onPlay() to start playback of the current track
+        // or whatever the default play action is. A real implementation would use the query.
+        onPlay()
+    }
+
     override fun onPause() {
         Log.d("MediaBridge", "⏸️ onPause triggered")
         MediaControllerManager.getActiveController(context)?.transportControls?.pause()

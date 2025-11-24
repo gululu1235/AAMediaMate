@@ -50,10 +50,25 @@
     <string name="lyrics_content_label">歌詞內容（LRC 格式）</string>
     <string name="lyrics_saved">歌詞已儲存</string>
     <string name="lyrics_deleted">歌詞已刪除</string>
+    <string name="shift_backward_half">-0.5秒</string>
+    <string name="shift_forward_half">+0.5秒</string>
+    <string name="shifted_by_seconds">已將 %2$d 項歌詞整體偏移 %1$.1f 秒</string>
+
+    <!--Manual Lyrics Search-->
+    <string name="manual_search">手動搜尋</string>
+    <string name="manual_search_title">手動歌詞搜尋</string>
+    <string name="song_title">歌曲</string>
+    <string name="artist">演出者</string>
+    <string name="provider">歌詞來源</string>
+    <string name="search_lyrics">搜尋歌詞</string>
+    <string name="lyrics_not_found">未找到歌詞。</string>
+    <string name="searching_lyrics">正在搜尋…</string>
+    <string name="do_not_show_lyrics">不顯示歌詞</string>
+    <string name="lyrics_cleared">歌詞已清空並儲存。</string>
 
     <!--MediaInformationRetriever-->
     <string name="unknown_title">未知標題</string>
-    <string name="unknown_artist">未知藝術家</string>
+    <string name="unknown_artist">未知演出者</string>
     <string name="unknown_album">未知專輯</string>
     
     <!--Media Control Actions-->

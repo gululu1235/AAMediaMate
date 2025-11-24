@@ -54,6 +54,18 @@
     <string name="shift_forward_half">+0.5s</string>
     <string name="shifted_by_seconds">Shifted lyrics by %1$.1fs for %2$d item(s)</string>
 
+    <!--Manual Lyrics Search-->
+    <string name="manual_search">Manual Search</string>
+    <string name="manual_search_title">Manual Lyrics Search</string>
+    <string name="song_title">Song Title</string>
+    <string name="artist">Artist</string>
+    <string name="provider">Provider</string>
+    <string name="search_lyrics">Search Lyrics</string>
+    <string name="lyrics_not_found">Lyrics not found.</string>
+    <string name="searching_lyrics">Searching…</string>
+    <string name="do_not_show_lyrics">"Don't show lyrics"</string>
+    <string name="lyrics_cleared">Lyrics cleared and saved.</string>
+
     <!--MediaInformationRetriever-->
     <string name="unknown_title">Unknown Title</string>
     <string name="unknown_artist">Unknown Artist</string>

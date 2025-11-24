@@ -54,6 +54,18 @@
     <string name="shift_forward_half">+0.5秒</string>
     <string name="shifted_by_seconds">已将 %2$d 项歌词整体偏移 %1$.1f 秒</string>
 
+    <!--Manual Lyrics Search-->
+    <string name="manual_search">手动搜索</string>
+    <string name="manual_search_title">手动歌词搜索</string>
+    <string name="song_title">歌曲</string>
+    <string name="artist">艺术家</string>
+    <string name="provider">歌词源</string>
+    <string name="search_lyrics">搜索歌词</string>
+    <string name="lyrics_not_found">未找到歌词。</string>
+    <string name="searching_lyrics">正在搜索…</string>
+    <string name="do_not_show_lyrics">不显示歌词</string>
+    <string name="lyrics_cleared">歌词已清空并保存。</string>
+
     <!--MediaInformationRetriever-->
     <string name="unknown_title">未知标题</string>
     <string name="unknown_artist">未知艺术家</string>

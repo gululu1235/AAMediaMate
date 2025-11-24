@@ -29,26 +29,39 @@ object LyricsManager {
     }
 
     fun parseLrc(context: Context, lrc: String): List<LyricLine> {
-        val pattern = Pattern.compile("\\[(\\d+):(\\d+\\.\\d+)](.*)")
-        return lrc.lineSequence()
-            .mapNotNull { line ->
-                val matcher = pattern.matcher(line)
-                if (matcher.find()) {
-                    val min = matcher.group(1)!!.toInt()
-                    val sec = matcher.group(2)!!.toFloat()
-                    var text = matcher.group(3)!!.trim()
-                    if (SettingsManager.getSimplifyEnabled(context))
-                    {
-                        text = ZhConverterUtil.toSimple(text)
-                    }
-                    else
-                    {
-                        text = ZhConverterUtil.toTraditional(text)
-                    }
-                    LyricLine(timeSec = min * 60 + sec, text = text)
-                } else null
+        // This regex captures all timestamp tags at the beginning of the line, and the lyric text.
+        // Group 1: The entire block of timestamp tags (e.g., "[00:01.23][00:02.45]")
+        // Group 2: The lyric text after the timestamps
+        val linePattern = Pattern.compile("((?:\\[\\d+:\\d+\\.\\d+])+)(.*)")
+
+        // This regex is for parsing a single timestamp tag from the block captured by group 1.
+        val timeTagPattern = Pattern.compile("\\[(\\d+):(\\d+\\.\\d+)]")
+
+        val lyricLines = mutableListOf<LyricLine>()
+
+        lrc.lineSequence().forEach { line ->
+            val lineMatcher = linePattern.matcher(line)
+            if (lineMatcher.matches()) {
+                val tagsBlock = lineMatcher.group(1)!!
+                var text = lineMatcher.group(2)!!.trim()
+
+                // Chinese character conversion
+                if (SettingsManager.getSimplifyEnabled(context)) {
+                    text = ZhConverterUtil.toSimple(text)
+                } else {
+                    text = ZhConverterUtil.toTraditional(text)
+                }
+
+                val timeTagMatcher = timeTagPattern.matcher(tagsBlock)
+                while (timeTagMatcher.find()) {
+                    val min = timeTagMatcher.group(1)!!.toInt()
+                    val sec = timeTagMatcher.group(2)!!.toFloat()
+                    val timeSec = min * 60 + sec
+                    lyricLines.add(LyricLine(timeSec = timeSec, text = text))
+                }
             }
-            .sortedBy { it.timeSec }
-            .toList()
+        }
+
+        return lyricLines.sortedBy { it.timeSec }
     }
 }
