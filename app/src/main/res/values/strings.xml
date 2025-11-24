@@ -63,8 +63,8 @@
     <string name="search_lyrics">Search Lyrics</string>
     <string name="lyrics_not_found">Lyrics not found.</string>
     <string name="searching_lyrics">Searching…</string>
-    <string name="do_not_show_lyrics">"Don't show lyrics"</string>
-    <string name="lyrics_cleared">Lyrics cleared and saved.</string>
+    <string name="clear_lyrics">Clear lyrics</string>
+    <string name="lyrics_cleared">Lyrics cleared, will no longer show synced lyrics.</string>
 
     <!--MediaInformationRetriever-->
     <string name="unknown_title">Unknown Title</string>

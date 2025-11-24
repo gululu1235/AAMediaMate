@@ -63,8 +63,8 @@
     <string name="search_lyrics">搜尋歌詞</string>
     <string name="lyrics_not_found">未找到歌詞。</string>
     <string name="searching_lyrics">正在搜尋…</string>
-    <string name="do_not_show_lyrics">不顯示歌詞</string>
-    <string name="lyrics_cleared">歌詞已清空並儲存。</string>
+    <string name="clear_lyrics">清空歌詞</string>
+    <string name="lyrics_cleared">歌詞已清空，將不再顯示同步歌詞。</string>
 
     <!--MediaInformationRetriever-->
     <string name="unknown_title">未知標題</string>

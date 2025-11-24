@@ -155,7 +155,7 @@ fun LyricsEditorScreen(
                             }
                         )
                         DropdownMenuItem(
-                            text = { Text(stringResource(id = R.string.do_not_show_lyrics)) },
+                            text = { Text(stringResource(id = R.string.clear_lyrics)) },
                             onClick = {
                                 showMenu = false
                                 content = ""

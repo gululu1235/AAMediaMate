@@ -44,8 +44,8 @@ object LRCLibProvider : LyricsProvider {
             val jsonObject = JSONObject(body)
             val syncedLyrics = jsonObject.optString("syncedLyrics", "")
             
-            // Return synced lyrics if available, otherwise null
-            if (syncedLyrics.isNotBlank()) syncedLyrics else null
+            // Return synced lyrics if available and not the literal string "null", otherwise null
+            if (syncedLyrics.isNotBlank() && syncedLyrics != "null") syncedLyrics else null
         } catch (e: Exception) {
             Log.e("MediaBridge", "Error fetching lyrics from LRCLib", e)
             null
