@@ -6,8 +6,10 @@ import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
 import com.gululu.aamediamate.lyrics.LyricCache
 import com.gululu.aamediamate.lyrics.LyricSyncEngine
+import com.gululu.aamediamate.lyrics.LyricsRepository
 import com.gululu.aamediamate.models.MediaInfo
 import kotlinx.coroutines.*
+import kotlinx.coroutines.flow.collectLatest
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 
@@ -16,6 +18,8 @@ class LyricDisplayManager(private val context: Context) {
     private val lyricsScope = CoroutineScope(SupervisorJob() + Dispatchers.IO)
     private var currentLyricsJob: Job? = null
     private val lyricsJobMutex = Mutex()
+    private var lyricsUpdateJob: Job? = null
+    private var currentMediaInfo: MediaInfo? = null
 
     fun start(mediaSession: MediaSessionCompat, info: MediaInfo) {
         val globalLyricsEnabled = SettingsManager.getLyricsEnabled(context)
@@ -32,6 +36,22 @@ class LyricDisplayManager(private val context: Context) {
         }
         
         Log.d("MediaBridge", "🎵 Starting lyrics for: ${info.appPackageName} - ${info.title} by ${info.artist}")
+        currentMediaInfo = info
+
+        // Start observing lyric updates
+        lyricsUpdateJob?.cancel() // Cancel any previous observation
+        lyricsUpdateJob = lyricsScope.launch {
+            val observedMediaInfo = info // Capture the media info that started this observation
+            LyricsRepository.lyricsUpdatedFlow.collectLatest { updatedKey ->
+                val currentKey = "${observedMediaInfo.title}_${observedMediaInfo.artist}"
+                if (updatedKey == currentKey) {
+                    Log.d("MediaBridge", "🎤 Lyrics for current song updated. Restarting lyric display.")
+                    // Stop internal components and restart to refresh with new lyrics
+                    stopInternal()
+                    start(mediaSession, observedMediaInfo)
+                }
+            }
+        }
 
         lyricsScope.launch {
             lyricsJobMutex.withLock {
@@ -46,6 +66,7 @@ class LyricDisplayManager(private val context: Context) {
 
                     if (lyrics.isEmpty()) {
                         Log.d("MediaBridge", "🚫 Lyrics not found: ${info.title}")
+                        updateLyricLine(mediaSession, info, "") // Clear the displayed lyric
                         return@launch
                     }
 
@@ -60,6 +81,12 @@ class LyricDisplayManager(private val context: Context) {
     }
 
     fun stop() {
+        stopInternal()
+        lyricsUpdateJob?.cancel()
+        currentMediaInfo = null
+    }
+
+    private fun stopInternal() {
         LyricSyncEngine.stop()
         runBlocking {
             lyricsJobMutex.withLock {

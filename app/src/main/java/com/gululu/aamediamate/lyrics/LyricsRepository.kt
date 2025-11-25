@@ -3,10 +3,16 @@ package com.gululu.aamediamate.lyrics
 import android.content.Context
 import com.gululu.aamediamate.models.LyricsEntry
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.SharedFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.withContext
 import java.io.File
 
 object LyricsRepository {
+    private val _lyricsUpdatedFlow = MutableSharedFlow<String>()
+    val lyricsUpdatedFlow: SharedFlow<String> = _lyricsUpdatedFlow.asSharedFlow()
+
     suspend fun getAllLyrics(context: Context): List<LyricsEntry> = withContext(Dispatchers.IO) {
         val lyricsDir = LyricCache.getLyricsDir(context)
         if (!lyricsDir.exists()) return@withContext emptyList()
@@ -56,6 +62,7 @@ object LyricsRepository {
         file.parentFile?.mkdirs()
         file.writeText(content)
         LyricCache.clearMemoryCache(key)
+        _lyricsUpdatedFlow.emit(key)
     }
 
     suspend fun shiftLyricsByMs(context: Context, keys: List<String>, deltaMs: Long) = withContext(Dispatchers.IO) {
@@ -89,6 +96,7 @@ object LyricsRepository {
 
             file.writeText(shifted)
             LyricCache.clearMemoryCache(key)
+            _lyricsUpdatedFlow.emit(key)
         }
     }
 }
