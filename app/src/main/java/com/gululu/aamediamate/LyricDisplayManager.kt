@@ -97,18 +97,27 @@ class LyricDisplayManager(private val context: Context) {
     }
 
     private fun updateLyricLine(mediaSession: MediaSessionCompat, originalInfo: MediaInfo, lyricLine: String) {
-        val artistAlbum = listOfNotNull(originalInfo.artist.takeIf { it.isNotBlank() }, originalInfo.album.takeIf { it.isNotBlank() })
-            .joinToString(" - ")
-
         val metadataBuilder = MediaMetadataCompat.Builder()
-            .putString(MediaMetadataCompat.METADATA_KEY_TITLE, lyricLine)
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, originalInfo.duration)
 
-        if (artistAlbum.isNotBlank()) {
-            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, "${originalInfo.title} - $artistAlbum")
-        }
+        if (lyricLine.isNotBlank()) {
+            // When a lyric is displayed, use the lyric as the title
+            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, lyricLine)
 
-        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "From ${originalInfo.appName}")
+            // Consolidate song title, artist, and album into the ARTIST field
+            val songInfo = listOfNotNull(
+                originalInfo.title.takeIf { it.isNotBlank() },
+                originalInfo.artist.takeIf { it.isNotBlank() },
+                originalInfo.album.takeIf { it.isNotBlank() }
+            ).joinToString(" - ")
+            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, songInfo)
+
+        } else {
+            // When no lyric is displayed, use the original media info
+            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, originalInfo.title)
+            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, originalInfo.artist)
+            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, originalInfo.album)
+        }
 
         originalInfo.albumArt?.let {
             metadataBuilder.putBitmap(MediaMetadataCompat.METADATA_KEY_ALBUM_ART, it)
