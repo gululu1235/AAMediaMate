@@ -100,6 +100,9 @@ class LyricDisplayManager(private val context: Context) {
         val metadataBuilder = MediaMetadataCompat.Builder()
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, originalInfo.duration)
 
+        // Always set the album to "From [App Name]"
+        metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "From ${originalInfo.appName}")
+
         if (lyricLine.isNotBlank()) {
             // When a lyric is displayed, use the lyric as the title
             metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, lyricLine)
@@ -113,10 +116,16 @@ class LyricDisplayManager(private val context: Context) {
             metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, songInfo)
 
         } else {
-            // When no lyric is displayed, use the original media info
+            // When no lyric is displayed, restore the original media info formatted correctly
             metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, originalInfo.title)
-            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, originalInfo.artist)
-            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, originalInfo.album)
+
+            val artist = originalInfo.artist.takeIf { it.isNotBlank() }
+            val album = originalInfo.album.takeIf { it.isNotBlank() }
+            val artistAlbum = listOfNotNull(artist, album).joinToString(" - ")
+
+            if (artistAlbum.isNotBlank()) {
+                metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artistAlbum)
+            }
         }
 
         originalInfo.albumArt?.let {
