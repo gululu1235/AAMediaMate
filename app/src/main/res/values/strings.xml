@@ -25,6 +25,7 @@
     <string name="lyrics_enable_confirm_button">I\'m a passenger</string>
     <string name="language_title">Language(Restart required)</string>
     <string name="language">Language</string>
+    <string name="donate">Donate</string>
 
     <!-- Main Screen -->
     <string name="app_title">AA Media Mate</string>

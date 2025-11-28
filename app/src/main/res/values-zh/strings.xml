@@ -25,6 +25,7 @@
     <string name="lyrics_enable_confirm_button">我是乘客</string>
     <string name="language_title">语言(重启后生效)</string>
     <string name="language">语言</string>
+    <string name="donate">捐赠</string>
 
     <!-- Main Screen -->
     <string name="app_title">AA Media Mate</string>

@@ -63,13 +63,16 @@ import androidx.compose.ui.unit.dp
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.lifecycleScope
+import com.gululu.aamediamate.billing.BillingManager
 import com.gululu.aamediamate.models.MediaInfo
+import com.gululu.aamediamate.ui.BridgedAppsScreen
+import com.gululu.aamediamate.ui.DonationScreen
 import com.gululu.aamediamate.ui.LyricsEditorScreen
 import com.gululu.aamediamate.ui.LyricsManagerScreen
-import com.gululu.aamediamate.ui.SettingsScreen
-import com.gululu.aamediamate.ui.BridgedAppsScreen
 import com.gululu.aamediamate.ui.LyricsProvidersScreen
 import com.gululu.aamediamate.ui.ManualLyricsSearchScreen
+import com.gululu.aamediamate.ui.SettingsScreen
 import java.util.Locale
 
 val DeepPurpleBackground = Color(0xFF1B1B2F)
@@ -78,6 +81,8 @@ val LeftTextColor = Color(0xFFAAAAAA)
 val RightTextColor = Color(0xFFFFFFFF)
 
 class MainActivity : ComponentActivity() {
+    private lateinit var billingManager: BillingManager
+
     override fun attachBaseContext(newBase: Context) {
         val langCode = SettingsManager.getLanguagePreference(newBase).split("_")
         Log.d("mediaBridge", "$langCode")
@@ -89,8 +94,11 @@ class MainActivity : ComponentActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        billingManager = BillingManager(this, lifecycleScope)
+        billingManager.startConnection()
+
         setContent {
-            MediaBridgeApp()
+            MediaBridgeApp(billingManager = billingManager)
         }
     }
 }
@@ -125,13 +133,14 @@ fun applyLanguage(context: Context, language: String, country: String): Context 
 
 @Preview
 @Composable
-fun MediaBridgeApp() {
+fun MediaBridgeApp(billingManager: BillingManager? = null) {
     val context = LocalContext.current
 
     var showSettings by remember { mutableStateOf(false) }
     var showLyricsManager by remember { mutableStateOf(false) }
     var showBridgedApps by remember { mutableStateOf(false) }
     var showLyricsProviders by remember { mutableStateOf(false) }
+    var showDonationScreen by remember { mutableStateOf(false) }
     var selectedLyricsKey by remember { mutableStateOf<String?>(null) }
     var manualSearchLyricsKey by remember { mutableStateOf<String?>(null) }
     var currentMediaInfo by remember { mutableStateOf<MediaInfo?>(null) }
@@ -166,6 +175,7 @@ fun MediaBridgeApp() {
         )
         showBridgedApps -> BridgedAppsScreen { showBridgedApps = false }
         showLyricsProviders -> LyricsProvidersScreen { showLyricsProviders = false }
+        showDonationScreen -> billingManager?.let { DonationScreen(billingManager = it) }
         showSettings -> SettingsScreen(
             onBack = { showSettings = false },
             onNavigateToProviders = { showLyricsProviders = true },
@@ -181,6 +191,7 @@ fun MediaBridgeApp() {
             isLyricsEnabled = SettingsManager.getLyricsEnabled(context),
             onOpenSettings = { showSettings = true },
             onOpenLyricsManager = { showLyricsManager = true },
+            onOpenDonation = { showDonationScreen = true },
             onOpenLyricsEditor = { title, artist ->
                 selectedLyricsKey = title + "_" + artist
             },
@@ -201,6 +212,7 @@ fun MainScreen(
     isLyricsEnabled: Boolean,
     onOpenSettings: () -> Unit,
     onOpenLyricsManager: () -> Unit,
+    onOpenDonation: () -> Unit,
     onOpenLyricsEditor: (String, String) -> Unit,
     onOpenApp: (String) -> Unit
 ) {
@@ -250,6 +262,13 @@ fun MainScreen(
                             onClick = {
                                 expanded = false
                                 onOpenLyricsManager()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.donate)) },
+                            onClick = {
+                                expanded = false
+                                onOpenDonation()
                             }
                         )
                     }

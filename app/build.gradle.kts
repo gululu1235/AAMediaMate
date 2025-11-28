@@ -14,9 +14,8 @@ android {
         applicationId = "com.gululu.aamediamate"
         minSdk = 29
         targetSdk = 35
-        versionCode = 8
-        versionName = "1.0.4"
-
+        versionCode = 9
+        versionName = "1.0.5"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -85,6 +84,7 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.7.3")
     implementation("com.github.houbb:opencc4j:1.6.0")
     implementation(libs.androidx.runtime.livedata)
+    implementation("com.android.billingclient:billing-ktx:7.0.0")
     testImplementation(libs.junit)
     testImplementation("io.mockk:mockk:1.13.10")
     testImplementation("org.robolectric:robolectric:4.15.1")
