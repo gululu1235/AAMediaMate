@@ -14,7 +14,7 @@ android {
         applicationId = "com.gululu.aamediamate"
         minSdk = 29
         targetSdk = 35
-        versionCode = 6
+        versionCode = 8
         versionName = "1.0.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
