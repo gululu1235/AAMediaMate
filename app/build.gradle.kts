@@ -14,8 +14,8 @@ android {
         applicationId = "com.gululu.aamediamate"
         minSdk = 29
         targetSdk = 35
-        versionCode = 9
-        versionName = "1.0.5"
+        versionCode = 11
+        versionName = "1.1.1"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
     }
 
@@ -47,6 +47,11 @@ android {
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
             )
+        }
+        debug {
+            if (hasSigning) {
+                signingConfig = signingConfigs.getByName("release")
+            }
         }
     }
     compileOptions {

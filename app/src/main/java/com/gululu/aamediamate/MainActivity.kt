@@ -175,7 +175,7 @@ fun MediaBridgeApp(billingManager: BillingManager? = null) {
         )
         showBridgedApps -> BridgedAppsScreen { showBridgedApps = false }
         showLyricsProviders -> LyricsProvidersScreen { showLyricsProviders = false }
-        showDonationScreen -> billingManager?.let { DonationScreen(billingManager = it) }
+        showDonationScreen -> billingManager?.let { DonationScreen(billingManager = it, onBack = { showDonationScreen = false }) }
         showSettings -> SettingsScreen(
             onBack = { showSettings = false },
             onNavigateToProviders = { showLyricsProviders = true },

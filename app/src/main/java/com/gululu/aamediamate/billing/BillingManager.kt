@@ -35,35 +35,57 @@ class BillingManager(private val context: Context, private val scope: CoroutineS
         .enablePendingPurchases()
         .build()
 
-    private val _products = MutableStateFlow<List<ProductDetails>>(emptyList())
-    val products = _products.asStateFlow()
+    private val _billingState = MutableStateFlow<BillingUiState>(BillingUiState.Loading)
+    val billingState = _billingState.asStateFlow()
 
     fun startConnection() {
+        _billingState.value = BillingUiState.Loading
         billingClient.startConnection(object : BillingClientStateListener {
             override fun onBillingSetupFinished(billingResult: BillingResult) {
                 if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
                     Log.d("BillingManager", "Billing client connected.")
                     queryProducts()
+                    queryPurchases()
+                } else {
+                    _billingState.value = BillingUiState.Error("Setup failed: ${billingResult.responseCode} ${billingResult.debugMessage}")
                 }
             }
 
             override fun onBillingServiceDisconnected() {
                 Log.d("BillingManager", "Billing client disconnected.")
-                // Try to restart the connection on the next request to
-                // Google Play by calling the startConnection() method.
+                _billingState.value = BillingUiState.Error("Service disconnected")
             }
         })
+    }
+
+    fun retryConnection() {
+        startConnection()
+    }
+
+    private fun queryPurchases() {
+        val params = QueryPurchasesParams.newBuilder()
+            .setProductType(BillingClient.ProductType.INAPP)
+            .build()
+
+        billingClient.queryPurchasesAsync(params) { billingResult, purchasesList ->
+            if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
+                _purchases.value = purchasesList
+                Log.d("BillingManager", "Query purchases success: ${purchasesList.size} items")
+            } else {
+                Log.e("BillingManager", "Query purchases failed: ${billingResult.debugMessage}")
+            }
+        }
     }
 
     private fun queryProducts() {
         scope.launch(Dispatchers.IO) {
             val productList = listOf(
                             QueryProductDetailsParams.Product.newBuilder()
-                                .setProductId("donation_coffee")
+                                .setProductId("donate_tier_1")
                                 .setProductType(BillingClient.ProductType.INAPP)
                                 .build(),
                             QueryProductDetailsParams.Product.newBuilder()
-                                .setProductId("donation_pizza")
+                                .setProductId("donate_tier_2")
                                 .setProductType(BillingClient.ProductType.INAPP)
                                 .build()
                             )
@@ -74,9 +96,11 @@ class BillingManager(private val context: Context, private val scope: CoroutineS
             val productDetailsResult = billingClient.queryProductDetails(params)
             val billingResult = productDetailsResult.billingResult
             if (billingResult.responseCode == BillingClient.BillingResponseCode.OK) {
-                _products.value = productDetailsResult.productDetailsList ?: emptyList()
-                Log.d("BillingManager", "Product query successful. Found ${productDetailsResult.productDetailsList?.size ?: 0} products.")
+                val products = productDetailsResult.productDetailsList ?: emptyList()
+                _billingState.value = BillingUiState.Success(products)
+                Log.d("BillingManager", "Product query successful. Found ${products.size} products.")
             } else {
+                _billingState.value = BillingUiState.Error("Query failed: ${billingResult.responseCode} ${billingResult.debugMessage}")
                 Log.e("BillingManager", "Product query failed with response code: ${billingResult.responseCode} and message: ${billingResult.debugMessage}")
             }
         }
@@ -110,4 +134,10 @@ class BillingManager(private val context: Context, private val scope: CoroutineS
             }
         }
     }
+}
+
+sealed interface BillingUiState {
+    data object Loading : BillingUiState
+    data class Success(val products: List<ProductDetails>) : BillingUiState
+    data class Error(val message: String) : BillingUiState
 }

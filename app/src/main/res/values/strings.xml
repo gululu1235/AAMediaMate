@@ -26,6 +26,9 @@
     <string name="language_title">Language(Restart required)</string>
     <string name="language">Language</string>
     <string name="donate">Donate</string>
+    <string name="thank_you_support">Thank you for your support</string>
+    <string name="send_me_a_tip">Send me a tip</string>
+    <string name="buy_me_a_coffee">Buy me a coffee</string>
 
     <!-- Main Screen -->
     <string name="app_title">AA Media Mate</string>

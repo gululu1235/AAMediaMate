@@ -26,6 +26,9 @@
     <string name="language_title">語言(重啓後生效)</string>
     <string name="language">語言</string>
     <string name="donate">捐贈</string>
+    <string name="thank_you_support">感謝您的支持</string>
+    <string name="send_me_a_tip">打賞我</string>
+    <string name="buy_me_a_coffee">請我喝杯咖啡</string>
 
     <!-- Main Screen -->
     <string name="app_title">AA Media Mate</string>
