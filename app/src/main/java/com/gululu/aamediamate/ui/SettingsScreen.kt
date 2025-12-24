@@ -111,15 +111,7 @@ fun SettingsScreen(
                 }
             }
 
-            // Display Settings Button
-            OutlinedButton(
-                onClick = onNavigateToDisplaySettings,
-                modifier = Modifier.fillMaxWidth()
-            ) {
-                Text(stringResource(R.string.display_settings_title))
-            }
-
-            // Ignore native Android Auto apps (moved above Show Lyrics)
+            // Ignore native Android Auto apps
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Text(text = stringResource(id = R.string.ignore_auto_supported_apps), modifier = Modifier.weight(1f))
                 Switch(
@@ -129,6 +121,22 @@ fun SettingsScreen(
                         SettingsManager.setIgnoreNativeAutoApps(context, it)
                     }
                 )
+            }
+
+            // Display Settings Button
+            OutlinedButton(
+                onClick = onNavigateToDisplaySettings,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.display_settings_title))
+            }
+
+            // Customizations per App Button (Bridged Apps)
+            OutlinedButton(
+                onClick = onNavigateToBridgedApps,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.customizations_per_app_title))
             }
 
             // Show Lyrics toggle
@@ -169,14 +177,6 @@ fun SettingsScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(stringResource(R.string.lyrics_providers_title))
-                }
-
-                // Bridged Apps Button (under providers)
-                OutlinedButton(
-                    onClick = onNavigateToBridgedApps,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(stringResource(R.string.bridged_apps_title))
                 }
             }
 

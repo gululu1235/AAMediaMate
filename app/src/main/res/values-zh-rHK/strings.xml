@@ -85,13 +85,18 @@
     <!--Media Control Actions-->
     <string name="action_rewind_10s">後退10秒</string>
     <string name="action_fast_forward_10s">前進10秒</string>
+    <string name="action_skip_next">下一首</string>
+    <string name="action_skip_previous">上一首</string>
     
     <!--Bridged Apps-->
-    <string name="bridged_apps_title">按應用顯示歌詞</string>
-    <string name="bridged_apps_subtitle">控制每個應用的歌詞顯示</string>
+    <string name="customizations_per_app_title">應用程式個人化設定</string>
+    <string name="customizations_per_app_subtitle">為每個應用程式單獨設定</string>
     <string name="no_bridged_apps">尚無橋接的應用</string>
     <string name="lyrics_enabled">歌詞已啟用</string>
     <string name="lyrics_disabled">歌詞已禁用</string>
+    <string name="bridged_app_head_unit_control">車機控制</string>
+    <string name="bridged_app_swap_rw_ff">交換上一首/下一首與快進/快退</string>
+    <string name="bridged_app_lyrics_toggle">顯示歌詞</string>
     
     <!--Setup Guidance-->
     <string name="setup_guidance">設定指南</string>

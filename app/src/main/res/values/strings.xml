@@ -85,13 +85,18 @@
     <!--Media Control Actions-->
     <string name="action_rewind_10s">Rewind 10s</string>
     <string name="action_fast_forward_10s">Forward 10s</string>
+    <string name="action_skip_next">Next Song</string>
+    <string name="action_skip_previous">Previous Song</string>
     
     <!--Bridged Apps-->
-    <string name="bridged_apps_title">Lyrics display by apps</string>
-    <string name="bridged_apps_subtitle">Control lyrics display for each app</string>
+    <string name="customizations_per_app_title">Customizations per App</string>
+    <string name="customizations_per_app_subtitle">Customize settings for each app</string>
     <string name="no_bridged_apps">No apps have been bridged yet</string>
     <string name="lyrics_enabled">Lyrics enabled</string>
     <string name="lyrics_disabled">Lyrics disabled</string>
+    <string name="bridged_app_head_unit_control">Control from Head Unit</string>
+    <string name="bridged_app_swap_rw_ff">Swap Prev/Next with RW/FF</string>
+    <string name="bridged_app_lyrics_toggle">Show Lyrics</string>
     
     <!--Setup Guidance-->
     <string name="setup_guidance">Setup Guidance</string>

@@ -119,7 +119,9 @@ object SettingsManager {
                     appName = refreshedAppName,
                     firstSeen = jsonObject.getLong("firstSeen"),
                     lastSeen = jsonObject.getLong("lastSeen"),
-                    lyricsEnabled = jsonObject.optBoolean("lyricsEnabled", true)
+                    lyricsEnabled = jsonObject.optBoolean("lyricsEnabled", true),
+                    headUnitControlEnabled = jsonObject.optBoolean("headUnitControlEnabled", true),
+                    swapRewindFastForward = jsonObject.optBoolean("swapRewindFastForward", false)
                 )
             )
         }
@@ -156,7 +158,9 @@ object SettingsManager {
                     appName = finalAppName,
                     firstSeen = System.currentTimeMillis(),
                     lastSeen = System.currentTimeMillis(),
-                    lyricsEnabled = true
+                    lyricsEnabled = true,
+                    headUnitControlEnabled = true,
+                    swapRewindFastForward = false
                 )
             )
         }
@@ -178,6 +182,34 @@ object SettingsManager {
         return getBridgedApps(context).find { it.packageName == packageName }?.lyricsEnabled ?: true
     }
 
+    fun setAppHeadUnitControlEnabled(context: Context, packageName: String, enabled: Boolean) {
+        val apps = getBridgedApps(context).toMutableList()
+        val existingIndex = apps.indexOfFirst { it.packageName == packageName }
+
+        if (existingIndex >= 0) {
+            apps[existingIndex] = apps[existingIndex].copy(headUnitControlEnabled = enabled)
+            saveBridgedApps(context, apps)
+        }
+    }
+
+    fun isAppHeadUnitControlEnabled(context: Context, packageName: String): Boolean {
+        return getBridgedApps(context).find { it.packageName == packageName }?.headUnitControlEnabled ?: true
+    }
+
+    fun setAppSwapRewindFastForward(context: Context, packageName: String, enabled: Boolean) {
+        val apps = getBridgedApps(context).toMutableList()
+        val existingIndex = apps.indexOfFirst { it.packageName == packageName }
+
+        if (existingIndex >= 0) {
+            apps[existingIndex] = apps[existingIndex].copy(swapRewindFastForward = enabled)
+            saveBridgedApps(context, apps)
+        }
+    }
+
+    fun isAppSwapRewindFastForward(context: Context, packageName: String): Boolean {
+        return getBridgedApps(context).find { it.packageName == packageName }?.swapRewindFastForward ?: false
+    }
+
     private fun saveBridgedApps(context: Context, apps: List<BridgedApp>) {
         val jsonArray = JSONArray()
         apps.forEach { app ->
@@ -187,6 +219,8 @@ object SettingsManager {
                 put("firstSeen", app.firstSeen)
                 put("lastSeen", app.lastSeen)
                 put("lyricsEnabled", app.lyricsEnabled)
+                put("headUnitControlEnabled", app.headUnitControlEnabled)
+                put("swapRewindFastForward", app.swapRewindFastForward)
             }
             jsonArray.put(jsonObject)
         }

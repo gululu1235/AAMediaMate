@@ -5,5 +5,7 @@ data class BridgedApp(
     val appName: String,
     val firstSeen: Long = System.currentTimeMillis(),
     val lastSeen: Long = System.currentTimeMillis(),
-    val lyricsEnabled: Boolean = true
+    val lyricsEnabled: Boolean = true,
+    val headUnitControlEnabled: Boolean = true,
+    val swapRewindFastForward: Boolean = false
 )
