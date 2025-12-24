@@ -56,6 +56,22 @@ class MediaBridgeService : MediaBrowserServiceCompat() {
         Log.d("MediaBridge", "🔄 onLoadChildren called for parentId: $parentId")
 
         val context = this.applicationContext
+        
+        if (!hasNotificationAccess(context)) {
+            val permissionItem = MediaDescriptionCompat.Builder()
+                .setMediaId("permission_required")
+                .setTitle(getString(R.string.permission_required_title))
+                .setSubtitle(getString(R.string.permission_required_subtitle))
+                // You might want to set an icon here if available, e.g., R.drawable.ic_warning
+                .build()
+            
+            val items = mutableListOf(
+                MediaBrowserCompat.MediaItem(permissionItem, MediaBrowserCompat.MediaItem.FLAG_BROWSABLE)
+            )
+            result.sendResult(items)
+            return
+        }
+
         val controllers = MediaControllerManager.getAllControllers(context)
 
         val items = controllers.mapNotNull { controller ->

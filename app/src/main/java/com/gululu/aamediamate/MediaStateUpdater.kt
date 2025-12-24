@@ -19,14 +19,19 @@ class MediaStateUpdater(private val context: Context) {
         val artist = info.artist.takeIf { it.isNotBlank() }
         val album = info.album.takeIf { it.isNotBlank() }
 
-        val artistAlbum = listOfNotNull(artist, album).joinToString(" - ")
+        val showAlbumName = SettingsManager.getShowAlbumName(context)
+        val artistText = if (showAlbumName) {
+            listOfNotNull(artist, album).joinToString(" - ")
+        } else {
+            artist ?: ""
+        }
 
         val metadataBuilder = MediaMetadataCompat.Builder()
             .putString(MediaMetadataCompat.METADATA_KEY_TITLE, info.title)
             .putLong(MediaMetadataCompat.METADATA_KEY_DURATION, info.duration)
 
-        if (artistAlbum.isNotBlank()) {
-            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artistAlbum)
+        if (artistText.isNotBlank()) {
+            metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artistText)
         }
 
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "From ${info.appName}")

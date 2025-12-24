@@ -27,7 +27,8 @@ import com.gululu.aamediamate.models.LanguageOption
 fun SettingsScreen(
     onBack: () -> Unit,
     onNavigateToProviders: () -> Unit = {},
-    onNavigateToBridgedApps: () -> Unit = {}
+    onNavigateToBridgedApps: () -> Unit = {},
+    onNavigateToDisplaySettings: () -> Unit = {}
 ) {
     BackHandler {
         onBack()
@@ -108,6 +109,14 @@ fun SettingsScreen(
                         )
                     }
                 }
+            }
+
+            // Display Settings Button
+            OutlinedButton(
+                onClick = onNavigateToDisplaySettings,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.display_settings_title))
             }
 
             // Ignore native Android Auto apps (moved above Show Lyrics)

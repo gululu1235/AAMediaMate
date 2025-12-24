@@ -28,10 +28,11 @@ object LyricsRepository {
                     key = key,
                     title = title,
                     artist = artist,
-                    hasLyrics = file.length() > 0
+                    hasLyrics = file.length() > 0,
+                    lastModified = file.lastModified()
                 )
             }
-            ?.sortedBy { it.title }
+            ?.sortedByDescending { it.lastModified }
             ?: emptyList()
     }
 

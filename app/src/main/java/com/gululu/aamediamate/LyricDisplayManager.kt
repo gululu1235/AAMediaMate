@@ -103,16 +103,21 @@ class LyricDisplayManager(private val context: Context) {
         // Always set the album to "From [App Name]"
         metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ALBUM, "From ${originalInfo.appName}")
 
+        val showAlbumName = SettingsManager.getShowAlbumName(context)
+
         if (lyricLine.isNotBlank()) {
             // When a lyric is displayed, use the lyric as the title
             metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_TITLE, lyricLine)
 
             // Consolidate song title, artist, and album into the ARTIST field
-            val songInfo = listOfNotNull(
-                originalInfo.title.takeIf { it.isNotBlank() },
-                originalInfo.artist.takeIf { it.isNotBlank() },
-                originalInfo.album.takeIf { it.isNotBlank() }
-            ).joinToString(" - ")
+            val songInfoParts = mutableListOf<String>()
+            originalInfo.title.takeIf { it.isNotBlank() }?.let { songInfoParts.add(it) }
+            originalInfo.artist.takeIf { it.isNotBlank() }?.let { songInfoParts.add(it) }
+            if (showAlbumName) {
+                originalInfo.album.takeIf { it.isNotBlank() }?.let { songInfoParts.add(it) }
+            }
+            
+            val songInfo = songInfoParts.joinToString(" - ")
             metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, songInfo)
 
         } else {
@@ -121,10 +126,15 @@ class LyricDisplayManager(private val context: Context) {
 
             val artist = originalInfo.artist.takeIf { it.isNotBlank() }
             val album = originalInfo.album.takeIf { it.isNotBlank() }
-            val artistAlbum = listOfNotNull(artist, album).joinToString(" - ")
+            
+            val artistText = if (showAlbumName) {
+                listOfNotNull(artist, album).joinToString(" - ")
+            } else {
+                artist ?: ""
+            }
 
-            if (artistAlbum.isNotBlank()) {
-                metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artistAlbum)
+            if (artistText.isNotBlank()) {
+                metadataBuilder.putString(MediaMetadataCompat.METADATA_KEY_ARTIST, artistText)
             }
         }
 

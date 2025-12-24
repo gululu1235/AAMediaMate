@@ -6,10 +6,16 @@ import android.media.session.MediaController
 
 object MediaControllerManager {
     fun getAllControllers(context: Context): List<MediaController> {
-        val sessionManager = context.getSystemService(Context.MEDIA_SESSION_SERVICE) as android.media.session.MediaSessionManager
-        val component = ComponentName(context, MediaNotificationListener::class.java)
-        return sessionManager.getActiveSessions(component)
-            .filter { it.packageName != context.packageName && Global.packageAllowed(context, it.packageName) }
+        return try {
+            val sessionManager = context.getSystemService(Context.MEDIA_SESSION_SERVICE) as android.media.session.MediaSessionManager
+            val component = ComponentName(context, MediaNotificationListener::class.java)
+            sessionManager.getActiveSessions(component)
+                .filter { it.packageName != context.packageName && Global.packageAllowed(context, it.packageName) }
+        } catch (e: Exception) {
+            // Likely SecurityException due to missing notification access
+            e.printStackTrace()
+            emptyList()
+        }
     }
 
     fun getFirstController(context: Context): MediaController? {

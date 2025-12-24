@@ -32,12 +32,16 @@ object LyricCache {
         val key = title+"_" +artist
         Log.d("MediaBridge", "🎤 Getting lyrics for: $title by $artist")
 
-        memoryCache[key]?.let { cached ->
+        val file = getLyricFile(context, title, artist)
+
+        if (memoryCache.containsKey(key)) {
             Log.d("MediaBridge", "🎤 Reading from mem cache")
+            val cached = memoryCache[key]
+            if (file.exists()) {
+                file.setLastModified(System.currentTimeMillis())
+            }
             return cached ?: emptyList()
         }
-
-        val file = getLyricFile(context, title, artist)
 
         if (file.exists()) {
             val lrcContent = file.readText()
@@ -46,12 +50,14 @@ object LyricCache {
             if (lrcContent.isBlank()) {
                 Log.d("MediaBridge", "🎤 Reading from file, but no lyrics found.")
                 memoryCache[key] = null
+                file.setLastModified(System.currentTimeMillis())
                 return emptyList()
             }
 
             val lyrics = LyricsManager.parseLrc(context, lrcContent)
             memoryCache[key] = lyrics
             Log.d("MediaBridge", "🎤 Loaded ${lyrics.size} lines from cache")
+            file.setLastModified(System.currentTimeMillis())
             return lyrics
         }
 

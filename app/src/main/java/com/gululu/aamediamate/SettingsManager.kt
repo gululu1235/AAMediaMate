@@ -19,8 +19,24 @@ object SettingsManager {
     private const val KEY_LANGUAGE = "language_pref"
     private const val KEY_BRIDGED_APPS = "bridged_apps"
     private const val KEY_LYRICS_PROVIDERS = "lyrics_providers"
+    private const val KEY_COMBINE_APP_ICON_AND_ALBUM_ART = "combine_app_icon_and_album_art"
+    private const val KEY_SHOW_ALBUM_NAME = "show_album_name"
 
     private fun getPrefs(context: Context) = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
+
+    fun getCombineAppIconAndAlbumArt(context: Context): Boolean =
+        getPrefs(context).getBoolean(KEY_COMBINE_APP_ICON_AND_ALBUM_ART, true)
+
+    fun setCombineAppIconAndAlbumArt(context: Context, enabled: Boolean) {
+        getPrefs(context).edit() { putBoolean(KEY_COMBINE_APP_ICON_AND_ALBUM_ART, enabled) }
+    }
+
+    fun getShowAlbumName(context: Context): Boolean =
+        getPrefs(context).getBoolean(KEY_SHOW_ALBUM_NAME, true)
+
+    fun setShowAlbumName(context: Context, enabled: Boolean) {
+        getPrefs(context).edit() { putBoolean(KEY_SHOW_ALBUM_NAME, enabled) }
+    }
 
     fun getLyricsEnabled(context: Context): Boolean =
         getPrefs(context).getBoolean(KEY_LYRICS_ENABLED, false)
