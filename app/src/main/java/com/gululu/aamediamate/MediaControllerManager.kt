@@ -3,6 +3,7 @@ package com.gululu.aamediamate
 import android.content.ComponentName
 import android.content.Context
 import android.media.session.MediaController
+import android.media.session.PlaybackState
 
 object MediaControllerManager {
     fun getAllControllers(context: Context): List<MediaController> {
@@ -19,7 +20,15 @@ object MediaControllerManager {
     }
 
     fun getFirstController(context: Context): MediaController? {
-        return getAllControllers(context).firstOrNull()
+        val controllers = getAllControllers(context)
+        
+        // Prioritize the controller that is currently playing
+        val playingController = controllers.firstOrNull { 
+            it.playbackState?.state == PlaybackState.STATE_PLAYING ||
+            it.playbackState?.state == PlaybackState.STATE_BUFFERING
+        }
+        
+        return playingController ?: controllers.firstOrNull()
     }
 
     fun getActiveController(context: Context): MediaController? {

@@ -37,18 +37,21 @@ object MediaBridgeSessionManager {
     fun updateFromMediaInfo(info: MediaInfo?) {
         currentMediaInfo = info
         val session = mediaSession ?: return
+        val ctx = context ?: return
 
-        if (info == null) {
+        if (info == null || !Global.packageAllowed(ctx, info.appPackageName)) {
+            if (info != null) {
+                Log.d("MediaBridge", "🚫 Ignoring disallowed package: ${info.appPackageName}")
+            }
             mediaStateUpdater?.clear(session)
             lyricDisplayManager?.stop()
             mediaInfoListener?.invoke(null)
+            currentMediaInfo = null // Ensure we don't hold onto disallowed info
             return
         }
 
         // Track this app as bridged
-        context?.let { ctx ->
-            SettingsManager.addOrUpdateBridgedApp(ctx, info.appPackageName, info.appName)
-        }
+        SettingsManager.addOrUpdateBridgedApp(ctx, info.appPackageName, info.appName)
 
         // Restore original metadata before showing lyrics
         mediaStateUpdater?.update(session, info)
