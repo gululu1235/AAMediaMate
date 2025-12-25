@@ -16,6 +16,8 @@ class MediaStateUpdater(private val context: Context) {
     }
 
     private fun updateMetadata(mediaSession: MediaSessionCompat, info: MediaInfo) {
+        val swapEnabled = SettingsManager.isAppSwapRewindFastForward(context, info.appPackageName)
+
         val artist = info.artist.takeIf { it.isNotBlank() }
         val album = info.album.takeIf { it.isNotBlank() }
 
@@ -44,11 +46,27 @@ class MediaStateUpdater(private val context: Context) {
     }
 
     private fun updatePlaybackState(mediaSession: MediaSessionCompat, info: MediaInfo) {
+        val swapEnabled = SettingsManager.isAppSwapRewindFastForward(context, info.appPackageName)
+
+        val actions = if (swapEnabled) {
+            SWAPPED_ACTIONS
+        } else {
+            DEFAULT_ACTIONS
+        }
+
         val stateBuilder = PlaybackStateCompat.Builder()
-            .setActions(SUPPORTED_ACTIONS)
-            .addCustomAction(createRewindAction())
-            .addCustomAction(createFastForwardAction())
-            .setState(
+            .setActions(actions)
+        stateBuilder.addCustomAction(createRewindAction())
+        stateBuilder.addCustomAction(createFastForwardAction())
+
+        if (swapEnabled) {
+            // In swap mode, we hide standard Skip buttons (via actions mask) and rely on standard FF/RW buttons.
+            // So we provide Skip actions as custom buttons.
+            stateBuilder.addCustomAction(createSkipPreviousAction())
+            stateBuilder.addCustomAction(createSkipNextAction())
+        }
+
+        stateBuilder.setState(
                 if (info.isPlaying) PlaybackStateCompat.STATE_PLAYING else PlaybackStateCompat.STATE_PAUSED,
                 info.position,
                 1.0f
@@ -82,15 +100,40 @@ class MediaStateUpdater(private val context: Context) {
         ).build()
     }
 
+    private fun createSkipNextAction(): PlaybackStateCompat.CustomAction {
+        return PlaybackStateCompat.CustomAction.Builder(
+            ACTION_SKIP_NEXT,
+            context.getString(R.string.action_skip_next),
+            R.drawable.ic_skip_next
+        ).build()
+    }
+
+    private fun createSkipPreviousAction(): PlaybackStateCompat.CustomAction {
+        return PlaybackStateCompat.CustomAction.Builder(
+            ACTION_SKIP_PREVIOUS,
+            context.getString(R.string.action_skip_previous),
+            R.drawable.ic_skip_previous
+        ).build()
+    }
+
     companion object {
         const val ACTION_REWIND_10S = "action_rewind_10s"
         const val ACTION_FAST_FORWARD_10S = "action_fast_forward_10s"
+        const val ACTION_SKIP_NEXT = "action_skip_next"
+        const val ACTION_SKIP_PREVIOUS = "action_skip_previous"
 
-        const val SUPPORTED_ACTIONS =
+        const val DEFAULT_ACTIONS =
             PlaybackStateCompat.ACTION_PLAY or
                     PlaybackStateCompat.ACTION_PAUSE or
                     PlaybackStateCompat.ACTION_SKIP_TO_NEXT or
                     PlaybackStateCompat.ACTION_SKIP_TO_PREVIOUS or
+                    PlaybackStateCompat.ACTION_SEEK_TO or
+                    PlaybackStateCompat.ACTION_REWIND or
+                    PlaybackStateCompat.ACTION_FAST_FORWARD
+
+        const val SWAPPED_ACTIONS =
+            PlaybackStateCompat.ACTION_PLAY or
+                    PlaybackStateCompat.ACTION_PAUSE or
                     PlaybackStateCompat.ACTION_SEEK_TO or
                     PlaybackStateCompat.ACTION_REWIND or
                     PlaybackStateCompat.ACTION_FAST_FORWARD

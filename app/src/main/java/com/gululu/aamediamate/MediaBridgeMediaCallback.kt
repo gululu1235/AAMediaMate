@@ -2,6 +2,7 @@ package com.gululu.aamediamate
 
 import android.content.ComponentName
 import android.content.Context
+import android.content.Intent
 import android.media.session.MediaController
 import android.media.session.MediaSessionManager
 import android.os.Bundle
@@ -9,8 +10,29 @@ import android.os.Handler
 import android.os.Looper
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
+import android.view.KeyEvent
 
 class MediaBridgeMediaCallback(private val context: Context) : MediaSessionCompat.Callback() {
+    override fun onMediaButtonEvent(mediaButtonEvent: Intent?): Boolean {
+        val keyEvent = mediaButtonEvent?.getParcelableExtra<KeyEvent>(Intent.EXTRA_KEY_EVENT)
+
+        if (isSwapEnabled() && keyEvent?.action == KeyEvent.ACTION_DOWN) {
+            when (keyEvent.keyCode) {
+                KeyEvent.KEYCODE_MEDIA_NEXT -> {
+                    Log.d("MediaBridge", "🔘 Intercepted KEYCODE_MEDIA_NEXT -> FastForward")
+                    onFastForward()
+                    return true
+                }
+                KeyEvent.KEYCODE_MEDIA_PREVIOUS -> {
+                    Log.d("MediaBridge", "🔘 Intercepted KEYCODE_MEDIA_PREVIOUS -> Rewind")
+                    onRewind()
+                    return true
+                }
+            }
+        }
+        return super.onMediaButtonEvent(mediaButtonEvent)
+    }
+
     override fun onPlay() {
         Log.d("MediaBridge", "▶️ onPlay triggered")
         MediaControllerManager.getActiveController(context)?.transportControls?.play()
@@ -32,14 +54,22 @@ class MediaBridgeMediaCallback(private val context: Context) : MediaSessionCompa
 
     override fun onSkipToNext() {
         Log.d("MediaBridge", "⏭️ onSkipToNext triggered")
-        MediaControllerManager.getActiveController(context)?.transportControls?.skipToNext()
-        sync()
+        if (isSwapEnabled()) {
+            onFastForward()
+        } else {
+            MediaControllerManager.getActiveController(context)?.transportControls?.skipToNext()
+            sync()
+        }
     }
 
     override fun onSkipToPrevious() {
         Log.d("MediaBridge", "⏮️ onSkipToPrevious triggered")
-        MediaControllerManager.getActiveController(context)?.transportControls?.skipToPrevious()
-        sync()
+        if (isSwapEnabled()) {
+            onRewind()
+        } else {
+            MediaControllerManager.getActiveController(context)?.transportControls?.skipToPrevious()
+            sync()
+        }
     }
 
     override fun onSeekTo(pos: Long) {
@@ -93,10 +123,23 @@ class MediaBridgeMediaCallback(private val context: Context) : MediaSessionCompa
             MediaStateUpdater.ACTION_FAST_FORWARD_10S -> {
                 onFastForward()
             }
+            MediaStateUpdater.ACTION_SKIP_NEXT -> {
+                MediaControllerManager.getActiveController(context)?.transportControls?.skipToNext()
+                sync()
+            }
+            MediaStateUpdater.ACTION_SKIP_PREVIOUS -> {
+                MediaControllerManager.getActiveController(context)?.transportControls?.skipToPrevious()
+                sync()
+            }
             else -> {
                 Log.w("MediaBridge", "Unknown custom action: $action")
             }
         }
+    }
+
+    private fun isSwapEnabled(): Boolean {
+        val controller = MediaControllerManager.getActiveController(context) ?: return false
+        return SettingsManager.isAppSwapRewindFastForward(context, controller.packageName)
     }
 
     private fun sync()
