@@ -2,6 +2,7 @@ package com.gululu.aamediamate.ui
 
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
@@ -27,6 +28,10 @@ import com.gululu.aamediamate.data.LyricsProviderConfig
 fun LyricsProvidersScreen(
     onBackClick: () -> Unit
 ) {
+    BackHandler {
+        onBackClick()
+    }
+
     val context = LocalContext.current
     var providers by remember { mutableStateOf(SettingsManager.getLyricsProviders(context)) }
     var apiKey by remember { mutableStateOf(SettingsManager.getApiKey(context)) }

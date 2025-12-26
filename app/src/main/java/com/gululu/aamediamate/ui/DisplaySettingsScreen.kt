@@ -1,5 +1,6 @@
 package com.gululu.aamediamate.ui
 
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
@@ -16,6 +17,10 @@ import com.gululu.aamediamate.SettingsManager
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DisplaySettingsScreen(onBack: () -> Unit) {
+    BackHandler {
+        onBack()
+    }
+
     val context = LocalContext.current
     var combineAppIconAndAlbumArt by remember { mutableStateOf(SettingsManager.getCombineAppIconAndAlbumArt(context)) }
     var showAlbumName by remember { mutableStateOf(SettingsManager.getShowAlbumName(context)) }
