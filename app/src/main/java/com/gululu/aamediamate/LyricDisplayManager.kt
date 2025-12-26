@@ -70,7 +70,7 @@ class LyricDisplayManager(private val context: Context) {
                         return@launch
                     }
 
-                    val currentPosition = MediaInformationRetriever.refreshCurrentMediaInfo(context)?.position ?: info.position
+                    val currentPosition = MediaControllerManager.getActiveController(context)?.playbackState?.position ?: info.position
 
                     LyricSyncEngine.start(lyrics, currentPosition) { line ->
                         updateLyricLine(mediaSession, info, line)
