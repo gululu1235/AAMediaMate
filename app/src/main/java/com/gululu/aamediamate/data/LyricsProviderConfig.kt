@@ -50,7 +50,7 @@ object LyricsProviderRegistry {
             name = "LRC API",
             descriptionRes = R.string.lrc_api_description,
             isEnabled = true,
-            priority = 3,
+            priority = 4,
             provider = LrcApiProvider
         )
     )
