@@ -245,7 +245,7 @@ private fun ProviderConfigCard(
                         OutlinedTextField(
                             value = apiKey,
                             onValueChange = onApiKeyChange,
-                            label = { Text(stringResource(R.string.musixmatch_api_key)) },
+                            label = { Text(stringResource(R.string.spotify_musixmatch_api_key)) },
                             singleLine = true,
                             visualTransformation = VisualTransformation.None,
                             modifier = Modifier.fillMaxWidth()
