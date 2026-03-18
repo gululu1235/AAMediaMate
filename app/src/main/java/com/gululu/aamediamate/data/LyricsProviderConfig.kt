@@ -6,6 +6,7 @@ import com.gululu.aamediamate.lyrics.providers.LrcApiProvider
 import com.gululu.aamediamate.lyrics.providers.LRCLibProvider
 import com.gululu.aamediamate.lyrics.providers.LyricsProvider
 import com.gululu.aamediamate.lyrics.providers.MusixmatchProvider
+import com.gululu.aamediamate.lyrics.providers.SpotifyProvider
 
 data class LyricsProviderConfig(
     val id: String,
@@ -29,11 +30,19 @@ object LyricsProviderRegistry {
             provider = LRCLibProvider
         ),
         LyricsProviderConfig(
+            id = "Spotify",
+            name = "Spotify",
+            descriptionRes = R.string.spotify_description,
+            isEnabled = true,
+            priority = 2,
+            provider = SpotifyProvider
+        ),
+        LyricsProviderConfig(
             id = "musixmatch",
             name = "Musixmatch",
             descriptionRes = R.string.musixmatch_description,
             isEnabled = true,
-            priority = 2,
+            priority = 3,
             provider = MusixmatchProvider
         ),
         LyricsProviderConfig(
@@ -41,7 +50,7 @@ object LyricsProviderRegistry {
             name = "LRC API",
             descriptionRes = R.string.lrc_api_description,
             isEnabled = true,
-            priority = 3,
+            priority = 4,
             provider = LrcApiProvider
         )
     )
