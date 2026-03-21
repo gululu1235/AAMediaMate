@@ -49,6 +49,8 @@ android {
             )
         }
         debug {
+            applicationIdSuffix = ".dev"
+            versionNameSuffix = "-dev"
             if (hasSigning) {
                 signingConfig = signingConfigs.getByName("release")
             }
