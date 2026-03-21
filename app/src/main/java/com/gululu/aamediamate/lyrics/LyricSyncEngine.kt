@@ -6,16 +6,17 @@ import android.util.Log
 object LyricSyncEngine {
     private var currentJob: Job? = null
 
-    fun start(lyrics: List<LyricLine>, startPositionMs: Long, onLineChanged: (String) -> Unit) {
+    fun start(lyrics: List<LyricLine>, startPositionMs: Long, offsetMs: Long = 0L, onLineChanged: (String) -> Unit) {
         currentJob?.cancel()
 
         currentJob = CoroutineScope(Dispatchers.Default).launch {
-            Log.d("MediaBridge", "🎤 LyricSyncEngine starting with position: ${startPositionMs}ms")
-            
-            val startTime = System.currentTimeMillis() - startPositionMs
+            Log.d("MediaBridge", "🎤 LyricSyncEngine starting with position: ${startPositionMs}ms, offset: ${offsetMs}ms")
+
+            val effectiveStartPositionMs = startPositionMs - offsetMs
+            val startTime = System.currentTimeMillis() - effectiveStartPositionMs
             var lastLineIndex = -1
 
-            // Find the current line based on start position
+            // Find the current line based on actual playback position (not offset)
             val currentTimeSec = startPositionMs / 1000.0f
             val currentLineIndex = lyrics.indexOfFirst { it.timeSec > currentTimeSec }
             

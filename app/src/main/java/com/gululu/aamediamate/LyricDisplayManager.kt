@@ -71,8 +71,9 @@ class LyricDisplayManager(private val context: Context) {
                     }
 
                     val currentPosition = MediaControllerManager.getActiveController(context)?.playbackState?.position ?: info.position
+                    val offsetMs = SettingsManager.getLyricsTimingOffset(context).toLong()
 
-                    LyricSyncEngine.start(lyrics, currentPosition) { line ->
+                    LyricSyncEngine.start(lyrics, currentPosition, offsetMs) { line ->
                         updateLyricLine(mediaSession, info, line)
                     }
                 }

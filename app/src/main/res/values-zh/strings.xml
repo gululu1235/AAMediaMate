@@ -64,6 +64,8 @@
     <string name="shift_backward_half">-0.5秒</string>
     <string name="shift_forward_half">+0.5秒</string>
     <string name="shifted_by_seconds">已将 %2$d 项歌词整体偏移 %1$.1f 秒</string>
+    <string name="lyrics_timing_offset_label">全局歌词时间偏移: %1$.1f 秒</string>
+    <string name="reset">重置</string>
 
     <!--Manual Lyrics Search-->
     <string name="manual_search">手动搜索</string>

@@ -21,6 +21,7 @@ object SettingsManager {
     private const val KEY_LYRICS_PROVIDERS = "lyrics_providers"
     private const val KEY_COMBINE_APP_ICON_AND_ALBUM_ART = "combine_app_icon_and_album_art"
     private const val KEY_SHOW_ALBUM_NAME = "show_album_name"
+    private const val KEY_LYRICS_TIMING_OFFSET = "lyrics_timing_offset"
 
     private fun getPrefs(context: Context) = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
@@ -36,6 +37,13 @@ object SettingsManager {
 
     fun setShowAlbumName(context: Context, enabled: Boolean) {
         getPrefs(context).edit() { putBoolean(KEY_SHOW_ALBUM_NAME, enabled) }
+    }
+
+    fun getLyricsTimingOffset(context: Context): Int =
+        getPrefs(context).getInt(KEY_LYRICS_TIMING_OFFSET, 0)
+
+    fun setLyricsTimingOffset(context: Context, offsetMs: Int) {
+        getPrefs(context).edit() { putInt(KEY_LYRICS_TIMING_OFFSET, offsetMs) }
     }
 
     fun getLyricsEnabled(context: Context): Boolean =

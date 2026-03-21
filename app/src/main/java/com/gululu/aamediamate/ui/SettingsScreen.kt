@@ -39,6 +39,7 @@ fun SettingsScreen(
     var lyricsEnabled by remember { mutableStateOf(SettingsManager.getLyricsEnabled(context)) }
     var simplifyChinese by remember { mutableStateOf(SettingsManager.getSimplifyEnabled(context)) }
     var ignoreNativeAutoApps by remember { mutableStateOf(SettingsManager.getIgnoreNativeAutoApps(context)) }
+    var lyricsTimingOffset by remember { mutableStateOf(SettingsManager.getLyricsTimingOffset(context)) }
     var showLyricsConfirmationDialog by remember { mutableStateOf(false) }
     var pendingEnableLyrics by remember { mutableStateOf(false) }
 
@@ -169,6 +170,32 @@ fun SettingsScreen(
                             }
                         )
                     }
+                }
+
+                // Lyrics Timing Offset
+                Text(
+                    text = stringResource(R.string.lyrics_timing_offset_label, lyricsTimingOffset / 1000f),
+                    style = MaterialTheme.typography.bodyMedium
+                )
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    OutlinedButton(onClick = {
+                        val newOffset = (lyricsTimingOffset - 500).coerceIn(-10000, 10000)
+                        lyricsTimingOffset = newOffset
+                        SettingsManager.setLyricsTimingOffset(context, newOffset)
+                    }) { Text("-0.5s") }
+                    TextButton(onClick = {
+                        lyricsTimingOffset = 0
+                        SettingsManager.setLyricsTimingOffset(context, 0)
+                    }) { Text(stringResource(R.string.reset)) }
+                    OutlinedButton(onClick = {
+                        val newOffset = (lyricsTimingOffset + 500).coerceIn(-10000, 10000)
+                        lyricsTimingOffset = newOffset
+                        SettingsManager.setLyricsTimingOffset(context, newOffset)
+                    }) { Text("+0.5s") }
                 }
 
                 // Lyrics Providers Button
