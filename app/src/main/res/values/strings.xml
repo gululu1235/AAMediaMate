@@ -118,5 +118,6 @@
     <string name="provider_configuration">Provider Configuration</string>
     <string name="spotify_description">Spotify commercial lyrics service (via RapidAPI)</string>
     <string name="lrc_api_description">Open source LRC API. Good Chinese lyrics support.</string>
+    <string name="lrc_api_auth_token">Authorization Token (optional)</string>
     <string name="lrclib_description">Free synced lyrics database, recommend setting as default.</string>
 </resources>

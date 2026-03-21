@@ -16,6 +16,7 @@ object SettingsManager {
     private const val KEY_SIMPLIFY = "simplify_chinese"
     private const val KEY_IGNORE_NATIVE_AUTO_APPS = "ignore_native_auto_apps"
     private const val KEY_LRC_API_URI = "lrc_api_uri"
+    private const val KEY_LRC_API_AUTH_TOKEN = "lrc_api_auth_token"
     private const val KEY_LANGUAGE = "language_pref"
     private const val KEY_BRIDGED_APPS = "bridged_apps"
     private const val KEY_LYRICS_PROVIDERS = "lyrics_providers"
@@ -65,6 +66,13 @@ object SettingsManager {
 
     fun setLrcApiBaseUri(context: Context, uri: String) {
         getPrefs(context).edit() { putString(KEY_LRC_API_URI, uri) }
+    }
+
+    fun getLrcApiAuthToken(context: Context): String =
+        getPrefs(context).getString(KEY_LRC_API_AUTH_TOKEN, "") ?: ""
+
+    fun setLrcApiAuthToken(context: Context, token: String) {
+        getPrefs(context).edit() { putString(KEY_LRC_API_AUTH_TOKEN, token) }
     }
 
     fun getSimplifyEnabled(context: Context): Boolean {

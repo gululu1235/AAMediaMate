@@ -25,9 +25,11 @@ object LrcApiProvider : LyricsProvider {
 
             val url = "$baseUrl?title=$t&artist=$a"
 
+            val authToken = SettingsManager.getLrcApiAuthToken(context)
             val request = Request.Builder()
                 .url(url)
                 .get()
+                .apply { if (authToken.isNotEmpty()) addHeader("Authorization", authToken) }
                 .build()
 
             Log.d("MediaBridge", "Sending request to Lrc Api: $request")

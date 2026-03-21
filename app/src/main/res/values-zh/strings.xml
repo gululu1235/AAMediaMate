@@ -118,5 +118,6 @@
     <string name="provider_configuration">提供商配置</string>
     <string name="spotify_description">Spotify商业歌词服务（需RapidAPI）</string>
     <string name="lrc_api_description">开源LRC API，更好的中文歌词支持</string>
+    <string name="lrc_api_auth_token">授权 Token（可选）</string>
     <string name="lrclib_description">免费同步歌词数据库，建议设为默认</string>
 </resources>

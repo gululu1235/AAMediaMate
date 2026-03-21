@@ -36,6 +36,7 @@ fun LyricsProvidersScreen(
     var providers by remember { mutableStateOf(SettingsManager.getLyricsProviders(context)) }
     var apiKey by remember { mutableStateOf(SettingsManager.getApiKey(context)) }
     var lrcApiUri by remember { mutableStateOf(SettingsManager.getLrcApiBaseUri(context)) }
+    var lrcApiAuthToken by remember { mutableStateOf(SettingsManager.getLrcApiAuthToken(context)) }
 
     Scaffold(
         topBar = {
@@ -74,6 +75,7 @@ fun LyricsProvidersScreen(
                     context = context,
                     apiKey = if (provider.id == "Spotify") apiKey else "",
                     lrcApiUri = if (provider.id == "lrc_api") lrcApiUri else "",
+                    lrcApiAuthToken = if (provider.id == "lrc_api") lrcApiAuthToken else "",
                     onEnabledChange = { enabled ->
                         SettingsManager.updateProviderEnabled(context, provider.id, enabled)
                         providers = SettingsManager.getLyricsProviders(context)
@@ -88,6 +90,12 @@ fun LyricsProvidersScreen(
                         if (provider.id == "lrc_api") {
                             lrcApiUri = newUri
                             SettingsManager.setLrcApiBaseUri(context, newUri)
+                        }
+                    },
+                    onLrcApiAuthTokenChange = { newToken ->
+                        if (provider.id == "lrc_api") {
+                            lrcApiAuthToken = newToken
+                            SettingsManager.setLrcApiAuthToken(context, newToken)
                         }
                     },
                     onPriorityUp = {
@@ -159,9 +167,11 @@ private fun ProviderConfigCard(
     context: android.content.Context,
     apiKey: String,
     lrcApiUri: String,
+    lrcApiAuthToken: String,
     onEnabledChange: (Boolean) -> Unit,
     onApiKeyChange: (String) -> Unit,
     onLrcApiUriChange: (String) -> Unit,
+    onLrcApiAuthTokenChange: (String) -> Unit,
     onPriorityUp: () -> Unit,
     onPriorityDown: () -> Unit
 ) {
@@ -257,6 +267,15 @@ private fun ProviderConfigCard(
                             value = lrcApiUri,
                             onValueChange = onLrcApiUriChange,
                             label = { Text(stringResource(R.string.lrc_api_uri)) },
+                            singleLine = true,
+                            visualTransformation = VisualTransformation.None,
+                            modifier = Modifier.fillMaxWidth()
+                        )
+                        Spacer(modifier = Modifier.height(8.dp))
+                        OutlinedTextField(
+                            value = lrcApiAuthToken,
+                            onValueChange = onLrcApiAuthTokenChange,
+                            label = { Text(stringResource(R.string.lrc_api_auth_token)) },
                             singleLine = true,
                             visualTransformation = VisualTransformation.None,
                             modifier = Modifier.fillMaxWidth()
