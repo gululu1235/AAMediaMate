@@ -4,7 +4,9 @@ package com.gululu.aamediamate
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.os.Build
 import android.os.Bundle
+import android.os.LocaleList
 import android.provider.Settings
 import android.util.Log
 import androidx.activity.ComponentActivity
@@ -84,6 +86,11 @@ class MainActivity : ComponentActivity() {
     private lateinit var billingManager: BillingManager
 
     override fun attachBaseContext(newBase: Context) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+            // Android 13+: LocaleManager handles locale, no override needed
+            super.attachBaseContext(newBase)
+            return
+        }
         val langCode = SettingsManager.getLanguagePreference(newBase).split("_")
         Log.d("mediaBridge", "$langCode")
         val language = langCode[0]

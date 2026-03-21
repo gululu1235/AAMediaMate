@@ -2,8 +2,11 @@
 
 package com.gululu.aamediamate.ui
 
+import android.app.LocaleManager
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.os.LocaleList
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -102,10 +105,20 @@ fun SettingsScreen(
                                 expanded = false
                                 SettingsManager.setLanguagePreference(context, option)
 
-                                val intent = Intent(context, MainActivity::class.java)
-                                intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
-                                context.startActivity(intent)
-                                Runtime.getRuntime().exit(0)
+                                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                                    val localeManager = context.getSystemService(LocaleManager::class.java)
+                                    localeManager.applicationLocales = if (option.language.isEmpty()) {
+                                        LocaleList.getEmptyLocaleList()
+                                    } else {
+                                        LocaleList.forLanguageTags("${option.language}-${option.country}")
+                                    }
+                                    // System handles activity restart automatically
+                                } else {
+                                    val intent = Intent(context, MainActivity::class.java)
+                                    intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK)
+                                    context.startActivity(intent)
+                                    Runtime.getRuntime().exit(0)
+                                }
                             }
                         )
                     }
