@@ -1,6 +1,7 @@
 package com.gululu.aamediamate
 
 import android.content.Context
+import android.os.PowerManager
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import android.util.Log
@@ -21,6 +22,12 @@ class LyricDisplayManager(private val context: Context) {
     private var lyricsUpdateJob: Job? = null
     private var currentMediaInfo: MediaInfo? = null
 
+    private val wakeLock: PowerManager.WakeLock by lazy {
+        (context.getSystemService(Context.POWER_SERVICE) as PowerManager)
+            .newWakeLock(PowerManager.PARTIAL_WAKE_LOCK, "AAMediaMate:LyricSync")
+            .apply { setReferenceCounted(false) }
+    }
+
     fun start(mediaSession: MediaSessionCompat, info: MediaInfo) {
         val globalLyricsEnabled = SettingsManager.getLyricsEnabled(context)
         val appLyricsEnabled = SettingsManager.isAppLyricsEnabled(context, info.appPackageName)
@@ -37,6 +44,7 @@ class LyricDisplayManager(private val context: Context) {
         
         Log.d("MediaBridge", "🎵 Starting lyrics for: ${info.appPackageName} - ${info.title} by ${info.artist}")
         currentMediaInfo = info
+        if (!wakeLock.isHeld) wakeLock.acquire()
 
         // Start observing lyric updates
         lyricsUpdateJob?.cancel() // Cancel any previous observation
@@ -85,6 +93,7 @@ class LyricDisplayManager(private val context: Context) {
         stopInternal()
         lyricsUpdateJob?.cancel()
         currentMediaInfo = null
+        if (wakeLock.isHeld) wakeLock.release()
     }
 
     private fun stopInternal() {
