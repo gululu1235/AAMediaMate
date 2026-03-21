@@ -63,24 +63,30 @@ Please use it only when parked or as a passenger to ensure road safety.
 
 ## ⚙️ Lyrics Configuration
 
-AAMediaMate supports two lyrics sources. The default is **Musixmatch**, and you can switch between providers in the app settings.
+AAMediaMate supports three lyrics sources. You can enable, disable, and reorder them in the app settings.
 
-### 1️⃣ Musixmatch (via [RapidAPI](https://rapidapi.com/Paxsenix0/api/musixmatch-lyrics-songs/))
+### 1️⃣ LRCLib (Default)
 
-**Setup Instructions:**
-
-1. Visit the [RapidAPI Page](https://rapidapi.com/Paxsenix0/api/musixmatch-lyrics-songs/)
-2. Register or log in to your RapidAPI account
-3. Copy your `X-RapidAPI-Key`
-4. Paste it into AAMediaMate settings
-
-**Note:** Free quota is limited (~500 requests/month)
+A free, open-source synced lyrics database. No configuration required — recommended as the default.
 
 ---
 
-### 2️⃣ [LrcApi](https://github.com/HisAtri/LrcApi/blob/main/README_EN.md)
+### 2️⃣ Spotify (via [RapidAPI](https://rapidapi.com/spotify-web-api3/api/spotify-web-api3))
 
-A community-provided open-source lyrics API mainly for Chinese lyrics.  
+**Setup Instructions:**
+
+1. Visit the [RapidAPI Page](https://rapidapi.com/spotify-web-api3/api/spotify-web-api3)
+2. Register or log in to your RapidAPI account
+3. Copy your `X-RapidAPI-Key`
+4. Paste it into the Spotify provider settings in AAMediaMate
+
+**Note:** Free quota is limited.
+
+---
+
+### 3️⃣ [LrcApi](https://github.com/HisAtri/LrcApi/blob/main/README_EN.md)
+
+A community-provided open-source lyrics API with good Chinese lyrics support.
 No API key required, but you need to manually configure the API URL. See the [LrcApi docs](https://github.com/HisAtri/LrcApi/blob/main/README_EN.md#public-api) for public API endpoints or self-hosting instructions.
 
 ---
@@ -112,7 +118,7 @@ This project is open-sourced under the [Apache License 2.0](LICENSE). Contributi
 
 - [ChatGPT](https://chatgpt.com/)
 - [Gemini](https://gemini.google.com/app)
-- [Musixmatch Lyrics API](https://rapidapi.com/musixmatchcom/api/musixmatch-lyrics-songs)
+- [Spotify Lyrics via RapidAPI](https://rapidapi.com/spotify-web-api3/api/spotify-web-api3)
 - [LrcApi by @HisAtri](https://github.com/HisAtri/LrcApi)
 
 ---

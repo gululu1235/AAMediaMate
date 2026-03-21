@@ -58,25 +58,31 @@
 
 ## ⚙️ 歌词设置
 
-AAMediaMate 支持两个歌词源，默认启用 Musixmatch，如需切换请前往「设置」页面。
+AAMediaMate 支持三个歌词源，可在「设置」页面单独启用/禁用并调整优先级。
 
-### 1️⃣ Musixmatch (via [RapidAPI](https://rapidapi.com/musixmatchcom/api/musixmatch-lyrics-songs))
+### 1️⃣ LRCLib（默认）
 
-**设置方法：**
-
-1. 访问 [RapidAPI 页面](https://rapidapi.com/Paxsenix0/api/musixmatch-lyrics-songs/playground)
-2. 注册或登录 RapidAPI 账号
-3. 获取你的 `X-RapidAPI-Key`
-4. 在 AAMediaMate 设置中粘贴该 Key
-
-**注意：** 免费额度有限（约每月 500 次）
+免费开源的同步歌词数据库，无需任何配置，推荐设为默认。
 
 ---
 
-### 2️⃣ [LrcApi](https://github.com/HisAtri/LrcApi)
+### 2️⃣ Spotify (via [RapidAPI](https://rapidapi.com/spotify-web-api3/api/spotify-web-api3))
 
-社区提供的开源歌词 API,
-无需配置 API Key，但需要手动设置API地址。参阅[LrcApi](https://github.com/HisAtri/LrcApi)文档设置公开API或自己搭建服务器
+**设置方法：**
+
+1. 访问 [RapidAPI 页面](https://rapidapi.com/spotify-web-api3/api/spotify-web-api3)
+2. 注册或登录 RapidAPI 账号
+3. 获取你的 `X-RapidAPI-Key`
+4. 在 AAMediaMate 的 Spotify 歌词源设置中粘贴该 Key
+
+**注意：** 免费额度有限
+
+---
+
+### 3️⃣ [LrcApi](https://github.com/HisAtri/LrcApi)
+
+社区提供的开源歌词 API，中文歌词支持较好。
+无需配置 API Key，但需要手动设置 API 地址。参阅 [LrcApi](https://github.com/HisAtri/LrcApi) 文档设置公开 API 或自己搭建服务器
 
 ---
 
@@ -107,7 +113,7 @@ AAMediaMate 支持两个歌词源，默认启用 Musixmatch，如需切换请前
 
 - [ChatGPT](https://chatgpt.com/)
 - [Gemini](https://gemini.google.com/app)
-- [Musixmatch Lyrics API](https://rapidapi.com/musixmatchcom/api/musixmatch-lyrics-songs)
+- [Spotify Lyrics via RapidAPI](https://rapidapi.com/spotify-web-api3/api/spotify-web-api3)
 - [LrcApi by @HisAtri](https://github.com/HisAtri/LrcApi)
 
 ---

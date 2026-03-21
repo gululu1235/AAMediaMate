@@ -72,14 +72,14 @@ fun LyricsProvidersScreen(
                 ProviderConfigCard(
                     provider = provider,
                     context = context,
-                    apiKey = if (provider.id == "musixmatch") apiKey else "",
+                    apiKey = if (provider.id == "Spotify") apiKey else "",
                     lrcApiUri = if (provider.id == "lrc_api") lrcApiUri else "",
                     onEnabledChange = { enabled ->
                         SettingsManager.updateProviderEnabled(context, provider.id, enabled)
                         providers = SettingsManager.getLyricsProviders(context)
                     },
                     onApiKeyChange = { newApiKey ->
-                        if (provider.id == "musixmatch") {
+                        if (provider.id == "Spotify") {
                             apiKey = newApiKey
                             SettingsManager.setApiKey(context, newApiKey)
                         }
@@ -240,12 +240,12 @@ private fun ProviderConfigCard(
                 
                 // Provider-specific configuration
                 when (provider.id) {
-                    "musixmatch" -> {
+                    "Spotify" -> {
                         Spacer(modifier = Modifier.height(16.dp))
                         OutlinedTextField(
                             value = apiKey,
                             onValueChange = onApiKeyChange,
-                            label = { Text(stringResource(R.string.spotify_musixmatch_api_key)) },
+                            label = { Text(stringResource(R.string.spotify_api_key)) },
                             singleLine = true,
                             visualTransformation = VisualTransformation.None,
                             modifier = Modifier.fillMaxWidth()

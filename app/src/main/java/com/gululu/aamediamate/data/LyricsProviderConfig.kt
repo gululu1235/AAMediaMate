@@ -5,7 +5,6 @@ import com.gululu.aamediamate.R
 import com.gululu.aamediamate.lyrics.providers.LrcApiProvider
 import com.gululu.aamediamate.lyrics.providers.LRCLibProvider
 import com.gululu.aamediamate.lyrics.providers.LyricsProvider
-import com.gululu.aamediamate.lyrics.providers.MusixmatchProvider
 import com.gululu.aamediamate.lyrics.providers.SpotifyProvider
 
 data class LyricsProviderConfig(
@@ -36,14 +35,6 @@ object LyricsProviderRegistry {
             isEnabled = true,
             priority = 2,
             provider = SpotifyProvider
-        ),
-        LyricsProviderConfig(
-            id = "musixmatch",
-            name = "Musixmatch",
-            descriptionRes = R.string.musixmatch_description,
-            isEnabled = true,
-            priority = 3,
-            provider = MusixmatchProvider
         ),
         LyricsProviderConfig(
             id = "lrc_api",

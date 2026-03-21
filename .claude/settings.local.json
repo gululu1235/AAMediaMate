@@ -4,7 +4,8 @@
       "Bash(./gradlew:*)",
       "WebFetch(domain:lrclib.net)",
       "WebSearch",
-      "Bash(findstr:*)"
+      "Bash(findstr:*)",
+      "Bash(cd /g/Projects/MediaBridge && ls README*)"
     ],
     "deny": [],
     "ask": []

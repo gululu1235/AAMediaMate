@@ -4,7 +4,7 @@
     <!-- Settings Screen -->
     <string name="settings_title">設定</string>
     <string name="show_lyrics">顯示歌詞</string>
-    <string name="spotify_musixmatch_api_key">Spotify &amp; Musixmatch API 金鑰</string>
+    <string name="spotify_api_key">Spotify API 金鑰</string>
     <string name="lrc_api_uri">Lrc API 位址</string>
     <string name="show">顯示</string>
     <string name="hide">隱藏</string>
@@ -116,8 +116,7 @@
     <string name="priority_format">優先級: %1$d</string>
     <string name="no_providers_enabled_warning">⚠️ 沒有啟用任何歌詞提供商，您將無法獲取歌詞。</string>
     <string name="provider_configuration">提供商配置</string>
-    <string name="musixmatch_description">MusixMatch商業歌詞服務</string>
-    <string name="spotify_description">Spotify商業歌詞服務</string>
+    <string name="spotify_description">Spotify商業歌詞服務（需RapidAPI）</string>
     <string name="lrc_api_description">開源LRC API，更好的中文歌詞支援</string>
     <string name="lrclib_description">免費同步歌詞資料庫，建議設為預設</string>
 </resources>
