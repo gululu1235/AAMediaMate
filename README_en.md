@@ -89,6 +89,11 @@ A free, open-source synced lyrics database. No configuration required — recomm
 A community-provided open-source lyrics API with good Chinese lyrics support.
 No API key required, but you need to manually configure the API URL. See the [LrcApi docs](https://github.com/HisAtri/LrcApi/blob/main/README_EN.md#public-api) for public API endpoints or self-hosting instructions.
 
+For self-hosted instances with authorization enabled, set the **Authorization Token** field in the provider settings. The token is sent as-is in the `Authorization` HTTP header:
+```
+Authorization: <your-token>
+```
+
 ---
 
 ## 🛠️ How to Use
