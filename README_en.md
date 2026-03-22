@@ -71,11 +71,11 @@ A free, open-source synced lyrics database. No configuration required — recomm
 
 ---
 
-### 2️⃣ Spotify (via [RapidAPI](https://rapidapi.com/spotify-web-api3/api/spotify-web-api3))
+### 2️⃣ Spotify (via [RapidAPI](https://rapidapi.com/nguyenmanhict-MuTUtGWD7K/api/spotify-web-api3))
 
 **Setup Instructions:**
 
-1. Visit the [RapidAPI Page](https://rapidapi.com/spotify-web-api3/api/spotify-web-api3)
+1. Visit the [RapidAPI Page](https://rapidapi.com/nguyenmanhict-MuTUtGWD7K/api/spotify-web-api3)
 2. Register or log in to your RapidAPI account
 3. Copy your `X-RapidAPI-Key`
 4. Paste it into the Spotify provider settings in AAMediaMate
@@ -123,7 +123,7 @@ This project is open-sourced under the [Apache License 2.0](LICENSE). Contributi
 
 - [ChatGPT](https://chatgpt.com/)
 - [Gemini](https://gemini.google.com/app)
-- [Spotify Lyrics via RapidAPI](https://rapidapi.com/spotify-web-api3/api/spotify-web-api3)
+- [Spotify Lyrics via RapidAPI](https://rapidapi.com/nguyenmanhict-MuTUtGWD7K/api/spotify-web-api3)
 - [LrcApi by @HisAtri](https://github.com/HisAtri/LrcApi)
 
 ---
