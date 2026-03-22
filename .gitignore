@@ -29,6 +29,9 @@ app/release
 # Google services keys (DO NOT COMMIT)
 google-services.json
 
+# Claude Code local settings
+.claude/settings.local.json
+
 # IntelliJ specific
 .idea/caches
 .idea/libraries
