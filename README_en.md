@@ -132,17 +132,19 @@ This project is open-sourced under the [Apache License 2.0](LICENSE). Contributi
 
 ### Android Auto Lyrics Display
 <div align="center">
-<img src="screenshots/lyrics_ytmusic.png" alt="Lyrics Display" width="600">
+<img src="screenshots/%5BEN%5DAndroidAuto_Player.png" alt="Android Auto Player" width="600">
 </div>
 
 ### Mobile App Main Screen
 <div align="center">
-    <img src="screenshots/MainScreen_en.jpg" alt="Main Screen" width="400">
+<img src="screenshots/%5BEN%5DMain.jpg" alt="Main Screen" width="400">
+<img src="screenshots/%5BEN%5DSettings.jpg" alt="Settings" width="400">
 </div>
 
 ### Lyrics Manager
 <div align="center">
-<img src="screenshots/lyrics_editor_en.jpg" alt="Lyrics Editor" width="400">
+<img src="screenshots/%5BEN%5DLyricsManager.jpg" alt="Lyrics Manager" width="400">
+<img src="screenshots/%5BEN%5DLyricsEditor.jpg" alt="Lyrics Editor" width="400">
 </div>
 
 ---

@@ -127,18 +127,19 @@ Authorization: <your-token>
 
 ### Android Auto效果
 <div align="center">
-<img src="screenshots/lyrics_qqmusic.png" alt="歌词显示" width="600">
+<img src="screenshots/%5BCN%5DAndroidAuto_Player.png" alt="车机播放界面" width="600">
 </div>
 
 ### 手机端主界面
 <div align="center">
-    <img src="screenshots/MainScreen_zh.jpg" alt="主界面" width="400">
+<img src="screenshots/%5BCN%5DMain.jpg" alt="主界面" width="400">
+<img src="screenshots/%5BCN%5DSettings.jpg" alt="设置页面" width="400">
 </div>
 
 ### 歌词管理
 <div align="center">
-<img src="screenshots/lyrics_manager.jpg" alt="歌词管理器" width="400">
-<img src="screenshots/lyrics_editor_zh.jpg" alt="歌词编辑器" width="400">
+<img src="screenshots/%5BCN%5DLyricsManager.jpg" alt="歌词管理器" width="400">
+<img src="screenshots/%5BCN%5DLyricsEditor.jpg" alt="歌词编辑器" width="400">
 </div>
 
 ---
