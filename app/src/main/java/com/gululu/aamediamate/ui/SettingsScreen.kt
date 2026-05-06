@@ -30,6 +30,7 @@ import com.gululu.aamediamate.models.LanguageOption
 fun SettingsScreen(
     onBack: () -> Unit,
     onNavigateToProviders: () -> Unit = {},
+    onNavigateToCleanupRules: () -> Unit = {},
     onNavigateToBridgedApps: () -> Unit = {},
     onNavigateToDisplaySettings: () -> Unit = {}
 ) {
@@ -217,6 +218,15 @@ fun SettingsScreen(
                     modifier = Modifier.fillMaxWidth()
                 ) {
                     Text(stringResource(R.string.lyrics_providers_title))
+                }
+
+                Spacer(modifier = Modifier.height(8.dp))
+
+                OutlinedButton(
+                    onClick = onNavigateToCleanupRules,
+                    modifier = Modifier.fillMaxWidth()
+                ) {
+                    Text(stringResource(R.string.lyrics_cleanup_rules_title))
                 }
             }
 

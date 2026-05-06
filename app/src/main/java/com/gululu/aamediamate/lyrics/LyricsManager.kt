@@ -12,12 +12,15 @@ data class LyricLine(val timeSec: Float, val text: String)
 
 object LyricsManager {
     suspend fun getLyricsLrt(context: Context, title: String, artist: String, duration: String): String? = withContext(Dispatchers.IO) {
+        val cleanupRules = SettingsManager.getLyricsCleanupRules(context)
+        val (cleanedTitle, cleanedArtist) = LyricsCleanupManager.applyRules(title, artist, cleanupRules)
+
         // Get enabled providers in order of priority
         val enabledProviders = SettingsManager.getEnabledProvidersInOrder(context)
         
         for (providerConfig in enabledProviders) {
             try {
-                val lrc = providerConfig.provider.getLyricsLrc(context, title, artist, duration)
+                val lrc = providerConfig.provider.getLyricsLrc(context, cleanedTitle, cleanedArtist, duration)
                 if (!lrc.isNullOrBlank()) {
                     return@withContext lrc
                 }

@@ -120,4 +120,23 @@
     <string name="lrc_api_description">Open source LRC API. Good Chinese lyrics support.</string>
     <string name="lrc_api_auth_token">Authorization Token (optional)</string>
     <string name="lrclib_description">Free synced lyrics database, recommend setting as default.</string>
+
+    <!--Lyrics Cleanup Rules-->
+    <string name="lyrics_cleanup_rules_title">Lyrics Cleanup Rules</string>
+    <string name="lyrics_cleanup_rules_subtitle">Clean artist/title text before automatic lyric searches. Manual search is unchanged.</string>
+    <string name="lyrics_cleanup_rules_hint">Rules run from top to bottom. The built-in Lossless rule is editable.</string>
+    <string name="lyrics_cleanup_rules_empty">No cleanup rules yet.</string>
+    <string name="lyrics_cleanup_rule_add">Add Rule</string>
+    <string name="lyrics_cleanup_rule_edit_title">Edit Cleanup Rule</string>
+    <string name="lyrics_cleanup_rule_name">Rule Name</string>
+    <string name="lyrics_cleanup_rule_field">Target Field</string>
+    <string name="lyrics_cleanup_rule_pattern">Regex Pattern</string>
+    <string name="lyrics_cleanup_rule_pattern_hint">Example: (?i)\\s*[•·-]?\\s*Lossless\\s*$</string>
+    <string name="lyrics_cleanup_rule_enabled">Enabled</string>
+    <string name="lyrics_cleanup_rule_saved">Cleanup rule saved</string>
+    <string name="lyrics_cleanup_rule_edit">Edit</string>
+    <string name="lyrics_cleanup_rule_move_up">Move up</string>
+    <string name="lyrics_cleanup_rule_move_down">Move down</string>
+    <string name="lyrics_cleanup_field_artist">Artist</string>
+    <string name="lyrics_cleanup_field_title">Title</string>
 </resources>

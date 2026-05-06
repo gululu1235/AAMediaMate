@@ -120,4 +120,23 @@
     <string name="lrc_api_description">開源LRC API，更好的中文歌詞支援</string>
     <string name="lrc_api_auth_token">授權 Token（選填）</string>
     <string name="lrclib_description">免費同步歌詞資料庫，建議設為預設</string>
+
+    <!--Lyrics Cleanup Rules-->
+    <string name="lyrics_cleanup_rules_title">歌詞清理規則</string>
+    <string name="lyrics_cleanup_rules_subtitle">在自動搜尋歌詞前清理演出者或歌曲名稱。手動搜尋不受影響。</string>
+    <string name="lyrics_cleanup_rules_hint">規則會由上到下依序執行。內建的 Lossless 規則可以編輯。</string>
+    <string name="lyrics_cleanup_rules_empty">目前沒有清理規則。</string>
+    <string name="lyrics_cleanup_rule_add">新增規則</string>
+    <string name="lyrics_cleanup_rule_edit_title">編輯清理規則</string>
+    <string name="lyrics_cleanup_rule_name">規則名稱</string>
+    <string name="lyrics_cleanup_rule_field">目標欄位</string>
+    <string name="lyrics_cleanup_rule_pattern">Regex 規則</string>
+    <string name="lyrics_cleanup_rule_pattern_hint">例如: (?i)\\s*[•·-]?\\s*Lossless\\s*$</string>
+    <string name="lyrics_cleanup_rule_enabled">已啟用</string>
+    <string name="lyrics_cleanup_rule_saved">清理規則已儲存</string>
+    <string name="lyrics_cleanup_rule_edit">編輯</string>
+    <string name="lyrics_cleanup_rule_move_up">上移</string>
+    <string name="lyrics_cleanup_rule_move_down">下移</string>
+    <string name="lyrics_cleanup_field_artist">演出者</string>
+    <string name="lyrics_cleanup_field_title">歌曲名稱</string>
 </resources>

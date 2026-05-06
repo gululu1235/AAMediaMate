@@ -2,12 +2,15 @@ package com.gululu.aamediamate
 
 import android.content.Context
 import androidx.core.content.edit
+import com.gululu.aamediamate.data.LyricsCleanupField
+import com.gululu.aamediamate.data.LyricsCleanupRule
 import com.gululu.aamediamate.models.LanguageOption
 import com.gululu.aamediamate.models.BridgedApp
 import com.gululu.aamediamate.data.LyricsProviderConfig
 import com.gululu.aamediamate.data.LyricsProviderRegistry
 import org.json.JSONArray
 import org.json.JSONObject
+import java.util.UUID
 
 object SettingsManager {
     private const val PREFS_NAME = "media_bridge_settings"
@@ -20,6 +23,7 @@ object SettingsManager {
     private const val KEY_LANGUAGE = "language_pref"
     private const val KEY_BRIDGED_APPS = "bridged_apps"
     private const val KEY_LYRICS_PROVIDERS = "lyrics_providers"
+    private const val KEY_LYRICS_CLEANUP_RULES = "lyrics_cleanup_rules"
     private const val KEY_COMBINE_APP_ICON_AND_ALBUM_ART = "combine_app_icon_and_album_art"
     private const val KEY_SHOW_ALBUM_NAME = "show_album_name"
     private const val KEY_LYRICS_TIMING_OFFSET = "lyrics_timing_offset"
@@ -311,5 +315,65 @@ object SettingsManager {
         return getLyricsProviders(context)
             .filter { it.isEnabled }
             .sortedBy { it.priority }
+    }
+
+    fun getLyricsCleanupRules(context: Context): List<LyricsCleanupRule> {
+        val prefs = getPrefs(context)
+        if (!prefs.contains(KEY_LYRICS_CLEANUP_RULES)) {
+            return defaultLyricsCleanupRules()
+        }
+
+        val jsonString = prefs.getString(KEY_LYRICS_CLEANUP_RULES, "[]") ?: "[]"
+        val jsonArray = JSONArray(jsonString)
+        val rules = mutableListOf<LyricsCleanupRule>()
+
+        for (i in 0 until jsonArray.length()) {
+            val jsonObject = jsonArray.optJSONObject(i) ?: continue
+            val field = runCatching {
+                LyricsCleanupField.valueOf(jsonObject.optString("field", LyricsCleanupField.ARTIST.name))
+            }.getOrDefault(LyricsCleanupField.ARTIST)
+
+            rules.add(
+                LyricsCleanupRule(
+                    id = jsonObject.optString("id", UUID.randomUUID().toString()),
+                    name = jsonObject.optString("name", ""),
+                    field = field,
+                    pattern = jsonObject.optString("pattern", ""),
+                    isEnabled = jsonObject.optBoolean("isEnabled", true)
+                )
+            )
+        }
+
+        return rules
+    }
+
+    fun saveLyricsCleanupRules(context: Context, rules: List<LyricsCleanupRule>) {
+        val jsonArray = JSONArray()
+        rules.forEach { rule ->
+            val jsonObject = JSONObject().apply {
+                put("id", rule.id)
+                put("name", rule.name)
+                put("field", rule.field.name)
+                put("pattern", rule.pattern)
+                put("isEnabled", rule.isEnabled)
+            }
+            jsonArray.put(jsonObject)
+        }
+
+        getPrefs(context).edit {
+            putString(KEY_LYRICS_CLEANUP_RULES, jsonArray.toString())
+        }
+    }
+
+    private fun defaultLyricsCleanupRules(): List<LyricsCleanupRule> {
+        return listOf(
+            LyricsCleanupRule(
+                id = "default_lossless_artist",
+                name = "Lossless",
+                field = LyricsCleanupField.ARTIST,
+                pattern = """(?i)\s*[•·-]?\s*Lossless\s*$""",
+                isEnabled = true
+            )
+        )
     }
 }
