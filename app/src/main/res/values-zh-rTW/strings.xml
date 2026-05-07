@@ -29,6 +29,36 @@
     <string name="thank_you_support">感謝您的支持</string>
     <string name="send_me_a_tip">小額打賞</string>
     <string name="buy_me_a_coffee">請我喝杯咖啡</string>
+
+    <!-- Backup & Restore -->
+    <string name="backup_restore_title">備份與還原</string>
+    <string name="backup_create_title">建立備份</string>
+    <string name="backup_restore_section_title">還原備份</string>
+    <string name="backup_select_content_create">選擇要備份的內容</string>
+    <string name="backup_select_content_restore">選擇要還原的內容</string>
+    <string name="backup_include_lyrics">歌詞</string>
+    <string name="backup_include_config">設定</string>
+    <string name="backup_include_keys">包含 API Key / Token</string>
+    <string name="backup_include_keys_description">包含 Spotify API Key 和 LRC API 授權 Token。</string>
+    <string name="backup_create">建立備份</string>
+    <string name="backup_choose_restore_file">選擇備份檔案</string>
+    <string name="backup_restore">還原</string>
+    <string name="backup_selected_file_summary">備份包含 %1$d 個歌詞檔案。</string>
+    <string name="backup_config_included">包含設定</string>
+    <string name="backup_config_not_included">不包含設定</string>
+    <string name="backup_keys_included">包含 API Key/Token</string>
+    <string name="backup_keys_not_included">不包含 API Key/Token</string>
+    <string name="backup_settings_suffix">，以及設定</string>
+    <string name="backup_created">已建立備份：%1$d 個歌詞檔案%2$s</string>
+    <string name="backup_restored">已還原：%1$d 個歌詞檔案%2$s</string>
+    <string name="backup_no_content_selected">請至少選擇一項。</string>
+    <string name="backup_invalid_file">無效的備份檔案。</string>
+    <string name="backup_operation_failed">備份操作失敗：%1$s</string>
+    <string name="backup_restore_confirm_title">還原備份？</string>
+    <string name="backup_restore_confirm_message">同名本機歌詞和所選設定會被覆蓋。備份中沒有的本機歌詞會保留。</string>
+    <string name="backup_restart_required_title">需要重新啟動</string>
+    <string name="backup_restart_required_message">設定已還原。請重新啟動應用程式以套用所有變更。</string>
+    <string name="backup_restart_app">重新啟動應用程式</string>
     
     <!-- Display Customization -->
     <string name="display_settings_title">介面個人化</string>

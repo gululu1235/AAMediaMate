@@ -29,6 +29,36 @@
     <string name="thank_you_support">感谢您的支持</string>
     <string name="send_me_a_tip">小小打赏</string>
     <string name="buy_me_a_coffee">请我喝杯咖啡</string>
+
+    <!-- Backup & Restore -->
+    <string name="backup_restore_title">备份与还原</string>
+    <string name="backup_create_title">创建备份</string>
+    <string name="backup_restore_section_title">还原备份</string>
+    <string name="backup_select_content_create">选择要备份的内容</string>
+    <string name="backup_select_content_restore">选择要还原的内容</string>
+    <string name="backup_include_lyrics">歌词</string>
+    <string name="backup_include_config">配置</string>
+    <string name="backup_include_keys">包含 API Key / Token</string>
+    <string name="backup_include_keys_description">包含 Spotify API Key 和 LRC API 授权 Token。</string>
+    <string name="backup_create">创建备份</string>
+    <string name="backup_choose_restore_file">选择备份文件</string>
+    <string name="backup_restore">还原</string>
+    <string name="backup_selected_file_summary">备份包含 %1$d 个歌词文件。</string>
+    <string name="backup_config_included">包含配置</string>
+    <string name="backup_config_not_included">不包含配置</string>
+    <string name="backup_keys_included">包含 API Key/Token</string>
+    <string name="backup_keys_not_included">不包含 API Key/Token</string>
+    <string name="backup_settings_suffix">，以及配置</string>
+    <string name="backup_created">已创建备份：%1$d 个歌词文件%2$s</string>
+    <string name="backup_restored">已还原：%1$d 个歌词文件%2$s</string>
+    <string name="backup_no_content_selected">请至少选择一项。</string>
+    <string name="backup_invalid_file">无效的备份文件。</string>
+    <string name="backup_operation_failed">备份操作失败：%1$s</string>
+    <string name="backup_restore_confirm_title">还原备份？</string>
+    <string name="backup_restore_confirm_message">同名本地歌词和所选配置会被覆盖。备份中没有的本地歌词会保留。</string>
+    <string name="backup_restart_required_title">需要重启</string>
+    <string name="backup_restart_required_message">配置已还原。请重启应用以应用所有更改。</string>
+    <string name="backup_restart_app">重启应用</string>
     
     <!-- Display Customization -->
     <string name="display_settings_title">界面个性化</string>

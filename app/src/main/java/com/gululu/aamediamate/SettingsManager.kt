@@ -30,6 +30,49 @@ object SettingsManager {
 
     private fun getPrefs(context: Context) = context.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
+    fun exportBackupSettings(context: Context, includeSecrets: Boolean): JSONObject {
+        val prefs = getPrefs(context)
+
+        return JSONObject().apply {
+            put(KEY_LYRICS_ENABLED, getLyricsEnabled(context))
+            put(KEY_SIMPLIFY, getSimplifyEnabled(context))
+            put(KEY_IGNORE_NATIVE_AUTO_APPS, getIgnoreNativeAutoApps(context))
+            put(KEY_LRC_API_URI, getLrcApiBaseUri(context))
+            put(KEY_LANGUAGE, getLanguagePreference(context))
+            put(KEY_BRIDGED_APPS, prefs.getJSONArrayString(KEY_BRIDGED_APPS))
+            put(KEY_LYRICS_PROVIDERS, prefs.getJSONArrayString(KEY_LYRICS_PROVIDERS))
+            put(KEY_LYRICS_CLEANUP_RULES, lyricsCleanupRulesToJson(getLyricsCleanupRules(context)))
+            put(KEY_COMBINE_APP_ICON_AND_ALBUM_ART, getCombineAppIconAndAlbumArt(context))
+            put(KEY_SHOW_ALBUM_NAME, getShowAlbumName(context))
+            put(KEY_LYRICS_TIMING_OFFSET, getLyricsTimingOffset(context))
+
+            if (includeSecrets) {
+                put(KEY_API_KEY, getApiKey(context))
+                put(KEY_LRC_API_AUTH_TOKEN, getLrcApiAuthToken(context))
+            }
+        }
+    }
+
+    fun importBackupSettings(context: Context, settings: JSONObject) {
+        getPrefs(context).edit {
+            settings.optBooleanOrNull(KEY_LYRICS_ENABLED)?.let { putBoolean(KEY_LYRICS_ENABLED, it) }
+            settings.optBooleanOrNull(KEY_SIMPLIFY)?.let { putBoolean(KEY_SIMPLIFY, it) }
+            settings.optBooleanOrNull(KEY_IGNORE_NATIVE_AUTO_APPS)?.let { putBoolean(KEY_IGNORE_NATIVE_AUTO_APPS, it) }
+            settings.optStringOrNull(KEY_LRC_API_URI)?.let { putString(KEY_LRC_API_URI, it) }
+            settings.optStringOrNull(KEY_LANGUAGE)?.let { putString(KEY_LANGUAGE, it) }
+            settings.optJSONArrayStringOrNull(KEY_BRIDGED_APPS)?.let { putString(KEY_BRIDGED_APPS, it) }
+            settings.optJSONArrayStringOrNull(KEY_LYRICS_PROVIDERS)?.let { putString(KEY_LYRICS_PROVIDERS, it) }
+            settings.optJSONArrayStringOrNull(KEY_LYRICS_CLEANUP_RULES)?.let { putString(KEY_LYRICS_CLEANUP_RULES, it) }
+            settings.optBooleanOrNull(KEY_COMBINE_APP_ICON_AND_ALBUM_ART)?.let {
+                putBoolean(KEY_COMBINE_APP_ICON_AND_ALBUM_ART, it)
+            }
+            settings.optBooleanOrNull(KEY_SHOW_ALBUM_NAME)?.let { putBoolean(KEY_SHOW_ALBUM_NAME, it) }
+            settings.optIntOrNull(KEY_LYRICS_TIMING_OFFSET)?.let { putInt(KEY_LYRICS_TIMING_OFFSET, it) }
+            settings.optStringOrNull(KEY_API_KEY)?.let { putString(KEY_API_KEY, it) }
+            settings.optStringOrNull(KEY_LRC_API_AUTH_TOKEN)?.let { putString(KEY_LRC_API_AUTH_TOKEN, it) }
+        }
+    }
+
     fun getCombineAppIconAndAlbumArt(context: Context): Boolean =
         getPrefs(context).getBoolean(KEY_COMBINE_APP_ICON_AND_ALBUM_ART, true)
 
@@ -375,5 +418,46 @@ object SettingsManager {
                 isEnabled = true
             )
         )
+    }
+
+    private fun android.content.SharedPreferences.getJSONArrayString(key: String): JSONArray {
+        val value = getString(key, "[]") ?: "[]"
+        return runCatching { JSONArray(value) }.getOrElse { JSONArray() }
+    }
+
+    private fun lyricsCleanupRulesToJson(rules: List<LyricsCleanupRule>): JSONArray {
+        val jsonArray = JSONArray()
+        rules.forEach { rule ->
+            jsonArray.put(
+                JSONObject().apply {
+                    put("id", rule.id)
+                    put("name", rule.name)
+                    put("field", rule.field.name)
+                    put("pattern", rule.pattern)
+                    put("isEnabled", rule.isEnabled)
+                }
+            )
+        }
+        return jsonArray
+    }
+
+    private fun JSONObject.optBooleanOrNull(key: String): Boolean? =
+        if (has(key) && !isNull(key)) optBoolean(key) else null
+
+    private fun JSONObject.optIntOrNull(key: String): Int? =
+        if (has(key) && !isNull(key)) optInt(key) else null
+
+    private fun JSONObject.optStringOrNull(key: String): String? =
+        if (has(key) && !isNull(key)) optString(key, "") else null
+
+    private fun JSONObject.optJSONArrayStringOrNull(key: String): String? {
+        if (!has(key) || isNull(key)) return null
+
+        val value = opt(key)
+        return when (value) {
+            is JSONArray -> value.toString()
+            is String -> runCatching { JSONArray(value).toString() }.getOrNull()
+            else -> null
+        }
     }
 }

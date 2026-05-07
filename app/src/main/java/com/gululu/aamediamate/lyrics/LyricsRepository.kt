@@ -66,6 +66,11 @@ object LyricsRepository {
         _lyricsUpdatedFlow.emit(key)
     }
 
+    suspend fun notifyLyricsUpdated(key: String) {
+        LyricCache.clearMemoryCache(key)
+        _lyricsUpdatedFlow.emit(key)
+    }
+
     suspend fun shiftLyricsByMs(context: Context, keys: List<String>, deltaMs: Long) = withContext(Dispatchers.IO) {
         if (keys.isEmpty()) return@withContext
 

@@ -1,6 +1,7 @@
 package com.gululu.aamediamate
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.support.v4.media.MediaMetadataCompat
 import android.support.v4.media.session.MediaSessionCompat
 import com.gululu.aamediamate.models.MediaInfo
@@ -9,6 +10,7 @@ import io.mockk.mockk
 import io.mockk.slot
 import io.mockk.verify
 import org.junit.Assert.assertEquals
+import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.robolectric.RobolectricTestRunner
@@ -19,7 +21,15 @@ class LyricDisplayManagerTest {
 
     private val context = mockk<Context>(relaxed = true)
     private val mediaSession = mockk<MediaSessionCompat>(relaxed = true)
-    private val manager = LyricDisplayManager(context)
+    private lateinit var manager: LyricDisplayManager
+
+    @Before
+    fun setUp() {
+        val prefs = mockk<SharedPreferences>(relaxed = true)
+        every { context.getSharedPreferences(any(), any()) } returns prefs
+        every { prefs.getBoolean("show_album_name", true) } returns true
+        manager = LyricDisplayManager(context)
+    }
 
     private fun invokeUpdateLyricLine(info: MediaInfo, lyricLine: String) {
         val method: Method = LyricDisplayManager::class.java.getDeclaredMethod(

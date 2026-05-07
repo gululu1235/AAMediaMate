@@ -68,6 +68,7 @@ import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.lifecycle.lifecycleScope
 import com.gululu.aamediamate.billing.BillingManager
 import com.gululu.aamediamate.models.MediaInfo
+import com.gululu.aamediamate.ui.BackupRestoreScreen
 import com.gululu.aamediamate.ui.BridgedAppsScreen
 import com.gululu.aamediamate.ui.DonationScreen
 import com.gululu.aamediamate.ui.LyricsCleanupRulesScreen
@@ -151,6 +152,7 @@ fun MediaBridgeApp(billingManager: BillingManager? = null) {
     var showLyricsCleanupRules by remember { mutableStateOf(false) }
     var showDisplaySettings by remember { mutableStateOf(false) }
     var showDonationScreen by remember { mutableStateOf(false) }
+    var showBackupRestore by remember { mutableStateOf(false) }
     var selectedLyricsKey by remember { mutableStateOf<String?>(null) }
     var manualSearchLyricsKey by remember { mutableStateOf<String?>(null) }
     var currentMediaInfo by remember { mutableStateOf<MediaInfo?>(null) }
@@ -188,6 +190,7 @@ fun MediaBridgeApp(billingManager: BillingManager? = null) {
         showLyricsCleanupRules -> LyricsCleanupRulesScreen { showLyricsCleanupRules = false }
         showDisplaySettings -> com.gululu.aamediamate.ui.DisplaySettingsScreen { showDisplaySettings = false }
         showDonationScreen -> billingManager?.let { DonationScreen(billingManager = it, onBack = { showDonationScreen = false }) }
+        showBackupRestore -> BackupRestoreScreen { showBackupRestore = false }
         showSettings -> SettingsScreen(
             onBack = { showSettings = false },
             onNavigateToProviders = { showLyricsProviders = true },
@@ -206,6 +209,7 @@ fun MediaBridgeApp(billingManager: BillingManager? = null) {
             onOpenSettings = { showSettings = true },
             onOpenLyricsManager = { showLyricsManager = true },
             onOpenDonation = { showDonationScreen = true },
+            onOpenBackupRestore = { showBackupRestore = true },
             onOpenLyricsEditor = { title, artist ->
                 selectedLyricsKey = title + "_" + artist
             },
@@ -227,6 +231,7 @@ fun MainScreen(
     onOpenSettings: () -> Unit,
     onOpenLyricsManager: () -> Unit,
     onOpenDonation: () -> Unit,
+    onOpenBackupRestore: () -> Unit,
     onOpenLyricsEditor: (String, String) -> Unit,
     onOpenApp: (String) -> Unit
 ) {
@@ -269,6 +274,13 @@ fun MainScreen(
                             onClick = {
                                 expanded = false
                                 onOpenSettings()
+                            }
+                        )
+                        DropdownMenuItem(
+                            text = { Text(stringResource(id = R.string.backup_restore_title)) },
+                            onClick = {
+                                expanded = false
+                                onOpenBackupRestore()
                             }
                         )
                         DropdownMenuItem(
@@ -478,5 +490,4 @@ fun NotificationAccessBanner(onFixClicked: () -> Unit) {
         }
     }
 }
-
 

@@ -29,6 +29,36 @@
     <string name="thank_you_support">Thank you for your support</string>
     <string name="send_me_a_tip">Send me a tip</string>
     <string name="buy_me_a_coffee">Buy me a coffee</string>
+
+    <!-- Backup & Restore -->
+    <string name="backup_restore_title">Backup &amp; Restore</string>
+    <string name="backup_create_title">Create Backup</string>
+    <string name="backup_restore_section_title">Restore Backup</string>
+    <string name="backup_select_content_create">Choose what to include</string>
+    <string name="backup_select_content_restore">Choose what to restore</string>
+    <string name="backup_include_lyrics">Lyrics</string>
+    <string name="backup_include_config">Config</string>
+    <string name="backup_include_keys">Include API keys / tokens</string>
+    <string name="backup_include_keys_description">Includes Spotify API key and LRC API authorization token.</string>
+    <string name="backup_create">Create Backup</string>
+    <string name="backup_choose_restore_file">Choose Backup File</string>
+    <string name="backup_restore">Restore</string>
+    <string name="backup_selected_file_summary">Backup contains %1$d lyric file(s).</string>
+    <string name="backup_config_included">Config included</string>
+    <string name="backup_config_not_included">Config not included</string>
+    <string name="backup_keys_included">API keys/tokens included</string>
+    <string name="backup_keys_not_included">API keys/tokens not included</string>
+    <string name="backup_settings_suffix"> and config</string>
+    <string name="backup_created">Backup created: %1$d lyric file(s)%2$s</string>
+    <string name="backup_restored">Restored: %1$d lyric file(s)%2$s</string>
+    <string name="backup_no_content_selected">Select at least one item.</string>
+    <string name="backup_invalid_file">Invalid backup file.</string>
+    <string name="backup_operation_failed">Backup operation failed: %1$s</string>
+    <string name="backup_restore_confirm_title">Restore backup?</string>
+    <string name="backup_restore_confirm_message">Matching local lyrics and selected settings will be overwritten. Local lyrics not present in the backup will be kept.</string>
+    <string name="backup_restart_required_title">Restart required</string>
+    <string name="backup_restart_required_message">Config was restored. Restart the app to apply all changes.</string>
+    <string name="backup_restart_app">Restart App</string>
     
     <!-- Display Customization -->
     <string name="display_settings_title">Display Customization</string>

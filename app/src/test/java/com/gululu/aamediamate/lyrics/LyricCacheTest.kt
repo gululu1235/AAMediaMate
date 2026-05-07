@@ -2,9 +2,11 @@ package com.gululu.aamediamate.lyrics
 
 import android.content.Context
 import io.mockk.coEvery
+import io.mockk.every
 import io.mockk.mockk
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.runTest
+import org.junit.Assert.assertEquals
 import org.junit.Before
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -22,8 +24,9 @@ class LyricCacheTest {
     fun setUp() {
         context = mockk(relaxed = true)
         lyricsDir = File("build/tmp/test_lyrics")
+        lyricsDir.deleteRecursively()
         lyricsDir.mkdirs()
-        coEvery { context.getExternalFilesDir("lyrics") } returns lyricsDir
+        every { context.getExternalFilesDir("lyrics") } returns lyricsDir
     }
 
     @Test
@@ -31,12 +34,16 @@ class LyricCacheTest {
         val title = "Test Title"
         val artist = "Test Artist"
         val key = "${title}_${artist}"
-        val cachedLyrics = listOf(LyricLine(0f, "Hello"))
+        val file = File(lyricsDir, "$key.lrt")
+        file.writeText("[00:00.00]Hello")
+
         LyricCache.clearMemoryCache(key) // Ensure cache is clean
-        LyricCache.getOrFetchLyrics(context, title, artist, "180") // Prime cache
+        val cachedLyrics = LyricCache.getOrFetchLyrics(context, title, artist, "180") // Prime cache
+        file.writeText("[00:00.00]Changed")
 
         val result = LyricCache.getOrFetchLyrics(context, title, artist, "180")
 
+        assertEquals(cachedLyrics, result)
     }
 
     @Test
@@ -52,6 +59,7 @@ class LyricCacheTest {
 
         val result = LyricCache.getOrFetchLyrics(context, title, artist, "180")
 
+        assertEquals(listOf(LyricLine(1.0f, "Test lyric")), result)
     }
 
     @Test
