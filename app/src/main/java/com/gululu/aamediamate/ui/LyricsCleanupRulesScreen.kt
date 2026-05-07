@@ -31,9 +31,10 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalClipboardManager
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.VisualTransformation
+import androidx.compose.ui.text.AnnotatedString
 import androidx.compose.ui.unit.dp
 import com.gululu.aamediamate.R
 import com.gululu.aamediamate.SettingsManager
@@ -303,6 +304,8 @@ private fun LyricsCleanupRuleEditorDialog(
     onDismiss: () -> Unit,
     onSave: (LyricsCleanupRule) -> Unit,
 ) {
+    val context = LocalContext.current
+    val clipboardManager = LocalClipboardManager.current
     var name by remember(rule.id) { mutableStateOf(rule.name) }
     var pattern by remember(rule.id) { mutableStateOf(rule.pattern) }
     var field by remember(rule.id) { mutableStateOf(rule.field) }
@@ -313,6 +316,7 @@ private fun LyricsCleanupRuleEditorDialog(
         runCatching { Regex(pattern) }.exceptionOrNull()?.message
     }
     val canSave = name.isNotBlank() && pattern.isNotBlank() && regexError == null
+    val aiPrompt = stringResource(R.string.lyrics_cleanup_ai_prompt_text)
 
     AlertDialog(
         onDismissRequest = onDismiss,
@@ -383,6 +387,26 @@ private fun LyricsCleanupRuleEditorDialog(
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth()
                 )
+
+                Column(verticalArrangement = Arrangement.spacedBy(8.dp)) {
+                    Text(
+                        text = stringResource(R.string.lyrics_cleanup_ai_prompt_help),
+                        style = MaterialTheme.typography.bodySmall,
+                        color = MaterialTheme.colorScheme.onSurfaceVariant
+                    )
+                    OutlinedButton(
+                        onClick = {
+                            clipboardManager.setText(AnnotatedString(aiPrompt))
+                            Toast.makeText(
+                                context,
+                                context.getString(R.string.lyrics_cleanup_ai_prompt_copied),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                    ) {
+                        Text(stringResource(R.string.lyrics_cleanup_ai_prompt_copy))
+                    }
+                }
 
                 if (regexError != null) {
                     Text(

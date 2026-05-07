@@ -75,6 +75,7 @@ import com.gululu.aamediamate.ui.LyricsCleanupRulesScreen
 import com.gululu.aamediamate.ui.LyricsEditorScreen
 import com.gululu.aamediamate.ui.LyricsManagerScreen
 import com.gululu.aamediamate.ui.LyricsProvidersScreen
+import com.gululu.aamediamate.ui.LyricsSettingsScreen
 import com.gululu.aamediamate.ui.ManualLyricsSearchScreen
 import com.gululu.aamediamate.ui.SettingsScreen
 import java.util.Locale
@@ -147,6 +148,7 @@ fun MediaBridgeApp(billingManager: BillingManager? = null) {
 
     var showSettings by remember { mutableStateOf(false) }
     var showLyricsManager by remember { mutableStateOf(false) }
+    var showLyricsSettings by remember { mutableStateOf(false) }
     var showBridgedApps by remember { mutableStateOf(false) }
     var showLyricsProviders by remember { mutableStateOf(false) }
     var showLyricsCleanupRules by remember { mutableStateOf(false) }
@@ -188,13 +190,17 @@ fun MediaBridgeApp(billingManager: BillingManager? = null) {
         showBridgedApps -> BridgedAppsScreen { showBridgedApps = false }
         showLyricsProviders -> LyricsProvidersScreen { showLyricsProviders = false }
         showLyricsCleanupRules -> LyricsCleanupRulesScreen { showLyricsCleanupRules = false }
+        showLyricsSettings -> LyricsSettingsScreen(
+            onBack = { showLyricsSettings = false },
+            onNavigateToProviders = { showLyricsProviders = true },
+            onNavigateToCleanupRules = { showLyricsCleanupRules = true }
+        )
         showDisplaySettings -> com.gululu.aamediamate.ui.DisplaySettingsScreen { showDisplaySettings = false }
         showDonationScreen -> billingManager?.let { DonationScreen(billingManager = it, onBack = { showDonationScreen = false }) }
         showBackupRestore -> BackupRestoreScreen { showBackupRestore = false }
         showSettings -> SettingsScreen(
             onBack = { showSettings = false },
-            onNavigateToProviders = { showLyricsProviders = true },
-            onNavigateToCleanupRules = { showLyricsCleanupRules = true },
+            onNavigateToLyricsSettings = { showLyricsSettings = true },
             onNavigateToBridgedApps = { showBridgedApps = true },
             onNavigateToDisplaySettings = { showDisplaySettings = true }
         )
@@ -490,4 +496,3 @@ fun NotificationAccessBanner(onFixClicked: () -> Unit) {
         }
     }
 }
-

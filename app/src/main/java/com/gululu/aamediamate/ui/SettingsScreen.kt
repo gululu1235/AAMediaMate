@@ -4,11 +4,9 @@ package com.gululu.aamediamate.ui
 
 import android.app.LocaleManager
 import android.content.Intent
-import android.net.Uri
 import android.os.Build
 import android.os.LocaleList
 import androidx.activity.compose.BackHandler
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -18,10 +16,8 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
 import com.gululu.aamediamate.MainActivity
 import com.gululu.aamediamate.R
@@ -31,8 +27,7 @@ import com.gululu.aamediamate.models.LanguageOption
 @Composable
 fun SettingsScreen(
     onBack: () -> Unit,
-    onNavigateToProviders: () -> Unit = {},
-    onNavigateToCleanupRules: () -> Unit = {},
+    onNavigateToLyricsSettings: () -> Unit = {},
     onNavigateToBridgedApps: () -> Unit = {},
     onNavigateToDisplaySettings: () -> Unit = {}
 ) {
@@ -42,12 +37,7 @@ fun SettingsScreen(
 
     val context = LocalContext.current
 
-    var lyricsEnabled by remember { mutableStateOf(SettingsManager.getLyricsEnabled(context)) }
-    var simplifyChinese by remember { mutableStateOf(SettingsManager.getSimplifyEnabled(context)) }
     var ignoreNativeAutoApps by remember { mutableStateOf(SettingsManager.getIgnoreNativeAutoApps(context)) }
-    var lyricsTimingOffset by remember { mutableStateOf(SettingsManager.getLyricsTimingOffset(context)) }
-    var showLyricsConfirmationDialog by remember { mutableStateOf(false) }
-    var pendingEnableLyrics by remember { mutableStateOf(false) }
 
     val languageOptions = listOf(
         LanguageOption.SYSTEM,
@@ -157,106 +147,11 @@ fun SettingsScreen(
                 Text(stringResource(R.string.customizations_per_app_title))
             }
 
-            // Show Lyrics toggle
-            Row(verticalAlignment = Alignment.CenterVertically) {
-                Text(text = stringResource(id = R.string.show_lyrics), modifier = Modifier.weight(1f))
-                Switch(
-                    checked = lyricsEnabled,
-                    onCheckedChange = { checked ->
-                        if (checked) {
-                            pendingEnableLyrics = true
-                            showLyricsConfirmationDialog = true
-                        } else {
-                            lyricsEnabled = false
-                            SettingsManager.setLyricsEnabled(context, false)
-                        }
-                    }
-                )
-            }
-
-            if (lyricsEnabled) {
-                // Simplify Traditional Chinese (visible only for Simplified Chinese locale)
-                if (selectedLanguage == LanguageOption.SIMPLIFIED_CHINESE) {
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(text = stringResource(id = R.string.simplify_chinese), modifier = Modifier.weight(1f))
-                        Switch(
-                            checked = simplifyChinese,
-                            onCheckedChange = {
-                                simplifyChinese = it
-                                SettingsManager.setSimplifyEnabled(context, it)
-                            }
-                        )
-                    }
-                }
-
-                // Lyrics Timing Offset
-                Text(
-                    text = stringResource(R.string.lyrics_timing_offset_label, lyricsTimingOffset / 1000f),
-                    style = MaterialTheme.typography.bodyMedium
-                )
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.SpaceBetween,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    OutlinedButton(onClick = {
-                        val newOffset = (lyricsTimingOffset - 500).coerceIn(-10000, 10000)
-                        lyricsTimingOffset = newOffset
-                        SettingsManager.setLyricsTimingOffset(context, newOffset)
-                    }) { Text("-0.5s") }
-                    TextButton(onClick = {
-                        lyricsTimingOffset = 0
-                        SettingsManager.setLyricsTimingOffset(context, 0)
-                    }) { Text(stringResource(R.string.reset)) }
-                    OutlinedButton(onClick = {
-                        val newOffset = (lyricsTimingOffset + 500).coerceIn(-10000, 10000)
-                        lyricsTimingOffset = newOffset
-                        SettingsManager.setLyricsTimingOffset(context, newOffset)
-                    }) { Text("+0.5s") }
-                }
-
-                // Lyrics Providers Button
-                OutlinedButton(
-                    onClick = onNavigateToProviders,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(stringResource(R.string.lyrics_providers_title))
-                }
-
-                Spacer(modifier = Modifier.height(8.dp))
-
-                OutlinedButton(
-                    onClick = onNavigateToCleanupRules,
-                    modifier = Modifier.fillMaxWidth()
-                ) {
-                    Text(stringResource(R.string.lyrics_cleanup_rules_title))
-                }
-            }
-
-
-            if (showLyricsConfirmationDialog) {
-                AlertDialog(
-                    onDismissRequest = { showLyricsConfirmationDialog = false },
-                    title = { Text(stringResource(id = R.string.lyrics_enable_warning_title)) },
-                    text = { Text(stringResource(id = R.string.lyrics_enable_warning_text)) },
-                    confirmButton = {
-                        TextButton(onClick = {
-                            lyricsEnabled = true
-                            SettingsManager.setLyricsEnabled(context, true)
-                            showLyricsConfirmationDialog = false
-                        }) {
-                            Text(stringResource(id = R.string.lyrics_enable_confirm_button))
-                        }
-                    },
-                    dismissButton = {
-                        TextButton(onClick = {
-                            showLyricsConfirmationDialog = false
-                            pendingEnableLyrics = false
-                        }) {
-                            Text(stringResource(id = R.string.cancel))
-                        }
-                    }
-                )
+            OutlinedButton(
+                onClick = onNavigateToLyricsSettings,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(stringResource(R.string.lyrics_settings_title))
             }
 
         }
