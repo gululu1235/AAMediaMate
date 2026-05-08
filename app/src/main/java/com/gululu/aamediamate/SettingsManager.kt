@@ -167,6 +167,8 @@ object SettingsManager {
         for (i in 0 until jsonArray.length()) {
             val jsonObject = jsonArray.getJSONObject(i)
             val packageName = jsonObject.getString("packageName")
+            if (packageName == context.packageName) continue
+
             val storedAppName = jsonObject.getString("appName")
             
             // If stored app name is just the package name, try to get proper app name again
@@ -191,19 +193,48 @@ object SettingsManager {
         return apps
     }
 
+    fun getStoredBridgedAppName(context: Context, packageName: String): String? {
+        if (packageName == context.packageName) return null
+
+        val jsonString = getPrefs(context).getString(KEY_BRIDGED_APPS, "[]") ?: "[]"
+        val jsonArray = JSONArray(jsonString)
+
+        for (i in 0 until jsonArray.length()) {
+            val jsonObject = jsonArray.optJSONObject(i) ?: continue
+            if (jsonObject.optString("packageName") == packageName) {
+                val storedAppName = jsonObject.optString("appName", "")
+                if (storedAppName.isNotBlank() && storedAppName != packageName) {
+                    return storedAppName
+                }
+            }
+        }
+
+        return null
+    }
+
     fun addOrUpdateBridgedApp(context: Context, packageName: String, appName: String) {
+        if (packageName == context.packageName) return
+
         val apps = getBridgedApps(context).toMutableList()
         val existingIndex = apps.indexOfFirst { it.packageName == packageName }
+        val existingAppName = apps.getOrNull(existingIndex)?.appName
         
-        // Use cached app name from MediaInformationRetriever if available
-        // Only fallback to PackageManager if we don't have a good app name already
-        val finalAppName = if (appName.isNotBlank() && appName != packageName) {
-            // We already have a good app name, use it and cache it
-            MediaInformationRetriever.labelMap[packageName] = appName
-            appName
-        } else {
-            // Get app name from cache or PackageManager
-            MediaInformationRetriever.getAppLabel(context, packageName)
+        val finalAppName = when {
+            appName.isNotBlank() && appName != packageName -> {
+                // We already have a good app name, use it and cache it.
+                MediaInformationRetriever.labelMap[packageName] = appName
+                appName
+            }
+            !existingAppName.isNullOrBlank() && existingAppName != packageName -> {
+                // Preserve a previously known good name instead of overwriting it
+                // with a transient package-name fallback.
+                existingAppName
+            }
+            else -> MediaInformationRetriever.getAppLabel(context, packageName)
+        }
+
+        if (finalAppName.isNotBlank() && finalAppName != packageName) {
+            MediaInformationRetriever.labelMap[packageName] = finalAppName
         }
         
         if (existingIndex >= 0) {

@@ -21,6 +21,7 @@ object MediaInformationRetriever {
     fun refreshCurrentMediaInfo(context: Context): MediaInfo? {
         try {
             val controller = MediaControllerManager.getFirstController(context) ?: return null
+            if (controller.packageName == context.packageName) return null
 
             val metadata = controller.metadata ?: return null
             val state = controller.playbackState ?: return null
@@ -59,6 +60,8 @@ object MediaInformationRetriever {
     }
 
     fun buildMediaInfoFromController(context: Context, controller: MediaController): MediaInfo? {
+        if (controller.packageName == context.packageName) return null
+
         val metadata = controller.metadata ?: return null
         val state = controller.playbackState ?: return null
 
@@ -117,15 +120,47 @@ object MediaInformationRetriever {
     }
 
     internal fun getAppLabel(context: Context, packageName: String): String {
-        return labelMap[packageName] ?: run {
-            try {
-                val pm = context.packageManager
-                val appInfo = pm.getApplicationInfo(packageName, 0)
-                pm.getApplicationLabel(appInfo).toString()
-            } catch (e: Exception) {
-                packageName
-            }
+        if (packageName == context.packageName) {
+            return context.getString(R.string.unknown_app)
         }
+
+        labelMap[packageName]?.let { return it }
+
+        val resolvedLabel = resolveAppLabel(context, packageName)
+        val storedLabel = SettingsManager.getStoredBridgedAppName(context, packageName)
+        val finalLabel = when {
+            !resolvedLabel.isNullOrBlank() -> resolvedLabel
+            !storedLabel.isNullOrBlank() -> storedLabel
+            else -> packageName
+        }
+
+        if (packageName != context.packageName && finalLabel.isNotBlank() && finalLabel != packageName) {
+            labelMap[packageName] = finalLabel
+        }
+
+        return finalLabel
+    }
+
+    private fun resolveAppLabel(context: Context, packageName: String): String? {
+        return runCatching {
+            val pm = context.packageManager
+            val appInfo = pm.getApplicationInfo(packageName, 0)
+            val label = pm.getApplicationLabel(appInfo).toString().trim()
+
+            if (label.isNotBlank() && label != packageName) {
+                label
+            } else {
+                val installedLabel = pm.getInstalledPackages(0)
+                    .firstOrNull { it.packageName == packageName }
+                    ?.applicationInfo
+                    ?.loadLabel(pm)
+                    ?.toString()
+                    ?.trim()
+                    .orEmpty()
+
+                installedLabel.takeIf { it.isNotBlank() && it != packageName }
+            }
+        }.getOrNull()
     }
 
     private fun getAppIconBitmap(context: Context, packageName: String): Bitmap? {
