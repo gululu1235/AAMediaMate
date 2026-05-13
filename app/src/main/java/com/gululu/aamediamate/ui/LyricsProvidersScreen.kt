@@ -99,27 +99,12 @@ fun LyricsProvidersScreen(
                         }
                     },
                     onPriorityUp = {
-                        if (provider.priority > 1) {
-                            val newPriority = provider.priority - 1
-                            val otherProvider = providers.find { it.priority == newPriority }
-                            if (otherProvider != null) {
-                                SettingsManager.updateProviderPriority(context, otherProvider.id, provider.priority)
-                            }
-                            SettingsManager.updateProviderPriority(context, provider.id, newPriority)
-                            providers = SettingsManager.getLyricsProviders(context)
-                        }
+                        SettingsManager.moveProviderPriority(context, provider.id, -1)
+                        providers = SettingsManager.getLyricsProviders(context)
                     },
                     onPriorityDown = {
-                        val maxPriority = providers.maxOfOrNull { it.priority } ?: 1
-                        if (provider.priority < maxPriority) {
-                            val newPriority = provider.priority + 1
-                            val otherProvider = providers.find { it.priority == newPriority }
-                            if (otherProvider != null) {
-                                SettingsManager.updateProviderPriority(context, otherProvider.id, provider.priority)
-                            }
-                            SettingsManager.updateProviderPriority(context, provider.id, newPriority)
-                            providers = SettingsManager.getLyricsProviders(context)
-                        }
+                        SettingsManager.moveProviderPriority(context, provider.id, 1)
+                        providers = SettingsManager.getLyricsProviders(context)
                     }
                 )
             }

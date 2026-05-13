@@ -330,12 +330,15 @@ object SettingsManager {
         val jsonArray = JSONArray(jsonString)
         val allProviders = LyricsProviderRegistry.getAllProviders()
         val savedProviders = mutableMapOf<String, LyricsProviderConfig>()
+        val savedProviderOrder = mutableMapOf<String, Int>()
+        val registryOrder = allProviders.mapIndexed { index, provider -> provider.id to index }.toMap()
         
         // Parse saved settings
         for (i in 0 until jsonArray.length()) {
             val jsonObject = jsonArray.getJSONObject(i)
             val id = jsonObject.getString("id")
             val baseProvider = LyricsProviderRegistry.getProviderById(id)
+            savedProviderOrder[id] = i
             
             if (baseProvider != null) {
                 savedProviders[id] = baseProvider.copy(
@@ -348,12 +351,16 @@ object SettingsManager {
         // Return all providers with saved settings applied, or defaults if not saved
         return allProviders.map { provider ->
             savedProviders[provider.id] ?: provider
-        }.sortedBy { it.priority }
+        }.sortedWith(
+            compareBy<LyricsProviderConfig> { it.priority }
+                .thenBy { savedProviderOrder[it.id] ?: Int.MAX_VALUE }
+                .thenBy { registryOrder[it.id] ?: Int.MAX_VALUE }
+        ).normalizedProviderOrder()
     }
 
     fun saveLyricsProviders(context: Context, providers: List<LyricsProviderConfig>) {
         val jsonArray = JSONArray()
-        providers.forEach { provider ->
+        providers.normalizedProviderOrder().forEach { provider ->
             val jsonObject = JSONObject().apply {
                 put("id", provider.id)
                 put("isEnabled", provider.isEnabled)
@@ -380,15 +387,35 @@ object SettingsManager {
         val providers = getLyricsProviders(context).toMutableList()
         val index = providers.indexOfFirst { it.id == providerId }
         if (index >= 0) {
-            providers[index] = providers[index].copy(priority = priority)
-            saveLyricsProviders(context, providers.sortedBy { it.priority })
+            val provider = providers.removeAt(index)
+            val targetIndex = (priority - 1).coerceIn(0, providers.size)
+            providers.add(targetIndex, provider)
+            saveLyricsProviders(context, providers.normalizedProviderOrder())
         }
+    }
+
+    /** Moves a lyrics provider by one visible priority slot. */
+    fun moveProviderPriority(context: Context, providerId: String, direction: Int) {
+        val providers = getLyricsProviders(context)
+        val currentIndex = providers.indexOfFirst { it.id == providerId }
+        if (currentIndex < 0) return
+
+        val targetIndex = (currentIndex + direction.coerceIn(-1, 1)).coerceIn(providers.indices)
+        if (targetIndex == currentIndex) return
+
+        updateProviderPriority(context, providerId, targetIndex + 1)
     }
 
     fun getEnabledProvidersInOrder(context: Context): List<LyricsProviderConfig> {
         return getLyricsProviders(context)
             .filter { it.isEnabled }
             .sortedBy { it.priority }
+    }
+
+    private fun List<LyricsProviderConfig>.normalizedProviderOrder(): List<LyricsProviderConfig> {
+        return mapIndexed { index, provider ->
+            provider.copy(priority = index + 1)
+        }
     }
 
     fun getLyricsCleanupRules(context: Context): List<LyricsCleanupRule> {
